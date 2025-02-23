@@ -57,10 +57,12 @@ Future<void> main() async {
   );
   await authenticationRepository.user.first;
 
-  //final subscriptionRepository = SubscriptionRepository(dotenv.env['REVENUECAT_PROJECT_GOOGLE_API_KEY']!);
+  final subscriptionRepository =
+      SubscriptionRepository(dotenv.env['REVENUECAT_PROJECT_GOOGLE_API_KEY']!);
 
   // After initialization, run the main app
   runApp(App(
     authenticationRepository: authenticationRepository,
+    subscriptionRepository: subscriptionRepository,
   ));
 }

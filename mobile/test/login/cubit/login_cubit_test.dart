@@ -1,7 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:focusnow/bloc/cubit/login_cubit.dart';
+import 'package:focusnow/bloc/login/login_cubit.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
 import 'package:mocktail/mocktail.dart';

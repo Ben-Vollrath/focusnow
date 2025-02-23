@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/app/app_bloc.dart';
+import 'package:focusnow/bloc/subscription/subscription_bloc.dart';
 import 'package:focusnow/static/theme/theme.dart';
 import 'package:focusnow/static/theme/util.dart';
 import 'package:focusnow/ui/app/routes/routes.dart';
@@ -12,13 +13,13 @@ import 'package:subscription_repository/subscription_repository.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class App extends StatelessWidget {
-  const App({
-    required this.authenticationRepository,
-    super.key,
-  });
+  const App(
+      {required this.authenticationRepository,
+      required this.subscriptionRepository,
+      super.key});
 
   final AuthenticationRepository authenticationRepository;
-  //final SubscriptionRepository subscriptionRepository;
+  final SubscriptionRepository subscriptionRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +27,28 @@ class App extends StatelessWidget {
       providers: [
         RepositoryProvider<AuthenticationRepository>(
             create: (context) => authenticationRepository),
+        RepositoryProvider<SubscriptionRepository>(
+            create: (context) => subscriptionRepository),
       ],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider<SubscriptionBloc>(
+            create: (context) => SubscriptionBloc(subscriptionRepository),
+          ),
           BlocProvider<AppBloc>(
-            create: (context) =>
-                AppBloc(authenticationRepository: authenticationRepository),
+            create: (context) {
+              final appBloc =
+                  AppBloc(authenticationRepository: authenticationRepository);
+
+              appBloc.stream.listen((appState) {
+                if (appState.status == AppStatus.authenticated) {
+                  context
+                      .read<SubscriptionBloc>()
+                      .add(LoadSubscription(userId: appState.user.id));
+                }
+              });
+              return appBloc;
+            },
           ),
         ],
         child: const AppView(),
@@ -45,7 +62,6 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = View.of(context).platformDispatcher.platformBrightness;
     TextTheme textTheme =
         createTextTheme(context, "Varela Round", "Varela Round");
     MaterialTheme theme = MaterialTheme(textTheme);
@@ -69,7 +85,8 @@ class NavFlowBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlowBuilder<AppStatus>(
       state: context.select((AppBloc bloc) => bloc.state.status),
-      onGeneratePages: onGenerateAppViewPages,
+      onGeneratePages: (state, pages) =>
+          onGenerateAppViewPages(state, pages, context),
     );
   }
 }
