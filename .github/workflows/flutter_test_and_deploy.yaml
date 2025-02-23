@@ -58,7 +58,7 @@ jobs:
 
       - name: Creating .env
         run: echo "${{ secrets.ENV_FILE }}" > .env
-        working-directory: ./mobiles
+        working-directory: ./mobile
 
         #7 Building App Bundle (aab)
       - name: Build appBundle
