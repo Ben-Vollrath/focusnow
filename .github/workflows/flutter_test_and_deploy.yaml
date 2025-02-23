@@ -75,6 +75,41 @@ jobs:
           name: apk
           path: build/app/outputs/flutter-apk/app-release.apk
 
+  deploy-function:
+    runs-on: ubuntu-latest
+
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      PROJECT_ID: pozdstowggghedxrqbgk
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - run: supabase functions deploy one-time-purchase --project-ref $PROJECT_ID --no-verify-jwt
+      - run: supabase functions deploy revenuecat-expire --project-ref $PROJECT_ID --no-verify-jwt
+      - run: supabase functions deploy revenuecat-purchase-renewal --project-ref $PROJECT_ID --no-verify-jwt
+      - run: supabase functions deploy verify-purchase --project-ref $PROJECT_ID --no-verify-jwt
+  deploy-migration:
+    runs-on: ubuntu-latest
+
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      PROJECT_ID: pozdstowggghedxrqbgk
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - run: supabase link --project-ref $PROJECT_ID --password $SUPABASE_DB_PASSWORD
+      - run: supabase db push
   deploy:
     needs: build
     runs-on: ubuntu-latest
