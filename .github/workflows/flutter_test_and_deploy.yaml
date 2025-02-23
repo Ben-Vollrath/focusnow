@@ -60,6 +60,9 @@ jobs:
         run: echo "${{ secrets.ENV_FILE }}" > .env
         working-directory: ./mobile
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
         #7 Building App Bundle (aab)
       - name: Build appBundle
         run: flutter build appbundle --release
