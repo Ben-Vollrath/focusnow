@@ -32,11 +32,6 @@ jobs:
           flutter-version: "3.22.2"
           channel: "stable"
 
-      - name: Install Android SDK 35
-        run: |
-          yes | sdkmanager --install "platforms;android-35" "build-tools;35.0.0"
-          sdkmanager --licenses
-
           #4 Install Dependencies
       - name: Install Dependencies
         run: flutter pub get
