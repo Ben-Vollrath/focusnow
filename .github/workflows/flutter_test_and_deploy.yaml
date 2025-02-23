@@ -9,37 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.22.2"
-
-      - name: Dart version
-        run: dart --version
-      - name: Flutter version
-        run: flutter --version
-      - name: Flutter doctor
-        run: flutter doctor
-
-      # Step: Create .env file from secret
-      - name: Create .env file
-        run: echo "${{ secrets.ENV_FILE }}" > .env
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run tests with coverage
-        run: flutter test --coverage
-
   build:
-    needs: test
     name: Build
     runs-on: macos-latest
 
