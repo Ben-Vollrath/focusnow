@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "379688531054",
+    "project_id": "focusnow-d66fa",
+    "storage_bucket": "focusnow-d66fa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379688531054:android:2ca7cfb94ad2503bc5a27f",
+        "android_client_info": {
+          "package_name": "io.vollrath.focusnow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdU09hTnpBVcXddYvWaot24W4Ipv0vMFQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

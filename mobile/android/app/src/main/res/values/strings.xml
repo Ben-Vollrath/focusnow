@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="widget_image_description">Description of the widget image</string>
+    <string name="facebook_app_id">866085762085208</string>
+    <string name="facebook_client_token">d97310a2e393414fa894269c4d80714f</string>
+</resources>
+
