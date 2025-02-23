@@ -16,10 +16,6 @@ class MockAuthenticationRepository extends Mock
 
 class MockAppBloc extends MockBloc<AppEvent, AppState> implements AppBloc {}
 
-class MockSubscriptionBloc
-    extends MockBloc<SubscriptionEvent, SubscriptionState>
-    implements SubscriptionBloc {}
-
 class MockAnalyticsRepository extends Mock implements AnalyticsRepository {}
 
 void main() {
@@ -32,33 +28,22 @@ void main() {
 
   group('AppView', () {
     late AuthenticationRepository authenticationRepository;
-    late SubscriptionBloc subscriptionBloc;
     late AppBloc appBloc;
 
     setUp(() {
       authenticationRepository = MockAuthenticationRepository();
-      subscriptionBloc = MockSubscriptionBloc();
       appBloc = MockAppBloc();
     });
 
     testWidgets('navigates to LoginPage when unauthenticated', (tester) async {
       when(() => appBloc.state).thenReturn(const AppState.unauthenticated());
-      when(() => settingsBloc.state).thenReturn(SettingsState(
-        isIconsCircular: true,
-        iconTextColor: IconTextColors.white,
-        theme: UiTheme.system,
-      ));
 
       await tester.pumpWidget(
         RepositoryProvider.value(
           value: authenticationRepository,
           child: MaterialApp(
             home: MultiBlocProvider(
-              providers: [
-                BlocProvider.value(value: settingsBloc),
-                BlocProvider.value(value: subscriptionBloc),
-                BlocProvider.value(value: appBloc)
-              ],
+              providers: [BlocProvider.value(value: appBloc)],
               child: const NavFlowBuilder(),
             ),
           ),

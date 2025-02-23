@@ -1,43 +1,42 @@
-name: Flutter CI with Coverage
+name: Flutter Tests
 
 on:
   push:
     branches:
-      - '**'
+      - "**"
   pull_request:
     branches:
-      - '**'
+      - "**"
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.22.2'
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.22.2"
 
-    - name: Dart version
-      run: dart --version
-    - name: Flutter version
-      run: flutter --version
-    - name: Flutter doctor
-      run: flutter doctor
+      - name: Dart version
+        run: dart --version
+      - name: Flutter version
+        run: flutter --version
+      - name: Flutter doctor
+        run: flutter doctor
 
-    # Step: Copy .env-template to .env
-    - name: Copy .env-template to .env
-      run: cp .env-template .env
+      # Step: Copy .env-template to .env
+      - name: Copy .env-template to .env
+        run: cp .env-template .env
+        working-directory: ./mobile
 
-    - name: Install dependencies
-      run: flutter pub get
+      - name: Install dependencies
+        run: flutter pub get
+        working-directory: ./mobile
 
-    - name: Run tests with coverage
-      run: flutter test --coverage
-
-    - name: Debug lcov report
-      run: cat coverage/lcov.info
-  
+      - name: Run tests
+        run: flutter test
+        working-directory: ./mobile
