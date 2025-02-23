@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:focusnow/bloc/cubit/login_cubit.dart';
+import 'package:focusnow/bloc/login/login_cubit.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
 

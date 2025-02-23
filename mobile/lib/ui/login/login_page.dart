@@ -1,4 +1,4 @@
-import 'package:focusnow/bloc/cubit/login_cubit.dart';
+import 'package:focusnow/bloc/login/login_cubit.dart';
 import 'package:focusnow/ui/login/login.dart';
 import 'package:analytics_repository/analytics_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';

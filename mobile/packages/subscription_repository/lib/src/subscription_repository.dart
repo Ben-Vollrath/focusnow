@@ -55,22 +55,11 @@ class SubscriptionRepository {
       CustomerInfo customerInfo = await Purchases.getCustomerInfo();
 
       bool userIsPremium =
-          customerInfo.entitlements.all.containsKey("Premium Access") &&
-              customerInfo.entitlements.all["Premium Access"]?.isActive == true;
+          customerInfo.entitlements.all.containsKey("Subscription Access") &&
+              customerInfo.entitlements.all["Subscription Access"]?.isActive ==
+                  true;
 
-      bool isMonthly = customerInfo.activeSubscriptions.isNotEmpty &&
-          customerInfo.activeSubscriptions.first ==
-              "subscription_premium:premium-subscription";
-
-      final response = await _supabaseClient
-          .from('users')
-          .select('credits, purchased_credits')
-          .single();
-
-      return Subscription(
-          isPremium: userIsPremium,
-          credits: (response['credits'] + response['purchased_credits']),
-          isMonthly: isMonthly);
+      return Subscription(isActive: userIsPremium);
     } catch (e, stackTrace) {
       _analyticsRepository.logError(
           e, stackTrace, "Failed to fetch subscription");

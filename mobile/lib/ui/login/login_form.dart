@@ -1,4 +1,4 @@
-import 'package:focusnow/bloc/cubit/login_cubit.dart';
+import 'package:focusnow/bloc/login/login_cubit.dart';
 import 'package:focusnow/ui/login/magic_link.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

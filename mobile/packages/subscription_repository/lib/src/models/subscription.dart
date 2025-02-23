@@ -1,31 +1,17 @@
 import 'package:equatable/equatable.dart';
 
 class Subscription extends Equatable {
-  final bool isPremium;
-  final int credits;
-  final bool isMonthly;
+  final bool isActive;
 
-  const Subscription(
-      {required this.isPremium,
-      required this.credits,
-      required this.isMonthly});
+  const Subscription({required this.isActive});
 
   @override
-  List<Object?> get props => [isPremium, credits];
+  List<Object?> get props => [isActive];
 
-  String get displayName => isPremium ? 'Premium' : 'Free';
-
-  String get limit => isPremium
-      ? isMonthly
-          ? '2000/month'
-          : '500/week'
-      : '3/day';
+  static const Subscription inactive = Subscription(isActive: false);
 
   //Copy with
-  Subscription copyWith({bool? isPremium, int? credits, bool? isMonthly}) {
-    return Subscription(
-        isPremium: isPremium ?? this.isPremium,
-        credits: credits ?? this.credits,
-        isMonthly: isMonthly ?? this.isMonthly);
+  Subscription copyWith({bool? isActive}) {
+    return Subscription(isActive: isActive ?? this.isActive);
   }
 }
