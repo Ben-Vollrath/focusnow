@@ -36,20 +36,8 @@ class App extends StatelessWidget {
             create: (context) => SubscriptionBloc(subscriptionRepository),
           ),
           BlocProvider<AppBloc>(
-            create: (context) {
-              final appBloc =
-                  AppBloc(authenticationRepository: authenticationRepository);
-
-              appBloc.stream.listen((appState) {
-                if (appState.status == AppStatus.authenticated) {
-                  context
-                      .read<SubscriptionBloc>()
-                      .add(LoadSubscription(userId: appState.user.id));
-                }
-              });
-              return appBloc;
-            },
-          ),
+              create: (context) =>
+                  AppBloc(authenticationRepository: authenticationRepository)),
         ],
         child: const AppView(),
       ),
@@ -66,27 +54,23 @@ class AppView extends StatelessWidget {
         createTextTheme(context, "Varela Round", "Varela Round");
     MaterialTheme theme = MaterialTheme(textTheme);
 
-    return MaterialApp(
-        navigatorObservers: [
-          FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
-        ],
-        theme: theme.dark(),
-        home: KeyboardDismissOnTap(
-          dismissOnCapturedTaps: true,
-          child: NavFlowBuilder(),
-        ));
-  }
-}
-
-class NavFlowBuilder extends StatelessWidget {
-  const NavFlowBuilder({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return FlowBuilder<AppStatus>(
-      state: context.select((AppBloc bloc) => bloc.state.status),
-      onGeneratePages: (state, pages) =>
-          onGenerateAppViewPages(state, pages, context),
+    return BlocListener<AppBloc, AppState>(
+      listener: (context, appState) {
+        if (appState.status == AppStatus.authenticated) {
+          context
+              .read<SubscriptionBloc>()
+              .add(LoadSubscription(userId: appState.user.id));
+        }
+      },
+      child: MaterialApp(
+          navigatorObservers: [
+            FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
+          ],
+          theme: theme.dark(),
+          home: KeyboardDismissOnTap(
+            dismissOnCapturedTaps: true,
+            child: NavFlowBuilder(),
+          )),
     );
   }
 }

@@ -1,30 +1,22 @@
 part of 'subscription_bloc.dart';
 
-abstract class SubscriptionState extends Equatable {
-  const SubscriptionState();
-
-  @override
-  List<Object> get props => [];
+enum SubscriptionStatus {
+  active,
+  inactive,
 }
 
-class SubscriptionInitial extends SubscriptionState {}
+final class SubscriptionState extends Equatable {
+  const SubscriptionState._({
+    required this.status,
+  });
 
-class SubscriptionLoading extends SubscriptionState {}
+  const SubscriptionState.active() : this._(status: SubscriptionStatus.active);
 
-class SubscriptionLoaded extends SubscriptionState {
-  final Subscription subscription;
+  const SubscriptionState.inactive()
+      : this._(status: SubscriptionStatus.inactive);
 
-  const SubscriptionLoaded(this.subscription);
-
-  @override
-  List<Object> get props => [subscription];
-}
-
-class SubscriptionError extends SubscriptionState {
-  final String message;
-
-  const SubscriptionError(this.message);
+  final SubscriptionStatus status;
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [status];
 }
