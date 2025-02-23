@@ -19,7 +19,6 @@ dependencies:
   form_inputs:
     path: packages/form_inputs
 
-  image_picker: ^1.1.0
   permission_handler: ^11.3.1
   supabase_flutter: ^2.5.7
   google_sign_in: ^6.1.0
@@ -35,7 +34,6 @@ dependencies:
   loading_animation_widget: ^1.2.1
   crypto: ^3.0.3
   hydrated_bloc: ^9.1.5
-  path_provider: ^2.1.4
   flutter_emoji: ^2.5.1
   image_cropper: ^8.0.2
   in_app_purchase: ^3.2.0
