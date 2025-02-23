@@ -111,7 +111,7 @@ jobs:
       - run: supabase link --project-ref $PROJECT_ID --password $SUPABASE_DB_PASSWORD
       - run: supabase db push
   deploy:
-    needs: build
+    needs: [build, deploy-function, deploy-migration]
     runs-on: ubuntu-latest
 
     steps:
