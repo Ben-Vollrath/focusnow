@@ -15,8 +15,7 @@ class NavFlowBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlowBuilder<AppStatus>(
       state: context.select((AppBloc bloc) => bloc.state.status),
-      onGeneratePages: (state, pages) =>
-          onGenerateAppViewPages(state, pages, context),
+      onGeneratePages: (state, pages) => onGenerateAppViewPages(state, pages),
     );
   }
 }
@@ -24,7 +23,6 @@ class NavFlowBuilder extends StatelessWidget {
 List<Page<dynamic>> onGenerateAppViewPages(
   AppStatus state,
   List<Page<dynamic>> pages,
-  BuildContext context,
 ) {
   switch (state) {
     case AppStatus.authenticated:
