@@ -17,7 +17,6 @@ dependencies:
   supabase_flutter: ^2.5.7
   mocktail: ^1.0.4
   firebase_crashlytics: ^4.1.5
-  rxdart: ^0.27.0
   analytics_repository:
     path: ../analytics_repository
 

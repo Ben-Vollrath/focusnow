@@ -201,14 +201,7 @@ class AuthenticationRepository {
         _supabaseAuth = supabaseAuth ?? Supabase.instance.client.auth,
         _supabaseClient = supabaseClient ?? Supabase.instance.client,
         _googleSignIn = googleSignIn ?? GoogleSignIn.standard(),
-        _analyticsRepository = analyticsRepository ?? AnalyticsRepository() {
-    _supabaseAuth.onAuthStateChange.listen((authState) {
-      final user =
-          authState.session == null ? UserModel.User.empty : authState.toUser;
-      _cache.write(key: userCacheKey, value: user);
-      _userSubject.add(user);
-    });
-  }
+        _analyticsRepository = analyticsRepository ?? AnalyticsRepository();
 
   final CacheClient _cache;
   final GoTrueClient _supabaseAuth;
@@ -227,12 +220,18 @@ class AuthenticationRepository {
   @visibleForTesting
   static const userCacheKey = '__user_cache_key__';
 
-  ///Stream controller of [UserModel.User] which will emit the current user when
+  /// Stream of [UserModel.User] which will emit the current user when
   /// the authentication state changes.
-  final _userSubject =
-      BehaviorSubject<UserModel.User>.seeded(UserModel.User.empty);
-
-  Stream<UserModel.User> get user => _userSubject.stream;
+  ///
+  /// Emits [UserModel.User.empty] if the user is not authenticated.
+  Stream<UserModel.User> get user {
+    return _supabaseAuth.onAuthStateChange.map((authState) {
+      final user =
+          authState.session == null ? UserModel.User.empty : authState.toUser;
+      _cache.write(key: userCacheKey, value: user);
+      return user;
+    });
+  }
 
   /// Returns the current cached user
   /// Defaults to [UserModel.User.empty] if no user is cached.
@@ -246,10 +245,6 @@ class AuthenticationRepository {
   Future<void> refreshSession() async {
     try {
       final authState = await _supabaseAuth.refreshSession();
-      final user =
-          authState.session == null ? UserModel.User.empty : authState.toUser;
-      _cache.write(key: userCacheKey, value: user);
-      //_userSubject.add(user);
     } on AuthException catch (e, stackTrace) {
       _analyticsRepository.logError(
           e, stackTrace, "AuthException, refresh session failed");
