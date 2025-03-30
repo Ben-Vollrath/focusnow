@@ -55,11 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
               // Login form
-              BlocProvider(
-                create: (_) =>
-                    LoginCubit(context.read<AuthenticationRepository>()),
-                child: const LoginForm(),
-              ),
+              const LoginForm(),
             ],
           ),
         ),

@@ -1,3 +1,5 @@
+import 'package:authentication_repository/authentication_repository.dart';
+import 'package:focusnow/bloc/app/app_bloc.dart';
 import 'package:focusnow/bloc/login/login_cubit.dart';
 import 'package:focusnow/ui/login/magic_link.dart';
 import 'package:flutter/material.dart';
@@ -131,8 +133,15 @@ class _LoginButton extends StatelessWidget {
                     child: FilledButton(
                       key: const Key('loginForm_continue_raisedButton'),
                       onPressed: state.isValid
-                          ? () =>
-                              context.read<LoginCubit>().logInWithMagicLink()
+                          ? () {
+                              User currentUser =
+                                  context.read<AppBloc>().state.user;
+                              if (currentUser.isAnonymous) {
+                                context.read<LoginCubit>().linkEmailAuth();
+                              } else {
+                                context.read<LoginCubit>().logInWithMagicLink();
+                              }
+                            }
                           : null,
                       child: const Text('SIGN UP'),
                     ),
@@ -152,25 +161,31 @@ class _GoogleLoginButton extends StatelessWidget {
       children: [
         Expanded(
           child: ElevatedButton.icon(
-            key: const Key('loginForm_googleLogin_raisedButton'),
-            label: Text(
-              'Continue with Google',
-              style: TextStyle(color: theme.colorScheme.outline),
-            ),
-            icon: Image.asset(
-              'assets/google_logo.png',
-              height: 24.0,
-              width: 24.0,
-            ),
-            style: ElevatedButton.styleFrom(
-              side: const BorderSide(
-                  color: Colors.black, width: 1), // Black border
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+              key: const Key('loginForm_googleLogin_raisedButton'),
+              label: Text(
+                'Continue with Google',
+                style: TextStyle(color: theme.colorScheme.outline),
               ),
-            ),
-            onPressed: () => context.read<LoginCubit>().logInWithGoogle(),
-          ),
+              icon: Image.asset(
+                'assets/google_logo.png',
+                height: 24.0,
+                width: 24.0,
+              ),
+              style: ElevatedButton.styleFrom(
+                side: const BorderSide(
+                    color: Colors.black, width: 1), // Black border
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              onPressed: () {
+                User currentUser = context.read<AppBloc>().state.user;
+                if (currentUser.isAnonymous) {
+                  context.read<LoginCubit>().linkGoogleAuth();
+                } else {
+                  context.read<LoginCubit>().logInWithGoogle();
+                }
+              }),
         ),
       ],
     );

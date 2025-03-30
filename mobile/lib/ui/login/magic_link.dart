@@ -1,10 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/app/app_bloc.dart';
+import 'package:focusnow/bloc/login/login_cubit.dart';
 import 'package:lottie/lottie.dart';
 
-class MagicLinkView extends StatelessWidget {
+class MagicLinkView extends StatefulWidget {
   const MagicLinkView({super.key});
+
+  @override
+  State<MagicLinkView> createState() => _MagicLinkViewState();
+}
+
+class _MagicLinkViewState extends State<MagicLinkView>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      context.read<LoginCubit>().refreshSession();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

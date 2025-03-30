@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/app/app_bloc.dart';
 import 'package:focusnow/ui/paywall/paywall.dart';
+import 'package:focusnow/ui/start/start.dart';
 
 class NavFlowBuilder extends StatelessWidget {
   const NavFlowBuilder({super.key});
@@ -36,8 +37,8 @@ List<Page<dynamic>> onGenerateAppViewPages(
     case AppStatus.unauthenticated:
       return [
         MaterialPage(
-          name: "LoginPage",
-          child: LoginPage(),
+          name: "StartPage",
+          child: StartPage(),
         ),
       ];
   }

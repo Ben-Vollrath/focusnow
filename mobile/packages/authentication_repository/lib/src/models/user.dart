@@ -31,6 +31,8 @@ class User extends Equatable {
   /// Convenience getter to determine whether the current user is not empty.
   bool get isNotEmpty => this != User.empty;
 
+  bool get isAnonymous => email == "" && id != "";
+
   @override
   List<Object?> get props => [email, id, name];
 }
