@@ -22,6 +22,75 @@ class LoginCubit extends Cubit<LoginState> {
     );
   }
 
+  Future<void> refreshSession() async {
+    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+    try {
+      await _authenticationRepository.refreshSession();
+      emit(state.copyWith(status: FormzSubmissionStatus.success));
+    } on AuthFailure catch (e) {
+      emit(
+        state.copyWith(
+          errorMessage: e.message,
+          status: FormzSubmissionStatus.failure,
+        ),
+      );
+    } catch (_) {
+      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+    }
+  }
+
+  Future<void> signIgnAnonymously() async {
+    try {
+      await _authenticationRepository.sigInAnonymously();
+      emit(state.copyWith(status: FormzSubmissionStatus.success));
+    } on AuthFailure catch (e) {
+      emit(
+        state.copyWith(
+          errorMessage: e.message,
+          status: FormzSubmissionStatus.failure,
+        ),
+      );
+    } catch (_) {
+      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+    }
+  }
+
+  Future<void> linkGoogleAuth() async {
+    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+    try {
+      await _authenticationRepository.linkGoogleAuth();
+      emit(state.copyWith(status: FormzSubmissionStatus.success));
+    } on AuthFailure catch (e) {
+      emit(
+        state.copyWith(
+          errorMessage: e.message,
+          status: FormzSubmissionStatus.failure,
+        ),
+      );
+    } catch (_) {
+      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+    }
+  }
+
+  Future<void> linkEmailAuth() async {
+    if (!state.isValid) return;
+    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+    try {
+      await _authenticationRepository.linkEmailAuth(state.email.value);
+      emit(state.copyWith(
+          status: FormzSubmissionStatus.success, emailSent: true));
+    } on AuthFailure catch (e) {
+      emit(
+        state.copyWith(
+          errorMessage: e.message,
+          status: FormzSubmissionStatus.failure,
+        ),
+      );
+    } catch (_) {
+      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+    }
+  }
+
   Future<void> logInWithMagicLink() async {
     if (!state.isValid) return;
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));

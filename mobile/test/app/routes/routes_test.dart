@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:focusnow/ui/app/routes/routes.dart';
 import 'package:focusnow/ui/home.dart';
 import 'package:focusnow/ui/login/login_page.dart';
+import 'package:focusnow/ui/start/start_page.dart';
 
 void main() {
   group('onGenerateAppViewPages', () {
@@ -28,7 +29,7 @@ void main() {
           isA<MaterialPage<void>>().having(
             (p) => p.child,
             'child',
-            isA<LoginPage>(),
+            isA<StartPage>(),
           ),
         ],
       );

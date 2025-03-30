@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:analytics_repository/analytics_repository.dart';
+import 'package:app_links/app_links.dart';
 import 'package:cache/cache.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:meta/meta.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:rxdart/subjects.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import './models/user.dart' as UserModel;
@@ -235,6 +239,82 @@ class AuthenticationRepository {
     return _cache.read(key: userCacheKey) ?? UserModel.User.empty;
   }
 
+  /// Refreshes the supabaseAuth session and updates the user stream.
+  ///
+  /// Throws a [AuthFailure] if an exception occurs.
+  Future<void> refreshSession() async {
+    if (!currentUser.isAnonymous) {
+      return;
+    }
+
+    try {
+      final authState = await _supabaseAuth.refreshSession();
+    } on AuthException catch (e, stackTrace) {
+      _analyticsRepository.logError(
+          e, stackTrace, "AuthException, refresh session failed");
+      throw AuthFailure.fromException(e);
+    } catch (e, stackTrace) {
+      _analyticsRepository.logError(e, stackTrace, "refresh session failed");
+      throw const AuthFailure();
+    }
+  }
+
+  ///Sign in anonymously
+  ///
+  /// Throws a [AuthFailure] if an exception occurs.
+  Future<void> sigInAnonymously() async {
+    try {
+      _analyticsRepository.logEvent("login_anonymously");
+      await _supabaseAuth.signInAnonymously();
+    } on AuthException catch (e, stackTrace) {
+      _analyticsRepository.logError(
+          e, stackTrace, "AuthException, login anonymously failed");
+      throw AuthFailure.fromException(e);
+    } catch (e, stackTrace) {
+      _analyticsRepository.logError(e, stackTrace, "login anonymously failed");
+      throw const AuthFailure();
+    }
+  }
+
+  /// Links a email to the anonomyous user
+  ///
+  /// Throws a [AuthFailure] if an exception occurs.
+  Future<void> linkEmailAuth(String email) async {
+    try {
+      _analyticsRepository.logEvent("link_email");
+      await _supabaseAuth.updateUser(
+        UserAttributes(email: email),
+      );
+    } on AuthException catch (e, stackTrace) {
+      _analyticsRepository.logError(
+          e, stackTrace, "AuthException, link email failed");
+      throw AuthFailure.fromException(e);
+    } catch (e, stackTrace) {
+      _analyticsRepository.logError(e, stackTrace, "link email failed");
+      throw const AuthFailure();
+    }
+  }
+
+  /// Links a Google account to the anonomyous user
+  ///
+  /// Throws a [AuthFailure] if an exception occurs.
+  Future<void> linkGoogleAuth() async {
+    try {
+      await _supabaseAuth.linkIdentity(
+        OAuthProvider.google,
+        redirectTo: "io.vollrath.focusnow://login-callback/",
+      );
+    } on AuthException catch (e, stackTrace) {
+      _analyticsRepository.logError(
+          e, stackTrace, "AuthException, link google auth failed");
+      throw AuthFailure.fromException(e);
+    } catch (e, stackTrace) {
+      _analyticsRepository.logError(
+          e, stackTrace, "linking google auth failed");
+      throw const AuthFailure();
+    }
+  }
+
   /// Sign in with the provided [email] and [password]
   ///
   /// Throws a [AuthFailure] if an exception occurs.
@@ -262,7 +342,7 @@ class AuthenticationRepository {
       _analyticsRepository.logEvent("login_with_magic_link");
       await _supabaseAuth.signInWithOtp(
         email: email,
-        emailRedirectTo: "io.vollrath.iconchanger://login-callback/",
+        emailRedirectTo: "io.vollrath.focusnow://login-callback/",
       );
     } on AuthException catch (e, stackTrace) {
       _analyticsRepository.logError(
@@ -343,6 +423,15 @@ class AuthenticationRepository {
 
 extension on AuthState {
   /// Maps the [AuthState] to a [User] object.
+  UserModel.User get toUser {
+    User user = session!.user;
+    return UserModel.User(
+        id: user.id, email: user.email, name: user.email!.split('@')[0]);
+  }
+}
+
+extension on AuthResponse {
+  /// Maps the [AuthResponse] to a [User] object.
   UserModel.User get toUser {
     User user = session!.user;
     return UserModel.User(

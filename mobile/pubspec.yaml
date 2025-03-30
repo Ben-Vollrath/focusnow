@@ -52,6 +52,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
-    - assets/style_previews/
-    - assets/paywall/
+    - assets/onboarding/
     - .env
