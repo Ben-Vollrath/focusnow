@@ -17,21 +17,13 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFF0E0E10),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset('assets/ic_launcher_round.webp'),
-            SizedBox(height: 20),
-            Text(
-              'FocusNow',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Image.asset('assets/icon_round.png'),
           ],
         ), // Replace with your logo asset
       ),

@@ -243,6 +243,10 @@ class AuthenticationRepository {
   ///
   /// Throws a [AuthFailure] if an exception occurs.
   Future<void> refreshSession() async {
+    if (!currentUser.isAnonymous) {
+      return;
+    }
+
     try {
       final authState = await _supabaseAuth.refreshSession();
     } on AuthException catch (e, stackTrace) {

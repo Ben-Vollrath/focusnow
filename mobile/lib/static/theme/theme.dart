@@ -6,19 +6,19 @@ class MaterialTheme {
   const MaterialTheme(this.textTheme);
   static MaterialScheme lightScheme() {
     return const MaterialScheme(
-      brightness: Brightness.light,
-      primary: Color(0xFF4C6ED9),
-      onPrimary: Color(0xFFFFFFFF),
-      secondary: Color(0xFF4C6ED9),
-      onSecondary: Color(0xFF59647A),
-      tertiary: Color(0xFF4C6ED9),
-      error: Color(0xFFD32F2F), // Default red for errors
-      onError: Color(0xFFFFFFFF),
-      background: Color(0xFFF8F9FB),
-      onBackground: Color(0xFF1A213E),
-      surfaceContainerHighest: Color.fromARGB(255, 244, 245, 250),
-      surface: Color(0xFFF8F9FB),
-      onSurface: Color(0xFF1A213E));
+        brightness: Brightness.light,
+        primary: Color(0xFF4C6ED9),
+        onPrimary: Color(0xFFFFFFFF),
+        secondary: Color(0xFF4C6ED9),
+        onSecondary: Color(0xFF59647A),
+        tertiary: Color(0xFF4C6ED9),
+        error: Color(0xFFD32F2F), // Default red for errors
+        onError: Color(0xFFFFFFFF),
+        background: Color(0xFFF8F9FB),
+        onBackground: Color(0xFF1A213E),
+        surfaceContainerHighest: Color.fromARGB(255, 244, 245, 250),
+        surface: Color(0xFFF8F9FB),
+        onSurface: Color(0xFF1A213E));
   }
 
   ThemeData light() {
@@ -28,18 +28,23 @@ class MaterialTheme {
   static MaterialScheme darkScheme() {
     return const MaterialScheme(
       brightness: Brightness.dark,
-      primary: Color(0xFF97AAFC),
+      primary: Color(0xFFA259FF), // Vivid violet
       onPrimary: Color(0xFFFFFFFF),
-      secondary: Color(0xFF97AAFC),
-      onSecondary: Color(0xFFCDD1D9),
-      tertiary: Color(0xFF97AAFC),
-      error: Color(0xFFD32F2F), // Default red for errors
-      onError: Color(0xFF121B24),
-      background: Color(0xFF1F2631),
-      onBackground: Color(0xFFFFFFFF),
-      surfaceContainerHighest: Color.fromARGB(255, 29, 31, 38),
-      surface: Color(0xFF1F2631),
-      onSurface: Color(0xFFFFFFFF),
+
+      secondary: Color(0xFF7F5AF0), // Soft purple
+      onSecondary: Color(0xFFEFEFFF),
+
+      tertiary: Color(0xFF5A5A89), // Descriptive text, labels
+      error: Color(0xFFFF5C5C),
+      onError: Color(0xFF1A1A1D),
+
+      background: Color(0xFF0E0E10), // Very dark background
+      onBackground: Color(0xFFF5F5F5),
+
+      surface: Color(0xFF1A1A1D), // Bottom bar, surfaces
+      onSurface: Color(0xFFF5F5F5),
+
+      surfaceContainerHighest: Color(0xFF2A2A2E), // Widget backgrounds
     );
   }
 
@@ -104,9 +109,9 @@ extension MaterialSchemeUtils on MaterialScheme {
       error: error,
       onError: onError,
       surface: surface,
-      onSurface: onSurface, 
+      onSurface: onSurface,
       brightness: brightness,
-      surfaceContainerHighest: surfaceContainerHighest, 
+      surfaceContainerHighest: surfaceContainerHighest,
     );
   }
 }

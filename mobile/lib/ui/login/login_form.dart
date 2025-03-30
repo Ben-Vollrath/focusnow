@@ -55,31 +55,44 @@ class _LoginFormState extends State<LoginForm> with WidgetsBindingObserver {
               );
           }
         },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 24),
-              Image.asset(
-                'assets/ic_launcher_round.webp',
-                height: 120,
+        child: Scaffold(
+          body: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 24),
+                    Image.asset(
+                      'assets/icon_round.png',
+                      height: 120,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Continue to sign up for free',
+                      style:
+                          Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'If you already have an account, we\'ll log you in',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    _EmailInput(),
+                    _LoginButton(),
+                    const SizedBox(height: 16),
+                    _FormDivider(),
+                    const SizedBox(height: 16),
+                    _GoogleLoginButton(),
+                  ],
+                ),
               ),
-              const SizedBox(height: 16),
-              Text('Continue to sign up for free',
-                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                        fontWeight: FontWeight.bold,
-                      )),
-              const SizedBox(height: 16),
-              const Text('If you already have an account, we\'ll log you in'),
-              const SizedBox(height: 16),
-              _EmailInput(),
-              _LoginButton(),
-              const SizedBox(height: 16),
-              _FormDivider(),
-              const SizedBox(height: 16),
-              _GoogleLoginButton(),
-            ],
+            ),
           ),
         ),
       ),

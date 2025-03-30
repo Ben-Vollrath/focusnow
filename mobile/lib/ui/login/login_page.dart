@@ -33,32 +33,7 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Background image with overlay
-              Stack(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.25,
-                    child: Image.asset(
-                      'assets/login_background.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.25,
-                    color: Colors.black.withOpacity(0.5),
-                  ),
-                ],
-              ),
-              // Login form
-              const LoginForm(),
-            ],
-          ),
-        ),
+        body: const LoginForm(),
       ),
     );
   }

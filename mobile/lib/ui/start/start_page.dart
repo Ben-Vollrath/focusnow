@@ -1,9 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:focusnow/bloc/login/login_cubit.dart';
 import 'package:focusnow/ui/login/login.dart';
 import 'package:analytics_repository/analytics_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:focusnow/ui/start/onboarding/onboarding_screen.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({super.key});
@@ -23,45 +25,96 @@ class _StartPageState extends State<StartPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        final currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus &&
-            currentFocus.focusedChild != null) {
-          FocusManager.instance.primaryFocus!.unfocus();
-        }
-      },
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Background image with overlay
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.25,
-                child: Image.asset(
-                  'assets/login_background.png',
-                  fit: BoxFit.cover,
-                ),
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SizedBox(
+              height: constraints.maxHeight,
+              width: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(height: 20), // Top padding
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Center(
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 80,
+                            height: 80,
+                            child: Image.asset(
+                              'assets/icon_round.png',
+                              height: 80,
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Flexible(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: AutoSizeText(
+                                'FocusNow',
+                                maxLines: 1,
+                                style: theme.textTheme.displayLarge,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(
+                          height: 54,
+                          child: FilledButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  settings:
+                                      const RouteSettings(name: "Onboarding"),
+                                  builder: (context) =>
+                                      const OnboardingScreen(),
+                                ),
+                              );
+                            },
+                            child: const Text('Get Started'),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 54,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  settings:
+                                      const RouteSettings(name: "LoginPage"),
+                                  builder: (context) => LoginPage(),
+                                ),
+                              );
+                            },
+                            child: const Text('Login'),
+                          ),
+                        ),
+                        const SizedBox(height: 12)
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              FilledButton(
-                  onPressed: () {
-                    context.read<LoginCubit>().signIgnAnonymously();
-                  },
-                  child: Text('Get Started')),
-              FilledButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          settings: const RouteSettings(name: "LoginPage"),
-                          builder: (context) => LoginPage()),
-                    );
-                  },
-                  child: Text('Login')),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
