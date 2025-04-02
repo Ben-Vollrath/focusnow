@@ -1,5 +1,5 @@
 -- challenge_category enum
-CREATE TYPE challenge_category AS ENUM ('daily', 'one_time', 'streaks');
+CREATE TYPE challenge_category AS ENUM ('daily_sessions', 'streak_days', 'total_hours', 'total_sessions');
 
 -- levels table
 CREATE TABLE levels (
@@ -19,12 +19,15 @@ CREATE POLICY "Authenticated read access"
 CREATE TABLE challenges (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
-  description TEXT,
-  category challenge_category,
-  condition JSON NOT NULL,
-  reward_xp INT,
-  is_repeatable BOOLEAN DEFAULT FALSE
+  description TEXT NOT NULL,
+  category challenge_category NOT NULL,
+  condition_amount INT NOT NULL,
+  reward_xp INT NOT NULL,
+  is_repeatable BOOLEAN DEFAULT FALSE NOT NULL,
+  difficulty INT DEFAULT NOT NULL,
 );
+CREATE UNIQUE INDEX unique_challenge_type_difficulty
+ON challenges (category, difficulty);
 ALTER TABLE challenges ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Authenticated read access"
   ON challenges
@@ -39,7 +42,9 @@ CREATE TABLE users (
   username TEXT NOT NULL,
   level INT REFERENCES levels(level) DEFAULT 1,
   exp INT DEFAULT 0,
-  total_study_time INT DEFAULT 0
+  total_study_time INT DEFAULT 0,
+  total_study_sessions INT DEFAULT 0
+
 );
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can read their own data"
@@ -89,9 +94,11 @@ CREATE TABLE study_days (
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
   study_date DATE NOT NULL,
   total_study_time INT DEFAULT 0,
+  total_study_sessions INT DEFAULT 1,
   streak_day INT DEFAULT 0,
   UNIQUE(user_id, study_date)  -- ensures one entry per day per user
 );
+
 ALTER TABLE study_days ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can read their own study days"
   ON study_days
@@ -105,7 +112,7 @@ CREATE TABLE challenge_progress (
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
   challenger_id UUID REFERENCES challenges(id) ON DELETE CASCADE,
   completed BOOLEAN DEFAULT FALSE,
-  progress FLOAT DEFAULT 0,
+  progress INT DEFAULT 0,
   last_updated TIMESTAMPTZ DEFAULT now()
 );
 ALTER TABLE challenge_progress ENABLE ROW LEVEL SECURITY;
@@ -114,16 +121,6 @@ CREATE POLICY "Users can read their own challenge progress"
   FOR SELECT
   TO authenticated
   USING (user_id = auth.uid());
-
-
--- challenges_completed table
-CREATE TABLE challenges_completed (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  challenge_id UUID REFERENCES challenges(id) ON DELETE CASCADE,
-  completed_at TIMESTAMPTZ DEFAULT now()
-);
-
 
 --- Create new user on auth signup
 
@@ -237,6 +234,16 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+CREATE OR REPLACE FUNCTION increment_user_xp(p_user_id UUID, amount INT)
+RETURNS VOID AS $$
+BEGIN
+  UPDATE users
+  SET xp = xp + amount
+  WHERE id = p_user_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
 --- Update study day function
 CREATE OR REPLACE FUNCTION update_study_days_on_session_insert()
 RETURNS TRIGGER AS $$
@@ -268,6 +275,7 @@ BEGIN
   ON CONFLICT (user_id, study_date)
   DO UPDATE SET
     total_study_time = study_days.total_study_time + NEW.duration,
+    total_study_sessions = study_days.total_study_sessions + 1,
     streak_day = CASE
       WHEN previous_streak > 0 THEN previous_streak + 1
       ELSE 1
@@ -276,6 +284,11 @@ BEGIN
   -- Update user's total study time
   UPDATE users
   SET total_study_time = total_study_time + NEW.duration
+  WHERE id = NEW.user_id;
+
+  -- Update user's total study sessions
+  UPDATE users
+  SET total_study_sessions = total_study_sessions + 1
   WHERE id = NEW.user_id;
 
   -- Update goal progress
@@ -302,10 +315,9 @@ BEGIN
     AND (target_date IS NULL OR target_date >= session_date);
 
   -- Grant XP to user
-  UPDATE users
-  SET exp = exp + goal_exp_to_add + NEW.duration
-  WHERE id = NEW.user_id;
+  PERFORM increment_user_xp(NEW.user_id, goal_exp_to_add + NEW.duration);
 
+  --- Update user level if necessary
   PERFORM update_user_level(NEW.user_id);
 
   RETURN NULL;
