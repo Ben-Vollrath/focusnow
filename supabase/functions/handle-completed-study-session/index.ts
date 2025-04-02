@@ -4,26 +4,43 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "jsr:@supabase/supabase-js@2";
+import { updateStudySession } from "./utils/studySessions.ts";
 
 export type SessionData = {
-  userId: string;
   sessionDate: string;
   durationMinutes: number;
   start_time: string;
   end_time: string;
 };
 
+const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+const supabaseClient = createClient(supabaseUrl, supabaseServiceRoleKey);
+
 Deno.serve(async (req) => {
-  const { name } = await req.json();
-  const data = {
-    message: `Hello ${name}!`,
-  };
+  const sessionData: SessionData = await req.json();
+  const user_id = await authenticateUser(req);
+
+  updateStudySession(supabaseClient, user_id, sessionData);
 
   return new Response(
-    JSON.stringify(data),
+    JSON.stringify("Test"),
     { headers: { "Content-Type": "application/json" } },
   );
 });
+
+async function authenticateUser(req: Request): Promise<string> {
+  // Authenticate user
+  const authHeader = req.headers.get("Authorization")?.replace("Bearer ", "");
+  if (!authHeader) throw new Error("Authorization header missing");
+
+  const { data: userData, error: userError } = await supabaseClient.auth
+    .getUser(authHeader);
+  if (userError) throw new Error(userError.message);
+
+  return userData.user.id;
+}
 
 /* To invoke locally:
 

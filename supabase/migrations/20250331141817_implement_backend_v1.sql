@@ -53,13 +53,14 @@ CREATE POLICY "Users can read their own data"
 CREATE TABLE goals (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  target_hours FLOAT NOT NULL,
+  target_minutes INT NOT NULL,
+  current_minutes INT DEFAULT 0,
   target_date DATE,
-  progress FLOAT DEFAULT 0,
-  completed BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMPTZ DEFAULT now(),
-  xp_reward INT
+  xp_reward INT,
+  completed BOOLEAN DEFAULT FALSE
 );
+
 ALTER TABLE goals ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can read their own goals"
   ON goals
@@ -220,6 +221,7 @@ DECLARE
   yesterday DATE := (NEW.start_time - INTERVAL '1 day')::DATE;
   existing_study_time INT := 0;
   previous_streak INT := 0;
+  total_xp_to_add INT := 0;
 BEGIN
   -- Get yesterday's streak_day if it exists
   SELECT streak_day INTO previous_streak
@@ -247,8 +249,37 @@ BEGIN
       ELSE 1
     END;
 
+  -- Update user's total study time
   UPDATE users
   SET total_study_time = total_study_time + NEW.duration
+  WHERE id = NEW.user_id;
+
+  -- Update goal progress
+  UPDATE goals
+  SET current_minutes = current_minutes + NEW.duration
+  WHERE user_id = NEW.user_id
+    AND completed = FALSE
+    AND (target_date IS NULL OR target_date >= session_date);
+
+  -- Mark completed goals and collect total XP to grant
+  SELECT COALESCE(SUM(xp_reward), 0) INTO total_xp_to_add
+  FROM goals
+  WHERE user_id = NEW.user_id
+    AND completed = FALSE
+    AND current_minutes >= target_minutes
+    AND (target_date IS NULL OR target_date >= session_date);
+
+  -- Set those goals as completed
+  UPDATE goals
+  SET completed = TRUE
+  WHERE user_id = NEW.user_id
+    AND completed = FALSE
+    AND current_minutes >= target_minutes
+    AND (target_date IS NULL OR target_date >= session_date);
+
+  -- Grant XP to user
+  UPDATE users
+  SET xp = xp + total_xp_to_add
   WHERE id = NEW.user_id;
 
   RETURN NULL;
@@ -257,9 +288,10 @@ $$ LANGUAGE plpgsql;
 
 
 
+
 CREATE TRIGGER trigger_update_study_days
 AFTER INSERT ON study_sessions
 FOR EACH ROW
 EXECUTE FUNCTION update_study_days_on_session_insert();
 
-
+--- Handle Goal Completion
