@@ -1,11 +1,7 @@
-// Follow this setup guide to integrate the Deno language server with your editor:
-// https://deno.land/manual/getting_started/setup_your_environment
-// This enables autocomplete, go to definition, etc.
-
-// Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { updateStudySession } from "./utils/studySessions.ts";
+import { updateChallengeProgress } from "./utils/challenges.ts";
 
 export type SessionData = {
   sessionDate: string;
@@ -23,9 +19,10 @@ Deno.serve(async (req) => {
   const user_id = await authenticateUser(req);
 
   updateStudySession(supabaseClient, user_id, sessionData);
+  updateChallengeProgress(supabaseClient, user_id, sessionData);
 
   return new Response(
-    JSON.stringify("Test"),
+    JSON.stringify("Sucess"),
     { headers: { "Content-Type": "application/json" } },
   );
 });
