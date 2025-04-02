@@ -11,6 +11,18 @@ INSERT INTO username_words (type, word) VALUES
   ('animal', 'penguin');
 
 
+INSERT INTO levels (level, exp_required, name, icon) VALUES
+(1, 0, 'Daydreamer', '💭'),
+(2, 25, 'Note Taker', '📝'),
+(3, 30, 'Fresh Starter', '🌱'),
+(4, 35, 'Focus Finder', '🔍'),
+(5, 40, 'Pomodoro Pupil', '⏱️'),
+(6, 45, 'Task Tackler', '✅'),
+(7, 50, 'Study Sprinter', '🏃‍♂️'),
+(8, 55, 'Time Tracker', '⌛'),
+(9, 60, 'Desk Dweller', '🪑'),
+(10, 65, 'Momentum Builder', '🔄');
+
 
 INSERT INTO auth.users (
   id,
