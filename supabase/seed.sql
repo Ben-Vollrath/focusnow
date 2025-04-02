@@ -1,5 +1,16 @@
--- Generate a UUID manually or with gen_random_uuid()
--- Replace with your own values as needed
+INSERT INTO username_words (type, word) VALUES
+  ('verb', 'absorbing'),
+  ('verb', 'analyzing'),
+  ('verb', 'brainstorming'),
+  ('verb', 'concentrating'),
+  ('verb', 'visualizing'),
+  ('animal', 'panda'),
+  ('animal', 'koala'),
+  ('animal', 'otter'),
+  ('animal', 'giraffe'),
+  ('animal', 'penguin');
+
+
 
 INSERT INTO auth.users (
   id,
@@ -31,3 +42,5 @@ VALUES (
   now(),
   now()
 );
+
+

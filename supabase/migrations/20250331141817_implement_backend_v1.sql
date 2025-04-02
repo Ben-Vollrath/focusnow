@@ -150,16 +150,6 @@ CREATE TABLE username_words (
   PRIMARY KEY (type, word)
 );
 
--- Insert with manual IDs
-INSERT INTO username_words (type, word) VALUES
-  ('verb', 'running'),
-  ('verb', 'coding'),
-  ('verb', 'dancing'),
-  ('animal', 'tiger'),
-  ('animal', 'fox'),
-  ('animal', 'panda');
-
-
 
 CREATE OR REPLACE FUNCTION assign_structured_username()
 RETURNS TRIGGER AS $$
