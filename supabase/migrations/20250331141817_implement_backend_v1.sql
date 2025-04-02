@@ -70,7 +70,7 @@ CREATE POLICY "Users can read their own goals"
 -- study_sessions table
 CREATE TABLE study_sessions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
   start_time TIMESTAMPTZ NOT NULL,
   end_time TIMESTAMPTZ NOT NULL,
   duration INT
@@ -113,6 +113,15 @@ CREATE POLICY "Users can read their own challenge progress"
   FOR SELECT
   TO authenticated
   USING (user_id = auth.uid());
+
+
+-- challenges_completed table
+CREATE TABLE challenges_completed (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  challenge_id UUID REFERENCES challenges(id) ON DELETE CASCADE,
+  completed_at TIMESTAMPTZ DEFAULT now()
+);
 
 
 --- Create new user on auth signup
@@ -185,3 +194,72 @@ CREATE TRIGGER structured_username_trigger
   FOR EACH ROW
   WHEN (NEW.username IS NULL)
   EXECUTE FUNCTION assign_structured_username();
+
+
+--- Study session insert trigger
+CREATE OR REPLACE FUNCTION calculate_study_session_duration()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.duration := ROUND(EXTRACT(EPOCH FROM NEW.end_time - NEW.start_time) / 60);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_calculate_duration
+BEFORE INSERT ON study_sessions
+FOR EACH ROW
+EXECUTE FUNCTION calculate_study_session_duration();
+
+
+--- Update study day function
+
+CREATE OR REPLACE FUNCTION update_study_days_on_session_insert()
+RETURNS TRIGGER AS $$
+DECLARE
+  session_date DATE := NEW.start_time::DATE;
+  yesterday DATE := (NEW.start_time - INTERVAL '1 day')::DATE;
+  existing_study_time INT := 0;
+  previous_streak INT := 0;
+BEGIN
+  -- Get yesterday's streak_day if it exists
+  SELECT streak_day INTO previous_streak
+  FROM study_days
+  WHERE user_id = NEW.user_id AND study_date = yesterday;
+
+  -- Get today's existing study time
+  SELECT total_study_time INTO existing_study_time
+  FROM study_days
+  WHERE user_id = NEW.user_id AND study_date = session_date;
+
+  -- Upsert today's row with updated time and calculated streak
+  INSERT INTO study_days (user_id, study_date, total_study_time, streak_day)
+  VALUES (
+    NEW.user_id,
+    session_date,
+    NEW.duration,
+    CASE WHEN previous_streak > 0 THEN previous_streak + 1 ELSE 1 END
+  )
+  ON CONFLICT (user_id, study_date)
+  DO UPDATE SET
+    total_study_time = study_days.total_study_time + NEW.duration,
+    streak_day = CASE
+      WHEN previous_streak > 0 THEN previous_streak + 1
+      ELSE 1
+    END;
+
+  UPDATE users
+  SET total_study_time = total_study_time + NEW.duration
+  WHERE id = NEW.user_id;
+
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE TRIGGER trigger_update_study_days
+AFTER INSERT ON study_sessions
+FOR EACH ROW
+EXECUTE FUNCTION update_study_days_on_session_insert();
+
+
