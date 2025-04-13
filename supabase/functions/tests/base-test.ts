@@ -1,40 +1,32 @@
-// Import required libraries and modules
-import { assert } from "https://deno.land/std@0.192.0/testing/asserts.ts";
-import { createClient, SupabaseClient } from "jsr:@supabase/supabase-js@2";
+// testClientCreation.test.ts
+import {
+  assert,
+  assertEquals,
+  assertExists,
+} from "https://deno.land/std@0.192.0/testing/asserts.ts";
+import { createAnonymousTestUser, getTestClient } from "./test-utils.ts";
 
-// Will load the .env file to Deno.env
-import { config } from "https://deno.land/x/dotenv@v3.2.2/mod.ts";
-const env = config({ path: ".env.test" });
+Deno.test("Client Creation Test", async () => {
+  const client = getTestClient();
 
-// Set up the configuration for the Supabase client
-const supabaseUrl = env.SUPABASE_URL ?? "";
-const supabaseKey = env.SUPABASE_ANON_KEY ?? "";
-const options = {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false,
-    detectSessionInUrl: false,
-  },
-};
-
-// Test the creation and functionality of the Supabase client
-const testClientCreation = async () => {
-  var client: SupabaseClient = createClient(supabaseUrl, supabaseKey, options);
-
-  // Verify if the Supabase URL and key are provided
-  if (!supabaseUrl) throw new Error("supabaseUrl is required.");
-  if (!supabaseKey) throw new Error("supabaseKey is required.");
-
-  // Test a simple query to the database
-  const { data: table_data, error: table_error } = await client
-    .from("users")
-    .select("*")
-    .limit(1);
-  if (table_error) {
-    throw new Error("Invalid Supabase client: " + table_error.message);
+  const { data, error } = await client.from("users").select("*").limit(1);
+  if (error) {
+    throw new Error("Query failed: " + error.message);
   }
-  assert(table_data, "Data should be returned from the query.");
-};
 
-// Register and run the tests
-Deno.test("Client Creation Test", testClientCreation);
+  assert(data, "Expected data to be returned from the users table.");
+});
+
+Deno.test("createAnonymousTestUser returns a valid authed client and user", async () => {
+  const { client, user } = await createAnonymousTestUser();
+
+  // User ID should exist
+  assertExists(user.id, "User ID should be returned");
+
+  // Make a simple authed query to confirm the session works
+  const { error } = await client.from("study_sessions").select("*").limit(1);
+  assertEquals(error, null, "Authed client should be able to query tables");
+
+  // Optional: print info for debugging
+  console.log("Anonymous user created with ID:", user.id);
+});
