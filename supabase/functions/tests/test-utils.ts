@@ -54,3 +54,23 @@ export async function createAnonymousTestUser(): Promise<{
         user: { id: data.user.id },
     };
 }
+
+export async function createStudySession(
+    client: SupabaseClient,
+    edgeFunctionName: string,
+    durationMinutes = 25,
+) {
+    const now = new Date();
+    const sessionData = {
+        sessionDate: now.toISOString().split("T")[0],
+        start_time: now.toISOString(),
+        end_time: new Date(now.getTime() + durationMinutes * 60_000)
+            .toISOString(),
+    };
+
+    const { data, error } = await client.functions.invoke(edgeFunctionName, {
+        body: sessionData,
+    });
+
+    return { sessionData, data, error };
+}

@@ -24,7 +24,7 @@ CREATE TABLE challenges (
   condition_amount INT NOT NULL,
   reward_xp INT NOT NULL,
   is_repeatable BOOLEAN DEFAULT FALSE NOT NULL,
-  difficulty INT DEFAULT NOT NULL,
+  difficulty INT NOT NULL
 );
 CREATE UNIQUE INDEX unique_challenge_type_difficulty
 ON challenges (category, difficulty);
@@ -184,28 +184,19 @@ CREATE TRIGGER structured_username_trigger
   EXECUTE FUNCTION assign_structured_username();
 
 
---- Study session insert trigger
-CREATE OR REPLACE FUNCTION calculate_study_session_duration()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.duration := ROUND(EXTRACT(EPOCH FROM NEW.end_time - NEW.start_time) / 60);
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_calculate_duration
-BEFORE INSERT ON study_sessions
-FOR EACH ROW
-EXECUTE FUNCTION calculate_study_session_duration();
-
-
-CREATE OR REPLACE FUNCTION update_user_level(p_user_id UUID)
+CREATE OR REPLACE FUNCTION increment_user_xp(p_user_id UUID, amount INT)
 RETURNS VOID AS $$
 DECLARE
   current_level INT;
   current_exp INT;
   next_level_exp INT;
 BEGIN
+  UPDATE users
+  SET xp = xp + amount
+  WHERE id = p_user_id;
+
+  --- Level up user when needed
   LOOP
     -- Get the user's current level and xp
     SELECT level, exp INTO current_level, current_exp
@@ -234,101 +225,99 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE FUNCTION increment_user_xp(p_user_id UUID, amount INT)
+CREATE OR REPLACE FUNCTION update_study_day(
+  p_user_id UUID,
+  p_study_date DATE,
+  p_yesterday DATE,
+  p_duration_minutes INT
+)
 RETURNS VOID AS $$
-BEGIN
-  UPDATE users
-  SET xp = xp + amount
-  WHERE id = p_user_id;
-END;
-$$ LANGUAGE plpgsql;
-
-
---- Update study day function
-CREATE OR REPLACE FUNCTION update_study_days_on_session_insert()
-RETURNS TRIGGER AS $$
 DECLARE
-  session_date DATE := NEW.start_time::DATE;
-  yesterday DATE := (NEW.start_time - INTERVAL '1 day')::DATE;
-  existing_study_time INT := 0;
   previous_streak INT := 0;
-  goal_exp_to_add INT := 0;
 BEGIN
   -- Get yesterday's streak_day if it exists
   SELECT streak_day INTO previous_streak
   FROM study_days
-  WHERE user_id = NEW.user_id AND study_date = yesterday;
-
-  -- Get today's existing study time
-  SELECT total_study_time INTO existing_study_time
-  FROM study_days
-  WHERE user_id = NEW.user_id AND study_date = session_date;
+  WHERE user_id = p_user_id AND study_date = p_yesterday;
 
   -- Upsert today's row with updated time and calculated streak
-  INSERT INTO study_days (user_id, study_date, total_study_time, streak_day)
+  INSERT INTO study_days (
+    user_id,
+    study_date,
+    total_study_time,
+    total_study_sessions,
+    streak_day
+  )
   VALUES (
-    NEW.user_id,
-    session_date,
-    NEW.duration,
-    CASE WHEN previous_streak > 0 THEN previous_streak + 1 ELSE 1 END
+    p_user_id,
+    p_study_date,
+    p_duration_minutes,
+    1,
+    CASE
+      WHEN previous_streak > 0 THEN previous_streak + 1
+      ELSE 1
+    END
   )
   ON CONFLICT (user_id, study_date)
   DO UPDATE SET
-    total_study_time = study_days.total_study_time + NEW.duration,
+    total_study_time = study_days.total_study_time + EXCLUDED.total_study_time,
     total_study_sessions = study_days.total_study_sessions + 1,
     streak_day = CASE
       WHEN previous_streak > 0 THEN previous_streak + 1
       ELSE 1
     END;
-
-  -- Update user's total study time
-  UPDATE users
-  SET total_study_time = total_study_time + NEW.duration
-  WHERE id = NEW.user_id;
-
-  -- Update user's total study sessions
-  UPDATE users
-  SET total_study_sessions = total_study_sessions + 1
-  WHERE id = NEW.user_id;
-
-  -- Update goal progress
-  UPDATE goals
-  SET current_minutes = current_minutes + NEW.duration
-  WHERE user_id = NEW.user_id
-    AND completed = FALSE
-    AND (target_date IS NULL OR target_date >= session_date);
-
-  -- Mark completed goals and collect total XP to grant
-  SELECT COALESCE(SUM(xp_reward), 0) INTO goal_exp_to_add
-  FROM goals
-  WHERE user_id = NEW.user_id
-    AND completed = FALSE
-    AND current_minutes >= target_minutes
-    AND (target_date IS NULL OR target_date >= session_date);
-
-  -- Set those goals as completed
-  UPDATE goals
-  SET completed = TRUE
-  WHERE user_id = NEW.user_id
-    AND completed = FALSE
-    AND current_minutes >= target_minutes
-    AND (target_date IS NULL OR target_date >= session_date);
-
-  -- Grant XP to user
-  PERFORM increment_user_xp(NEW.user_id, goal_exp_to_add + NEW.duration);
-
-  --- Update user level if necessary
-  PERFORM update_user_level(NEW.user_id);
-
-  RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
 
 
-CREATE TRIGGER trigger_update_study_days
-AFTER INSERT ON study_sessions
-FOR EACH ROW
-EXECUTE FUNCTION update_study_days_on_session_insert();
+CREATE OR REPLACE FUNCTION increment_user_total_information(
+  p_user_id UUID,
+  p_duration_minutes INT
+)
+RETURNS VOID AS $$
+BEGIN
+  UPDATE users
+  SET
+    total_study_time = total_study_time + p_duration_minutes,
+    total_study_sessions = total_study_sessions + 1
+  WHERE id = p_user_id;
+END;
+$$ LANGUAGE plpgsql;
 
---- Handle Goal Completion
+
+CREATE OR REPLACE FUNCTION update_goal_progress(
+  p_user_id UUID,
+  p_session_date DATE,
+  p_duration_minutes INT
+)
+RETURNS INT AS $$
+DECLARE
+  goal_exp_to_add INT := 0;
+BEGIN
+  -- Update active (uncompleted) goals with new progress
+  UPDATE goals
+  SET current_minutes = current_minutes + p_duration_minutes
+  WHERE user_id = p_user_id
+    AND completed = FALSE
+    AND (target_date IS NULL OR target_date >= p_session_date);
+
+  -- Calculate XP to be granted for newly completed goals
+  SELECT COALESCE(SUM(xp_reward), 0) INTO goal_exp_to_add
+  FROM goals
+  WHERE user_id = p_user_id
+    AND completed = FALSE
+    AND current_minutes >= target_minutes
+    AND (target_date IS NULL OR target_date >= p_session_date);
+
+  -- Mark completed goals
+  UPDATE goals
+  SET completed = TRUE
+  WHERE user_id = p_user_id
+    AND completed = FALSE
+    AND current_minutes >= target_minutes
+    AND (target_date IS NULL OR target_date >= p_session_date);
+
+  RETURN goal_exp_to_add;
+END;
+$$ LANGUAGE plpgsql;

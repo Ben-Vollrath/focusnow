@@ -5,21 +5,29 @@ export async function updateStudySession(
   supabase: SupabaseClient,
   userId: string,
   session: SessionData,
+  durationMinutes: number,
 ) {
-  const { durationMinutes, start_time, end_time } = session;
+  const { start_time, end_time } = session;
 
   const { error } = await supabase
     .from("study_sessions")
     .insert({
       user_id: userId,
-      duration_minutes: durationMinutes,
       start_time,
       end_time,
+      duration: durationMinutes,
     });
+
+  supabase.rpc("increment_user_total_information", {
+    p_user_id: userId,
+    p_duration_minutes: durationMinutes,
+  });
 
   if (error) {
     console.error("Error inserting study session:", error);
   } else {
     console.log("Study session inserted successfully");
   }
+
+  return durationMinutes;
 }

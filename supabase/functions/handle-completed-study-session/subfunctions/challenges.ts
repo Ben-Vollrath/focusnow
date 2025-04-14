@@ -28,6 +28,8 @@ export async function updateChallengeProgress(
     "total_sessions",
   ];
 
+  let totalXP = 0;
+
   const activeChallenges: Challenge[] = [];
 
   for (const category of categories) {
@@ -63,9 +65,12 @@ export async function updateChallengeProgress(
 
     const handler = dispatcher[challenge.category];
     if (handler) {
-      await handler(supabase, userId, challenge, session);
+      const xpGained = await handler(supabase, userId, challenge, session);
+      totalXP += xpGained || 0;
     }
   }
+
+  return totalXP;
 }
 
 async function handleDailySessions(
@@ -93,7 +98,13 @@ async function handleDailySessions(
   }
 
   const progress = data.total_study_sessions;
-  await setChallengeProgress(supabase, userId, challenge.id, progress, target);
+  return await setChallengeProgress(
+    supabase,
+    userId,
+    challenge.id,
+    progress,
+    target,
+  );
 }
 
 async function handleStreakDays(
@@ -121,7 +132,13 @@ async function handleStreakDays(
   }
 
   const progress = data.streak_day;
-  await setChallengeProgress(supabase, userId, challenge.id, progress, target);
+  return await setChallengeProgress(
+    supabase,
+    userId,
+    challenge.id,
+    progress,
+    target,
+  );
 }
 
 async function handleTotalHours(
@@ -139,7 +156,13 @@ async function handleTotalHours(
   if (!count) return;
 
   const progress = count;
-  await setChallengeProgress(supabase, userId, challenge.id, progress, target);
+  return await setChallengeProgress(
+    supabase,
+    userId,
+    challenge.id,
+    progress,
+    target,
+  );
 }
 
 async function handleTotalSessions(
@@ -157,7 +180,13 @@ async function handleTotalSessions(
   if (!count) return;
 
   const progress = count;
-  await setChallengeProgress(supabase, userId, challenge.id, progress, target);
+  return await setChallengeProgress(
+    supabase,
+    userId,
+    challenge.id,
+    progress,
+    target,
+  );
 }
 
 async function setChallengeProgress(
@@ -188,15 +217,6 @@ async function setChallengeProgress(
       .eq("id", challengeId)
       .single();
 
-    if (currentChallenge?.reward_xp) {
-      await supabase.rpc("increment_user_xp", {
-        p_user_id: userId,
-        amount: currentChallenge.reward_xp,
-      });
-
-      await supabase.rpc("update_user_level", { p_user_id: userId });
-    }
-
     if (!currentChallenge) {
       console.error(`Challenge with ID ${challengeId} not found.`);
       return;
@@ -220,5 +240,7 @@ async function setChallengeProgress(
         data[0].condition_amount, // new target
       );
     }
+
+    return currentChallenge.reward_xp;
   }
 }

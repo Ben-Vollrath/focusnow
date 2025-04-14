@@ -1,11 +1,14 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
-import { updateStudySession } from "./utils/studySessions.ts";
-import { updateChallengeProgress } from "./utils/challenges.ts";
+import { updateStudySession } from "./subfunctions/studySessions.ts";
+import { updateChallengeProgress } from "./subfunctions/challenges.ts";
+import { updateGoalProgress } from "./subfunctions/goals.ts";
+import { calculateStudyTime } from "./subfunctions/utils.ts";
+import { updateStudyDays } from "./subfunctions/studyDays.ts";
+import { updateUserXP } from "./subfunctions/xp.ts";
 
 export type SessionData = {
   sessionDate: string;
-  durationMinutes: number;
   start_time: string;
   end_time: string;
 };
@@ -18,8 +21,43 @@ Deno.serve(async (req) => {
   const sessionData: SessionData = await req.json();
   const user_id = await authenticateUser(req);
 
-  updateStudySession(supabaseClient, user_id, sessionData);
-  updateChallengeProgress(supabaseClient, user_id, sessionData);
+  const studyDuration = calculateStudyTime(
+    sessionData.start_time,
+    sessionData.end_time,
+  );
+
+  await updateStudySession(
+    supabaseClient,
+    user_id,
+    sessionData,
+    studyDuration,
+  );
+
+  await updateStudyDays(
+    supabaseClient,
+    user_id,
+    sessionData.start_time,
+    studyDuration,
+  );
+
+  const goalXP = await updateGoalProgress(
+    supabaseClient,
+    user_id,
+    sessionData.start_time,
+    studyDuration,
+  );
+
+  const challengeXP = await updateChallengeProgress(
+    supabaseClient,
+    user_id,
+    sessionData,
+  );
+
+  updateUserXP(
+    supabaseClient,
+    user_id,
+    goalXP + challengeXP + studyDuration,
+  );
 
   return new Response(
     JSON.stringify("Sucess"),
@@ -38,15 +76,3 @@ async function authenticateUser(req: Request): Promise<string> {
 
   return userData.user.id;
 }
-
-/* To invoke locally:
-
-  1. Run `supabase start` (see: https://supabase.com/docs/reference/cli/supabase-start)
-  2. Make an HTTP request:
-
-  curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/handle-completed-study-session' \
-    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0' \
-    --header 'Content-Type: application/json' \
-    --data '{"name":"Functions"}'
-
-*/
