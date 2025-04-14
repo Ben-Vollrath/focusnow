@@ -33,7 +33,10 @@ export async function updateChallengeProgress(
   const activeChallenges: Challenge[] = [];
 
   for (const category of categories) {
-    const { data, error } = await supabase
+    let challenge: Challenge | null = null;
+
+    // Try to fetch the current active challenge from challenge_progress
+    const { data: active, error: activeError } = await supabase
       .from("challenges")
       .select("*, challenge_progress!inner(user_id, completed)")
       .eq("challenge_progress.user_id", userId)
@@ -42,16 +45,41 @@ export async function updateChallengeProgress(
       .order("difficulty", { ascending: true })
       .limit(1);
 
-    if (error) {
+    if (activeError) {
       console.error(
-        `Error fetching challenge for category ${category}:`,
-        error,
+        `Error fetching active challenge for ${category}:`,
+        activeError,
       );
       continue;
     }
 
-    if (data && data.length > 0) {
-      activeChallenges.push(data[0]);
+    if (active && active.length > 0) {
+      challenge = active[0];
+    } else {
+      // No active challenge — fetch first challenge of this category (difficulty = 1)
+      const { data: first, error: firstError } = await supabase
+        .from("challenges")
+        .select("*")
+        .eq("category", category)
+        .eq("difficulty", 1)
+        .limit(1)
+        .maybeSingle();
+
+      if (firstError) {
+        console.error(
+          `Error fetching fallback challenge for ${category}:`,
+          firstError,
+        );
+        continue;
+      }
+
+      if (first) {
+        challenge = first;
+      }
+    }
+
+    if (challenge) {
+      activeChallenges.push(challenge);
     }
   }
 
@@ -148,14 +176,15 @@ async function handleTotalHours(
   session: SessionData,
 ) {
   const { condition_amount: target } = challenge;
-  const { count } = await supabase
+  const { data } = await supabase
     .from("users")
     .select("total_study_time")
-    .eq("user_id", userId);
+    .eq("id", userId)
+    .single();
 
-  if (!count) return;
+  if (!data) return;
 
-  const progress = count;
+  const progress = data.total_study_time;
   return await setChallengeProgress(
     supabase,
     userId,
@@ -172,14 +201,15 @@ async function handleTotalSessions(
   session: SessionData,
 ) {
   const { condition_amount: target } = challenge;
-  const { count } = await supabase
+  const { data } = await supabase
     .from("users")
     .select("total_study_sessions")
-    .eq("user_id", userId);
+    .eq("id", userId)
+    .single();
 
-  if (!count) return;
+  if (!data) return;
 
-  const progress = count;
+  const progress = data.total_study_sessions;
   return await setChallengeProgress(
     supabase,
     userId,
@@ -199,15 +229,15 @@ async function setChallengeProgress(
   const isCompleted = progress >= target;
 
   // Upsert current challenge progress
-  await supabase
+  const { error } = await supabase
     .from("challenge_progress")
     .upsert({
       user_id: userId,
-      challenger_id: challengeId,
+      challenge_id: challengeId,
       progress,
       completed: isCompleted,
       last_updated: new Date().toISOString(),
-    }, { onConflict: "user_id,challenger_id" });
+    }, { onConflict: "user_id,challenge_id" });
 
   // If completed, grant XP and look for next challenge
   if (isCompleted) {

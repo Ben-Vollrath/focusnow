@@ -53,6 +53,7 @@ Deno.serve(async (req) => {
     sessionData,
   );
 
+  console.log("Total XP:", goalXP + challengeXP + studyDuration);
   await updateUserXP(
     supabaseClient,
     user_id,

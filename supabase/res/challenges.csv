@@ -1,0 +1,63 @@
+name,description,icon,category,condition_amount,reward_xp,is_repeatable,difficulty
+First Focus,Complete 1 study session in a day,📍,daily_sessions,1,10,true,1
+Getting Started,Complete 2 study sessions in a day,🚀,daily_sessions,2,15,true,2
+Daily Routine,Complete 3 study sessions in a day,🛠️,daily_sessions,3,20,true,3
+On a Roll,Complete 4 study sessions in a day,🔥,daily_sessions,4,25,true,4
+Power Day,Complete 5 study sessions in a day,⚡,daily_sessions,5,30,true,5
+Laser Focus,Complete 6 study sessions in a day,🎯,daily_sessions,6,35,true,6
+Study Streak,Complete 7 study sessions in a day,📅,daily_sessions,7,40,true,7
+Daily Hero,Complete 8 study sessions in a day,🦸,daily_sessions,8,45,true,8
+Master of Momentum,Complete 9 study sessions in a day,💫,daily_sessions,9,50,true,9
+Iron Will,Complete 10 study sessions in a day,🧱,daily_sessions,10,60,true,10
+Ultimate Focus,Complete 15 study sessions in a day,🏆,daily_sessions,15,90,true,12
+
+First Flame,Reach a study streak of 2 days,🔥,streak_days,2,10,False,1
+Getting Warm,Reach a study streak of 3 days,🌤️,streak_days,3,15,False,2
+Focus Spark,Reach a study streak of 5 days,✨,streak_days,5,20,False,3
+One Week Warrior,Reach a study streak of 7 days,🗓️,streak_days,7,30,False,4
+Tenacity,Reach a study streak of 10 days,🛡️,streak_days,10,40,False,5
+Two Weeks Strong,Reach a study streak of 14 days,💪,streak_days,14,50,False,6
+Habit Maker,Reach a study streak of 21 days,🧠,streak_days,21,60,False,7
+Focus Fortress,Reach a study streak of 30 days,🧱,streak_days,30,80,False,8
+Momentum Machine,Reach a study streak of 50 days,⚙️,streak_days,50,100,False,9
+Discipline Champ,Reach a study streak of 75 days,🏅,streak_days,75,125,False,10
+Century of Focus,Reach a study streak of 100 days,💯,streak_days,100,150,False,11
+Consistency King,Reach a study streak of 150 days,👑,streak_days,150,200,False,12
+Legendary Learner,Reach a study streak of 200 days,🐉,streak_days,200,250,False,13
+Master of Focus,Reach a study streak of 250 days,🧘,streak_days,250,300,False,14
+Iron Mind,Reach a study streak of 300 days,🧠,streak_days,300,350,False,15
+One Year Streak,Reach a study streak of 365 days,🎉,streak_days,365,500,False,16
+
+Hour One,Accumulate 1 total study hours,⏱️,total_hours,60,10,False,1
+Getting Into It,Accumulate 3 total study hours,🏃,total_hours,180,15,False,2
+Finding Flow,Accumulate 5 total study hours,💧,total_hours,300,20,False,3
+Focus Fuel,Accumulate 10 total study hours,🔋,total_hours,600,30,False,4
+Consistency Begins,Accumulate 15 total study hours,📆,total_hours,900,40,False,5
+Marathon Mode,Accumulate 20 total study hours,🏃‍♂️,total_hours,1200,50,False,6
+Deep Dive,Accumulate 30 total study hours,🌊,total_hours,1800,65,False,7
+Locked In,Accumulate 40 total study hours,🔒,total_hours,2400,80,False,8
+Focus Freak,Accumulate 50 total study hours,🧠,total_hours,3000,100,False,9
+Mental Muscle,Accumulate 75 total study hours,💪,total_hours,4500,130,False,10
+Century Studier,Accumulate 100 total study hours,💯,total_hours,6000,160,False,11
+Long-Haul Learner,Accumulate 150 total study hours,🛤️,total_hours,9000,200,False,12
+Time Titan,Accumulate 200 total study hours,🕰️,total_hours,12000,250,False,13
+Master of Minutes,Accumulate 250 total study hours,👨‍🏫,total_hours,15000,300,False,14
+Legendary Learner,Accumulate 300 total study hours,🧙‍♂️,total_hours,18000,350,False,15
+Study God,Accumulate 500 total study hours,🪐,total_hours,30000,500,False,16
+
+First Session,Complete 1 total study sessions,🎬,total_sessions,1,10,False,1
+Getting the Hang,Complete 5 total study sessions,👟,total_sessions,5,15,False,2
+Session Seeker,Complete 10 total study sessions,🕵️,total_sessions,10,25,False,3
+Routine Builder,Complete 20 total study sessions,🧱,total_sessions,20,35,False,4
+Sharp Starter,Complete 30 total study sessions,✨,total_sessions,30,45,False,5
+Half-Century,Complete 50 total study sessions,🪙,total_sessions,50,60,False,6
+Focus Flow,Complete 75 total study sessions,💧,total_sessions,75,80,False,7
+Triple Digits,Complete 100 total study sessions,💯,total_sessions,100,100,False,8
+Session Sage,Complete 150 total study sessions,🧙,total_sessions,150,125,False,9
+Daily Disciple,Complete 200 total study sessions,📿,total_sessions,200,150,False,10
+Discipline Devotee,Complete 250 total study sessions,🧘,total_sessions,250,175,False,11
+Focused Fiend,Complete 300 total study sessions,⚡,total_sessions,300,200,False,12
+Grind Master,Complete 400 total study sessions,🏋️,total_sessions,400,250,False,13
+Study Storm,Complete 500 total study sessions,🌪️,total_sessions,500,300,False,14
+Iron Will,Complete 750 total study sessions,🧠,total_sessions,750,400,False,15
+Session Legend,Complete 1000 total study sessions,🏆,total_sessions,1000,500,False,16

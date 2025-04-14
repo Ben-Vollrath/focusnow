@@ -18,7 +18,7 @@ export async function updateStudySession(
       duration: durationMinutes,
     });
 
-  supabase.rpc("increment_user_total_information", {
+  await supabase.rpc("increment_user_total_information", {
     p_user_id: userId,
     p_duration_minutes: durationMinutes,
   });

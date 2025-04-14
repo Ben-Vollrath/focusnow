@@ -7,10 +7,11 @@ const env = config({ path: ".env.test" });
 
 const supabaseUrl = env.SUPABASE_URL;
 const supabaseAnonKey = env.SUPABASE_ANON_KEY;
+const supabaseServiceKey = env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
+if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey) {
     throw new Error(
-        "SUPABASE_URL and SUPABASE_ANON_KEY must be set in .env.test",
+        "SUPABASE_URL and SUPABASE_ANON_KEY and SUPABASE_SERVICE_KEY must be set in .env.tes",
     );
 }
 
@@ -21,6 +22,10 @@ const options = {
         detectSessionInUrl: false,
     },
 };
+
+export function getTestServiceClient(): SupabaseClient {
+    return createClient(supabaseUrl, supabaseServiceKey, options);
+}
 
 export function getTestClient(): SupabaseClient {
     return createClient(supabaseUrl, supabaseAnonKey, options);
