@@ -11,7 +11,7 @@ INSERT INTO username_words (type, word) VALUES
   ('animal', 'penguin');
 
 
-INSERT INTO levels (level, exp_required, name, icon) VALUES
+INSERT INTO levels (level, xp_required, name, icon) VALUES
 (1, 0, 'Daydreamer', '💭'),
 (2, 25, 'Note Taker', '📝'),
 (3, 30, 'Fresh Starter', '🌱'),

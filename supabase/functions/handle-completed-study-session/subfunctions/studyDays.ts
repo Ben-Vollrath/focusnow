@@ -12,11 +12,22 @@ export async function updateStudyDays(
   yesterdayDate.setDate(sessionDate.getDate() - 1);
   const yesterdayString = yesterdayDate.toISOString().slice(0, 10);
 
-  // 2. Update study day
-  await supabase.rpc("update_study_day", {
+  const { error } = await supabase.rpc("update_study_day", {
     p_user_id: userId,
     p_study_date: dateString,
-    p_yesterday_date: yesterdayString,
+    p_yesterday: yesterdayString,
     p_duration_minutes: durationMinutes,
   });
+
+  if (error) {
+    console.error("Failed to update study days", {
+      userId,
+      start_time,
+      durationMinutes,
+      dateString,
+      yesterdayString,
+      error,
+    });
+    throw new Error(`update_study_day failed: ${error.message}`);
+  }
 }
