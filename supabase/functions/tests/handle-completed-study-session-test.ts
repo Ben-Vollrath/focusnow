@@ -135,6 +135,7 @@ Deno.test("Goal is updated but not completed", async () => {
     //Add a goal for the user
     const goalData = {
         target_minutes: 60,
+        name: "myGoal",
         target_date: new Date(Date.now() + 7 * 24 * 60 * 60_000) // 1 week from now
             .toISOString()
             .split("T")[0],
@@ -180,6 +181,7 @@ Deno.test("Goal is completed and grants xp", async () => {
     //Add a goal for the user
     const goalData = {
         target_minutes: 10,
+        name: "myGoal",
         target_date: new Date(Date.now() + 7 * 24 * 60 * 60_000) // 1 week from now
             .toISOString()
             .split("T")[0],

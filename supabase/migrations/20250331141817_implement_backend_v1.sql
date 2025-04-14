@@ -57,6 +57,7 @@ CREATE POLICY "Users can read their own data"
 -- goals table
 CREATE TABLE goals (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
   target_minutes INT NOT NULL,
   current_minutes INT DEFAULT 0,

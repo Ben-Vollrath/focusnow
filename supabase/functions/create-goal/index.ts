@@ -4,6 +4,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 export type GoalData = {
   target_date: string | undefined;
   target_minutes: number;
+  name: string;
 };
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
@@ -19,6 +20,7 @@ Deno.serve(async (req) => {
     .from("goals")
     .insert({
       user_id,
+      name: goalData.name,
       target_date: goalData.target_date,
       target_minutes: goalData.target_minutes,
       xp_reward: goalData.target_minutes,
