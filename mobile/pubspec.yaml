@@ -18,6 +18,9 @@ dependencies:
     path: packages/review_repository
   form_inputs:
     path: packages/form_inputs
+  study_session_repository:
+    path: packages/study_session_repository
+
 
   supabase_flutter: ^2.5.7
   google_sign_in: ^6.1.0
