@@ -31,10 +31,9 @@ export function getTestClient(): SupabaseClient {
     return createClient(supabaseUrl, supabaseAnonKey, options);
 }
 
-export async function createAnonymousTestUser(): Promise<{
-    client: SupabaseClient;
-    user: { id: string };
-}> {
+export async function withAnonymousTestUser(
+    testFn: (client: SupabaseClient, user: { id: string }) => Promise<void>,
+) {
     const { data, error } = await getTestClient().auth.signInAnonymously();
 
     if (error || !data.session?.access_token || !data.user) {
@@ -54,10 +53,20 @@ export async function createAnonymousTestUser(): Promise<{
         },
     });
 
-    return {
-        client: authedClient,
-        user: { id: data.user.id },
-    };
+    try {
+        await testFn(authedClient, { id: data.user.id });
+    } finally {
+        // Delete user using service client
+        const serviceClient = getTestServiceClient();
+        const { error: deleteError } = await serviceClient.auth.admin
+            .deleteUser(data.user.id);
+        if (deleteError) {
+            console.warn(
+                `Failed to delete test user ${data.user.id}:`,
+                deleteError.message,
+            );
+        }
+    }
 }
 
 export async function createStudySession(
