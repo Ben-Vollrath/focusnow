@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/app/app_bloc.dart';
+import 'package:focusnow/bloc/bloc/study_timer_bloc.dart';
 import 'package:focusnow/bloc/login/login_cubit.dart';
 import 'package:focusnow/bloc/subscription/subscription_bloc.dart';
 import 'package:focusnow/static/theme/theme.dart';
 import 'package:focusnow/static/theme/util.dart';
 import 'package:focusnow/ui/app/routes/routes.dart';
+import 'package:study_session_repository/study_session_repository.dart';
 import 'package:subscription_repository/subscription_repository.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
@@ -42,7 +44,10 @@ class App extends StatelessWidget {
           ),
           BlocProvider(
               create: (context) =>
-                  LoginCubit(context.read<AuthenticationRepository>()))
+                  LoginCubit(context.read<AuthenticationRepository>())),
+          BlocProvider(
+            create: (context) => StudyTimerBloc(StudySessionRepository()),
+          )
         ],
         child: const AppView(),
       ),

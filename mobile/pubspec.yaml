@@ -18,6 +18,9 @@ dependencies:
     path: packages/review_repository
   form_inputs:
     path: packages/form_inputs
+  study_session_repository:
+    path: packages/study_session_repository
+
 
   supabase_flutter: ^2.5.7
   google_sign_in: ^6.1.0
@@ -41,6 +44,7 @@ dependencies:
   cached_network_image: ^3.4.1
   flutter_keyboard_visibility: ^6.0.0
   lottie: ^3.3.1
+  flutter_glow: ^0.3.0
 
 dev_dependencies:
   bloc_test: ^9.0.0
