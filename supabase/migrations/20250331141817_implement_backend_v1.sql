@@ -326,3 +326,17 @@ BEGIN
   RETURN goal_xp_to_add;
 END;
 $$ LANGUAGE plpgsql;
+
+
+create extension if not exists pg_cron;
+
+SELECT cron.schedule(
+  'daily_repeatable_cleanup',
+  '0 3 * * *',
+  $$
+  DELETE FROM challenge_progress
+  WHERE challenge_id IN (
+    SELECT id FROM challenges WHERE repeatable = true
+  );
+  $$
+);
