@@ -13,6 +13,7 @@ Deno.test("Edge function creates a goal for anonymous user", async () => {
         target_date: new Date(Date.now() + 7 * 24 * 60 * 60_000) // 1 week from now
             .toISOString()
             .split("T")[0],
+        name: "Test Goal",
     };
 
     const { data, error } = await client.functions.invoke("create-goal", {

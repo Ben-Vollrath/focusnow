@@ -96,10 +96,8 @@ jobs:
         with:
           version: latest
 
-      - run: supabase functions deploy one-time-purchase --project-ref $PROJECT_ID --no-verify-jwt
-      - run: supabase functions deploy revenuecat-expire --project-ref $PROJECT_ID --no-verify-jwt
-      - run: supabase functions deploy revenuecat-purchase-renewal --project-ref $PROJECT_ID --no-verify-jwt
-      - run: supabase functions deploy verify-purchase --project-ref $PROJECT_ID --no-verify-jwt
+      - run: supabase functions deploy handle-completed-study-session --project-ref $PROJECT_ID
+      - run: supabase functions deploy create-goal --project-ref $PROJECT_ID
   deploy-migration:
     runs-on: ubuntu-latest
 
