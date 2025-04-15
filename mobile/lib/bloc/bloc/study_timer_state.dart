@@ -19,6 +19,9 @@ class StudyTimerState {
     this.startTime,
   });
 
+  bool get canChangeVariant =>
+      status != TimerStatus.running && status != TimerStatus.paused;
+
   Duration get totalDuration {
     if (variant.hasPause) {
       return phase == TimerPhase.work
@@ -30,6 +33,15 @@ class StudyTimerState {
   }
 
   Duration get remaining => totalDuration - elapsed;
+
+  factory StudyTimerState.initial() {
+    return const StudyTimerState(
+      status: TimerStatus.initial,
+      elapsed: Duration.zero,
+      variant: TimerVariant.pomodoro,
+      phase: TimerPhase.work,
+    );
+  }
 
   StudyTimerState copyWith({
     TimerStatus? status,

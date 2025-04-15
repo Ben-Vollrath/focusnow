@@ -40,6 +40,19 @@ extension TimerVariantExtension on TimerVariant {
     }
   }
 
+  String get icon {
+    switch (this) {
+      case TimerVariant.pomodoro:
+        return '🍅';
+      case TimerVariant.fiftyTwoSeventeen:
+        return '⏳';
+      case TimerVariant.ninetyThirty:
+        return '🕒';
+      case TimerVariant.endless:
+        return '♾️';
+    }
+  }
+
   Duration getWorkDuration() {
     switch (this) {
       case TimerVariant.pomodoro:

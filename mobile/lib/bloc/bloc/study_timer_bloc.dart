@@ -13,13 +13,7 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
   final StudySessionRepository sessionRepository;
   Timer? _ticker;
 
-  StudyTimerBloc(this.sessionRepository)
-      : super(StudyTimerState(
-          status: TimerStatus.initial,
-          elapsed: Duration.zero,
-          variant: TimerVariant.pomodoro,
-          phase: TimerPhase.work,
-        )) {
+  StudyTimerBloc(this.sessionRepository) : super(StudyTimerState.initial()) {
     on<SelectTimerVariant>((event, emit) {
       emit(state.copyWith(variant: event.variant));
     });
@@ -65,7 +59,8 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
         } else if (state.phase == TimerPhase.breakTime) {
           if (elapsed >= breakDuration) {
             _ticker?.cancel();
-            emit(state.copyWith(status: TimerStatus.completed));
+            emit(StudyTimerState.initial()
+                .copyWith(status: TimerStatus.completed));
           } else {
             emit(state.copyWith(
               elapsed: elapsed,
@@ -80,7 +75,9 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
             endTime: state.startTime!.add(workDuration),
           ));
           emit(state.copyWith(
-              status: TimerStatus.completed, elapsed: workDuration));
+              status: TimerStatus.completed,
+              elapsed: workDuration,
+              phase: TimerPhase.work));
         } else {
           emit(state.copyWith(elapsed: elapsed));
         }
@@ -105,6 +102,7 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
             endTime: state.startTime!.add(state.elapsed)));
       }
       emit(state.copyWith(
+        phase: TimerPhase.work,
         status: TimerStatus.stopped,
         elapsed: Duration.zero,
         startTime: null,
