@@ -100,7 +100,6 @@ Deno.test("Edge function inserts study days for user", async () => {
         assertEquals(fetchError, null);
         assertExists(study_days?.[0]);
         assertEquals(study_days?.[0].user_id, user.id);
-        assertEquals(study_days?.[0].study_date, sessionData.sessionDate);
         assertEquals(study_days?.[0].total_study_time, 25);
 
         const { data: funcData2, error: funcError2 } = await client.functions
@@ -124,7 +123,6 @@ Deno.test("Edge function inserts study days for user", async () => {
         assertEquals(fetchError2, null);
         assertExists(study_days2?.[0]);
         assertEquals(study_days2?.[0].user_id, user.id);
-        assertEquals(study_days2?.[0].study_date, sessionData.sessionDate);
         assertEquals(study_days2?.[0].total_study_time, 50);
     });
 });

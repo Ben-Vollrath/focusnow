@@ -76,7 +76,6 @@ export async function createStudySession(
 ) {
     const now = new Date();
     const sessionData = {
-        sessionDate: now.toISOString().split("T")[0],
         start_time: now.toISOString(),
         end_time: new Date(now.getTime() + durationMinutes * 60_000)
             .toISOString(),

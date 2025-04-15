@@ -8,7 +8,6 @@ import { updateStudyDays } from "./subfunctions/studyDays.ts";
 import { updateUserXP } from "./subfunctions/xp.ts";
 
 export type SessionData = {
-  sessionDate: string;
   start_time: string;
   end_time: string;
 };
