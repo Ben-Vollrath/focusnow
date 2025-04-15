@@ -72,15 +72,18 @@ class StudyTimerPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 26),
-                CircularTimer(
-                  remaining: state.variant == TimerVariant.endless
-                      ? state.elapsed
-                      : state.remaining,
-                  total: state.totalDuration,
-                  label: state.phase == TimerPhase.work
-                      ? 'Work Phase'
-                      : 'Break Time',
-                  isWorkPhase: state.phase == TimerPhase.work,
+                GestureDetector(
+                  onTap: () => context.read<StudyTimerBloc>().add(StartTimer()),
+                  child: CircularTimer(
+                    remaining: state.variant == TimerVariant.endless
+                        ? state.elapsed
+                        : state.remaining,
+                    total: state.totalDuration,
+                    label: state.phase == TimerPhase.work
+                        ? 'Work Phase'
+                        : 'Break Time',
+                    isWorkPhase: state.phase == TimerPhase.work,
+                  ),
                 ),
 
                 const SizedBox(height: 48),
