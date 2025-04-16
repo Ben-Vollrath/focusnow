@@ -16,9 +16,11 @@ class ChallengesPage extends StatelessWidget {
         scrolledUnderElevation: 0.0,
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const CategoryFilterBar(),
-          const SizedBox(height: 8),
+          const SizedBox(height: 2),
+          _CompletedCounter(),
           Expanded(child: _ChallengeList()),
         ],
       ),
@@ -48,6 +50,34 @@ class _ChallengeList extends StatelessWidget {
         } else {
           return const Center(child: Text('Failed to load challenges.'));
         }
+      },
+    );
+  }
+}
+
+class _CompletedCounter extends StatelessWidget {
+  const _CompletedCounter();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ChallengeBloc, ChallengeState>(
+      builder: (context, state) {
+        if (state.status != Status.loaded) return const SizedBox.shrink();
+
+        final completed =
+            state.challenges.where((e) => e.progress?.completed == true).length;
+        final total = state.challenges.length;
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'Completed: $completed / $total',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                ),
+          ),
+        );
       },
     );
   }
