@@ -27,6 +27,8 @@ class StudySessionRepository {
 
   Future<void> submitStudySession(StudySession studySession) async {
     try {
+      _analyticsRepository.logEvent('study_session_completed');
+
       final response = await supabaseClient.functions.invoke(
         'handle-completed-study-session',
         body: studySession.toJson(),
