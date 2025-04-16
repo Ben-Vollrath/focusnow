@@ -71,7 +71,9 @@ class ChallengeTile extends StatelessWidget {
               ),
               if (progress != null)
                 Text(
-                  '${((progress.progress / challenge.condition_amount) * 100).toInt()}%',
+                  progress.progress != challenge.condition_amount
+                      ? '${progress.progress} / ${challenge.condition_amount}'
+                      : 'Done',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
             ],
