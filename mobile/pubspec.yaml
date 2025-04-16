@@ -20,6 +20,8 @@ dependencies:
     path: packages/form_inputs
   study_session_repository:
     path: packages/study_session_repository
+  challenge_repository:
+    path: packages/challenge_repository
 
 
   supabase_flutter: ^2.5.7
