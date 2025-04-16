@@ -13,8 +13,10 @@ class ChallengeTile extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        ),
       ),
       padding: const EdgeInsets.all(12),
       child: Column(
@@ -22,9 +24,19 @@ class ChallengeTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(
-                challenge.icon,
-                style: const TextStyle(fontSize: 28),
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Text(
+                    challenge.icon,
+                    style: const TextStyle(fontSize: 28),
+                  ),
+                ),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -33,38 +45,65 @@ class ChallengeTile extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
-              if (progress == null)
-                const Icon(Icons.lock_outline, color: Colors.grey),
-              if (progress?.completed == true)
-                const Icon(Icons.check_circle, color: Colors.green),
+              //Add badge to show xp gain
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '${challenge.reward_xp} XP',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.white,
+                      ),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 6),
-          Text(
-            challenge.description,
-            style: Theme.of(context).textTheme.bodySmall,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                challenge.description,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              if (progress != null)
+                Text(
+                  '${((progress.progress / challenge.condition_amount) * 100).toInt()}%',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+            ],
           ),
           const SizedBox(height: 10),
           if (progress != null)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                LinearProgressIndicator(
-                  value: (progress.progress / challenge.condition_amount)
-                      .clamp(0.0, 1.0),
-                  backgroundColor: Colors.grey.shade300,
-                  color: progress.completed
-                      ? Colors.green
-                      : Theme.of(context).colorScheme.primary,
-                  minHeight: 6,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: LinearProgressIndicator(
+                    value: (progress.progress / challenge.condition_amount)
+                        .clamp(0.0, 1.0),
+                    backgroundColor:
+                        Theme.of(context).colorScheme.onSurface.withAlpha(200),
+                    color: progress.completed
+                        ? Colors.green
+                        : Theme.of(context).colorScheme.primary,
+                    minHeight: 6,
+                  ),
                 ),
                 const SizedBox(height: 4),
-                Text('${progress.progress} / ${challenge.condition_amount}',
-                    style: Theme.of(context).textTheme.bodySmall),
               ],
             ),
           if (progress == null)
-            const Text('Locked', style: TextStyle(color: Colors.grey)),
+            Text('Locked',
+                style: TextStyle(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withAlpha(150))),
         ],
       ),
     );
