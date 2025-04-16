@@ -14,6 +14,8 @@ class PayWall extends StatefulWidget {
 }
 
 class _PayWallState extends State<PayWall> {
+  bool boughtItem = false;
+
   Future<bool> checkPurchasesConfigured() async {
     return await Purchases.isConfigured;
   }
@@ -31,10 +33,18 @@ class _PayWallState extends State<PayWall> {
             } else {
               return PaywallView(
                 displayCloseButton: true,
+                onPurchaseCompleted: (customerInfo, storeTrans) {
+                  boughtItem = true;
+                },
+                onRestoreCompleted: (customerInfo) {
+                  boughtItem = true;
+                },
                 onDismiss: () {
-                  context.read<AppBloc>().add(
-                        AppLogoutRequested(),
-                      );
+                  if (!boughtItem) {
+                    context.read<AppBloc>().add(
+                          AppLogoutRequested(),
+                        );
+                  }
                 },
               );
             }
