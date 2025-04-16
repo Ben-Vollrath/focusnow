@@ -1,10 +1,12 @@
 import 'package:analytics_repository/analytics_repository.dart';
+import 'package:challenge_repository/challenge_repository.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/app/app_bloc.dart';
+import 'package:focusnow/bloc/challenge/challenge_bloc.dart';
 import 'package:focusnow/bloc/study_timer/study_timer_bloc.dart';
 import 'package:focusnow/bloc/login/login_cubit.dart';
 import 'package:focusnow/bloc/subscription/subscription_bloc.dart';
@@ -47,7 +49,11 @@ class App extends StatelessWidget {
                   LoginCubit(context.read<AuthenticationRepository>())),
           BlocProvider(
             create: (context) => StudyTimerBloc(StudySessionRepository()),
-          )
+          ),
+          BlocProvider(
+              create: (context) => ChallengeBloc(
+                    repository: ChallengeRepository(),
+                  )..add(LoadChallenges())),
         ],
         child: const AppView(),
       ),
