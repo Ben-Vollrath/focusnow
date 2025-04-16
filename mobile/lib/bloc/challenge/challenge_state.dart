@@ -11,12 +11,10 @@ class ChallengeState extends Equatable {
   final List<ChallengeWithProgress> challenges;
   final ChallengeCategory? selectedCategory;
   final Status status;
-  final bool showCompleted;
 
   const ChallengeState({
     required this.challenges,
     required this.status,
-    required this.showCompleted,
     this.selectedCategory,
   });
 
@@ -27,7 +25,6 @@ class ChallengeState extends Equatable {
     return const ChallengeState(
       challenges: [],
       status: Status.initial,
-      showCompleted: true,
     );
   }
 
@@ -41,7 +38,6 @@ class ChallengeState extends Equatable {
       challenges: challenges ?? this.challenges,
       selectedCategory: selectedCategory ?? this.selectedCategory,
       status: status ?? this.status,
-      showCompleted: showCompleted ?? this.showCompleted,
     );
   }
 }

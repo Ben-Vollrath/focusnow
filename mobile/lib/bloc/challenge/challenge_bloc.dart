@@ -12,7 +12,6 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
   ChallengeBloc({required this.repository}) : super(ChallengeState.initial()) {
     on<LoadChallenges>(_onLoadChallenges);
     on<FilterByCategory>(_onFilterByCategory);
-    on<ToggleShowCompleted>(_onToggleShowCompleted);
   }
 
   List<ChallengeWithProgress> _allChallenges = [];
@@ -33,19 +32,8 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
     emit(ChallengeState(
       challenges: state.challenges,
       status: state.status,
-      showCompleted: state.showCompleted,
       selectedCategory: event.category,
     ));
-    _emitFiltered(emit);
-  }
-
-  void _onToggleShowCompleted(
-      ToggleShowCompleted event, Emitter<ChallengeState> emit) {
-    emit(
-      state.copyWith(
-        showCompleted: !state.showCompleted,
-      ),
-    );
     _emitFiltered(emit);
   }
 
@@ -53,11 +41,8 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
     final filtered = _allChallenges.where((entry) {
       final matchesCategory = state.selectedCategory == null ||
           entry.challenge.category == state.selectedCategory;
-      final matchesCompletion = state.showCompleted ||
-          entry.progress == null ||
-          !entry.progress!.completed;
 
-      return matchesCategory && matchesCompletion;
+      return matchesCategory;
     }).toList();
 
     emit(state.copyWith(
