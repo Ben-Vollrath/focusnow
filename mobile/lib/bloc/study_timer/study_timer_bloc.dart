@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:focusnow/bloc/bloc/timer_variant.dart';
+import 'package:focusnow/bloc/study_timer/timer_variant.dart';
 import 'package:meta/meta.dart';
 import 'package:study_session_repository/study_session.dart';
 import 'package:study_session_repository/study_session_repository.dart';

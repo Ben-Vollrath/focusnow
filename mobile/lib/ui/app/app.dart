@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/app/app_bloc.dart';
-import 'package:focusnow/bloc/bloc/study_timer_bloc.dart';
+import 'package:focusnow/bloc/study_timer/study_timer_bloc.dart';
 import 'package:focusnow/bloc/login/login_cubit.dart';
 import 'package:focusnow/bloc/subscription/subscription_bloc.dart';
 import 'package:focusnow/static/theme/theme.dart';

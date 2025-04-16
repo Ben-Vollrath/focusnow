@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:focusnow/bloc/bloc/study_timer_bloc.dart';
-import 'package:focusnow/bloc/bloc/timer_variant.dart';
+import 'package:focusnow/bloc/study_timer/study_timer_bloc.dart';
+import 'package:focusnow/bloc/study_timer/timer_variant.dart';
 import 'package:focusnow/ui/study_timer/circular_timer.dart';
 import 'package:focusnow/ui/study_timer/timer_button.dart';
 
