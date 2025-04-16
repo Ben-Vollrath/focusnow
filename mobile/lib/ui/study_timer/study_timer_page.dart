@@ -73,7 +73,21 @@ class StudyTimerPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 26),
                 GestureDetector(
-                  onTap: () => context.read<StudyTimerBloc>().add(StartTimer()),
+                  onTap: () {
+                    switch (state.status) {
+                      case TimerStatus.initial:
+                      case TimerStatus.stopped:
+                      case TimerStatus.completed:
+                        context.read<StudyTimerBloc>().add(StartTimer());
+                        break;
+                      case TimerStatus.running:
+                        context.read<StudyTimerBloc>().add(PauseTimer());
+                        break;
+                      case TimerStatus.paused:
+                        context.read<StudyTimerBloc>().add(ResumeTimer());
+                        break;
+                    }
+                  },
                   child: CircularTimer(
                     remaining: state.variant == TimerVariant.endless
                         ? state.elapsed
