@@ -1,21 +1,47 @@
 part of 'challenge_bloc.dart';
 
-abstract class ChallengeState extends Equatable {
-  const ChallengeState();
-
-  @override
-  List<Object?> get props => [];
+enum Status {
+  initial,
+  loading,
+  loaded,
+  error,
 }
 
-class ChallengeLoading extends ChallengeState {}
-
-class ChallengeLoaded extends ChallengeState {
+class ChallengeState extends Equatable {
   final List<ChallengeWithProgress> challenges;
+  final ChallengeCategory? selectedCategory;
+  final Status status;
+  final bool showCompleted;
 
-  const ChallengeLoaded({required this.challenges});
+  const ChallengeState({
+    required this.challenges,
+    required this.status,
+    required this.showCompleted,
+    this.selectedCategory,
+  });
 
   @override
-  List<Object?> get props => [challenges];
-}
+  List<Object?> get props => [challenges, selectedCategory, status];
 
-class ChallengeError extends ChallengeState {}
+  factory ChallengeState.initial() {
+    return const ChallengeState(
+      challenges: [],
+      status: Status.initial,
+      showCompleted: true,
+    );
+  }
+
+  ChallengeState copyWith({
+    List<ChallengeWithProgress>? challenges,
+    ChallengeCategory? selectedCategory,
+    Status? status,
+    bool? showCompleted,
+  }) {
+    return ChallengeState(
+      challenges: challenges ?? this.challenges,
+      selectedCategory: selectedCategory ?? this.selectedCategory,
+      status: status ?? this.status,
+      showCompleted: showCompleted ?? this.showCompleted,
+    );
+  }
+}

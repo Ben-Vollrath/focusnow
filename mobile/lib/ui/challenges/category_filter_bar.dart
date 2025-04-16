@@ -12,13 +12,6 @@ class CategoryFilterBar extends StatelessWidget {
     final categories = ChallengeCategory.values;
     final state = context.watch<ChallengeBloc>().state;
 
-    ChallengeCategory? selectedCategory;
-    if (state is ChallengeLoaded) {
-      final filtered = state.challenges;
-      selectedCategory =
-          filtered.isNotEmpty ? filtered.first.challenge.category : null;
-    }
-
     return SizedBox(
       height: 48,
       child: ListView.builder(
@@ -29,8 +22,9 @@ class CategoryFilterBar extends StatelessWidget {
           final isAll = index == 0;
           final category = isAll ? null : categories[index - 1];
 
-          final isSelected =
-              isAll ? selectedCategory == null : selectedCategory == category;
+          final isSelected = isAll
+              ? state.selectedCategory == null
+              : state.selectedCategory == category;
 
           return Padding(
             padding: const EdgeInsets.only(right: 8),

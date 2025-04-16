@@ -33,9 +33,9 @@ class _ChallengeList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ChallengeBloc, ChallengeState>(
       builder: (context, state) {
-        if (state is ChallengeLoading) {
+        if (state.status == Status.loading) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state is ChallengeLoaded) {
+        } else if (state.status == Status.loaded) {
           if (state.challenges.isEmpty) {
             return const Center(child: Text('No challenges found.'));
           }
