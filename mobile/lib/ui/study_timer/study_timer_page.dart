@@ -182,7 +182,7 @@ class StudyTimerPage extends StatelessWidget {
                   ),
                   subtitle: Text(variant.description),
                   trailing: variant == current
-                      ? const Icon(Icons.check, color: Colors.green)
+                      ? const Icon(Icons.check, color: Color(0xFF3FBF7F))
                       : null,
                   onTap: () {
                     context

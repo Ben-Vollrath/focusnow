@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 
 enum ChallengeCategory {
+  daily_sessions,
   total_hours,
   total_sessions,
   streak_days,
-  daily_sessions,
 }
 
 extension ChallengeCategoryExtension on ChallengeCategory {

@@ -89,7 +89,7 @@ class ChallengeTile extends StatelessWidget {
                     backgroundColor:
                         Theme.of(context).colorScheme.onSurface.withAlpha(200),
                     color: progress.completed
-                        ? Colors.green
+                        ? Color(0xFF3FBF7F)
                         : Theme.of(context).colorScheme.primary,
                     minHeight: 6,
                   ),
