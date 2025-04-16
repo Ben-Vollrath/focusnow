@@ -15,16 +15,6 @@ class StudySessionRepository {
   }) : supabaseClient = supabaseClient ?? Supabase.instance.client,
        _analyticsRepository = analyticsRepository ?? AnalyticsRepository();
 
-  Future<bool> loadReviewEligibility() async {
-    final response =
-        await supabaseClient
-            .from('users')
-            .select('claimed_review_reward')
-            .single();
-
-    return !response['claimed_review_reward'];
-  }
-
   Future<void> submitStudySession(StudySession studySession) async {
     try {
       _analyticsRepository.logEvent('study_session_completed');
