@@ -16,14 +16,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  void _nextPage() {
+  void _nextPage() async {
     if (_currentPage < onboardingPages.length - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     } else {
-      context.read<LoginCubit>().signIgnAnonymously();
+      await context.read<LoginCubit>().signIgnAnonymously();
+      if (!mounted) return;
       Navigator.pop(context);
     }
   }
