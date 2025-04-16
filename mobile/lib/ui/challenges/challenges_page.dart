@@ -10,19 +10,17 @@ class ChallengesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ChallengeBloc(
-        repository: ChallengeRepository(),
-      )..add(LoadChallenges()),
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Challenges')),
-        body: Column(
-          children: [
-            const CategoryFilterBar(),
-            const SizedBox(height: 8),
-            Expanded(child: _ChallengeList()),
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Challenges'),
+        scrolledUnderElevation: 0.0,
+      ),
+      body: Column(
+        children: [
+          const CategoryFilterBar(),
+          const SizedBox(height: 8),
+          Expanded(child: _ChallengeList()),
+        ],
       ),
     );
   }
