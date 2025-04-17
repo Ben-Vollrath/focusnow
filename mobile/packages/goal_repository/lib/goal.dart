@@ -8,6 +8,7 @@ class Goal extends Equatable {
   final int currentMinutes;
   final bool completed;
   final String name;
+  final int xpReward;
 
   Goal({
     required this.id,
@@ -17,6 +18,7 @@ class Goal extends Equatable {
     required this.currentMinutes,
     required this.completed,
     required this.name,
+    required this.xpReward,
   });
 
   @override
@@ -28,6 +30,7 @@ class Goal extends Equatable {
     currentMinutes,
     completed,
     name,
+    xpReward,
   ];
 
   factory Goal.fromJson(Map<String, dynamic> json) {
@@ -39,6 +42,7 @@ class Goal extends Equatable {
       currentMinutes: json['current_minutes'],
       completed: json['completed'],
       name: json['name'],
+      xpReward: json['xp_reward'],
     );
   }
 }

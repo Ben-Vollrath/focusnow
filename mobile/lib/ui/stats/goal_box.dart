@@ -4,6 +4,7 @@ import 'package:focusnow/bloc/goal/goal_bloc.dart';
 import 'package:focusnow/ui/widgets/duration_text.dart';
 import 'package:focusnow/ui/widgets/flat_container.dart';
 import 'package:focusnow/ui/widgets/rounded_progress_indicator.dart';
+import 'package:focusnow/ui/widgets/xp_badge.dart';
 import 'package:goal_repository/goal.dart';
 import 'package:intl/intl.dart';
 
@@ -59,6 +60,8 @@ class GoalBox extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text('Goal', style: textTheme.titleMedium),
+                      const SizedBox(width: 12),
+                      XpBadge(text: '${goal!.xpReward} XP'),
                       Spacer(),
                       IconButton(
                           onPressed: () => context
@@ -71,7 +74,7 @@ class GoalBox extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  if (goal!.targetDate != null)
+                  if (goal.targetDate != null)
                     Row(
                       children: [
                         const Icon(Icons.calendar_today_outlined, size: 16),
