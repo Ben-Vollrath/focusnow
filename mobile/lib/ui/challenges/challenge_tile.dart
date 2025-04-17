@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:challenge_repository/challenge_repository.dart';
+import 'package:focusnow/ui/widgets/flat_container.dart';
+import 'package:focusnow/ui/widgets/rounded_progress_indicator.dart';
+import 'package:focusnow/ui/widgets/xp_badge.dart';
 
 class ChallengeTile extends StatelessWidget {
   final ChallengeWithProgress entry;
@@ -11,14 +14,7 @@ class ChallengeTile extends StatelessWidget {
     final challenge = entry.challenge;
     final progress = entry.progress;
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        ),
-      ),
-      padding: const EdgeInsets.all(12),
+    return FlatContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -46,55 +42,22 @@ class ChallengeTile extends StatelessWidget {
                 ),
               ),
               //Add badge to show xp gain
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  '${challenge.reward_xp} XP',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.white,
-                      ),
-                ),
-              ),
+              XpBadge(text: '${challenge.reward_xp} XP')
             ],
           ),
           const SizedBox(height: 6),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                challenge.description,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              if (progress != null)
-                Text(
-                  progress.progress != challenge.condition_amount
-                      ? '${progress.progress} / ${challenge.condition_amount}'
-                      : 'Done',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-            ],
-          ),
-          const SizedBox(height: 10),
           if (progress != null)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: LinearProgressIndicator(
-                    value: (progress.progress / challenge.condition_amount)
-                        .clamp(0.0, 1.0),
-                    backgroundColor:
-                        Theme.of(context).colorScheme.onSurface.withAlpha(200),
-                    color: progress.completed
-                        ? Color(0xFF3FBF7F)
-                        : Theme.of(context).colorScheme.primary,
-                    minHeight: 6,
-                  ),
+                RoundedProgressIndicator(
+                  progress: progress.progress,
+                  fullAmount: challenge.condition_amount,
+                  textLeft: challenge.description,
+                  textRight: Text(progress.progress !=
+                          challenge.condition_amount
+                      ? '${progress.progress} / ${challenge.condition_amount}'
+                      : 'Done'),
                 ),
                 const SizedBox(height: 4),
               ],

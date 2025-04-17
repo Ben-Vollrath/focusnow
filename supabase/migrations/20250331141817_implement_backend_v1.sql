@@ -67,10 +67,20 @@ CREATE TABLE goals (
   completed BOOLEAN DEFAULT FALSE
 );
 
+ALTER TABLE goals
+ADD CONSTRAINT one_goal_per_user UNIQUE (user_id);
+
 ALTER TABLE goals ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can read their own goals"
   ON goals
   FOR SELECT
+  TO authenticated
+  USING (user_id = auth.uid());
+
+ALTER TABLE goals ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can read delete their goals"
+  ON goals
+  FOR DELETE
   TO authenticated
   USING (user_id = auth.uid());
 

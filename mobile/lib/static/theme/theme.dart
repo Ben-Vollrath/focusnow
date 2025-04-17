@@ -4,47 +4,28 @@ class MaterialTheme {
   final TextTheme textTheme;
 
   const MaterialTheme(this.textTheme);
-  static MaterialScheme lightScheme() {
-    return const MaterialScheme(
-        brightness: Brightness.light,
-        primary: Color(0xFF4C6ED9),
-        onPrimary: Color(0xFFFFFFFF),
-        secondary: Color(0xFF4C6ED9),
-        onSecondary: Color(0xFF59647A),
-        tertiary: Color(0xFF4C6ED9),
-        error: Color(0xFFD32F2F), // Default red for errors
-        onError: Color(0xFFFFFFFF),
-        background: Color(0xFFF8F9FB),
-        onBackground: Color(0xFF1A213E),
-        surfaceContainerHighest: Color.fromARGB(255, 244, 245, 250),
-        surface: Color(0xFFF8F9FB),
-        onSurface: Color(0xFF1A213E));
-  }
-
-  ThemeData light() {
-    return theme(lightScheme().toColorScheme());
-  }
 
   static MaterialScheme darkScheme() {
-    return const MaterialScheme(
+    return MaterialScheme(
       brightness: Brightness.dark,
-      primary: Color(0xFFA259FF), // Vivid violet
-      onPrimary: Color(0xFFFFFFFF),
+      primary: const Color(0xFFA259FF), // Vivid violet
+      onPrimary: const Color(0xFFFFFFFF),
 
-      secondary: Color(0xFF7F5AF0), // Soft purple
-      onSecondary: Color(0xFFEFEFFF),
+      secondary: const Color(0xFF7F5AF0), // Soft purple
+      onSecondary: const Color(0xFFEFEFFF),
 
-      tertiary: Color(0xFF5A5A89), // Descriptive text, labels
-      error: Color(0xFFFF5C5C),
-      onError: Color(0xFF1A1A1D),
+      tertiary: const Color(0xFF5A5A89), // Descriptive text, labels
+      error: const Color(0xFFFF5C5C),
+      onError: const Color(0xFF1A1A1D),
 
-      background: Color(0xFF0E0E10), // Very dark background
-      onBackground: Color(0xFFF5F5F5),
+      background: const Color(0xFF0E0E10), // Very dark background
+      onBackground: const Color(0xFFF5F5F5),
 
-      surface: Color(0xFF1A1A1D), // Bottom bar, surfaces
-      onSurface: Color(0xFFF5F5F5),
+      surface: const Color(0xFF1A1A1D), // Bottom bar, surfaces
+      onSurface: const Color(0xFFF5F5F5),
 
-      surfaceContainerHighest: Color(0xFF2A2A2E), // Widget backgrounds
+      surfaceContainerHigh: Colors.grey[900]!, // Widget backgrounds
+      surfaceContainerHighest: const Color(0xFF2A2A2E), // Widget backgrounds
     );
   }
 
@@ -82,6 +63,7 @@ class MaterialScheme {
     required this.surface,
     required this.onSurface,
     required this.surfaceContainerHighest,
+    required this.surfaceContainerHigh,
   });
 
   final Brightness brightness;
@@ -97,6 +79,7 @@ class MaterialScheme {
   final Color surface;
   final Color onSurface;
   final Color surfaceContainerHighest;
+  final Color surfaceContainerHigh;
 }
 
 extension MaterialSchemeUtils on MaterialScheme {
@@ -112,6 +95,7 @@ extension MaterialSchemeUtils on MaterialScheme {
       onSurface: onSurface,
       brightness: brightness,
       surfaceContainerHighest: surfaceContainerHighest,
+      surfaceContainerHigh: surfaceContainerHigh,
     );
   }
 }
