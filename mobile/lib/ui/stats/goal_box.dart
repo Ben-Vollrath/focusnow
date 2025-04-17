@@ -64,13 +64,17 @@ class GoalBox extends StatelessWidget {
                       XpBadge(text: '${goal!.xpReward} XP'),
                       Spacer(),
                       IconButton(
-                          onPressed: () => context
-                              .read<GoalBloc>()
-                              .add(DeleteGoal(goal!.id)),
-                          icon: Icon(
-                            Icons.delete,
-                            color: Theme.of(context).colorScheme.error,
-                          ))
+                        onPressed: () async {
+                          final confirm = await _confirmGoalDeletion(context);
+                          if (confirm) {
+                            context.read<GoalBloc>().add(DeleteGoal(goal!.id));
+                          }
+                        },
+                        icon: Icon(
+                          Icons.delete,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      )
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -127,6 +131,36 @@ class GoalBox extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<bool> _confirmGoalDeletion(BuildContext context) async {
+  return await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+          title: const Text('Delete Goal?'),
+          content: const Text(
+            'You will lose all your goal progress.',
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.error,
+                foregroundColor: Theme.of(context).colorScheme.onError,
+              ),
+              child: const Text('Delete'),
+              onPressed: () => Navigator.of(context).pop(true),
+            ),
+          ],
+        ),
+      ) ??
+      false; // fallback to false if user dismisses the dialog
 }
 
 class GoalInputSheet extends StatefulWidget {
