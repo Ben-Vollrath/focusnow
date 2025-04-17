@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:challenge_repository/challenge_repository.dart';
 import 'package:focusnow/ui/widgets/flat_container.dart';
 import 'package:focusnow/ui/widgets/rounded_progress_indicator.dart';
+import 'package:focusnow/ui/widgets/xp_badge.dart';
 
 class ChallengeTile extends StatelessWidget {
   final ChallengeWithProgress entry;
@@ -41,19 +42,7 @@ class ChallengeTile extends StatelessWidget {
                 ),
               ),
               //Add badge to show xp gain
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  '${challenge.reward_xp} XP',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.white,
-                      ),
-                ),
-              ),
+              XpBadge(text: '${challenge.reward_xp} XP')
             ],
           ),
           const SizedBox(height: 6),
