@@ -177,7 +177,7 @@ Deno.test("Goal is completed and grants xp", async () => {
     await withAnonymousTestUser(async (client, user) => {
         //Add a goal for the user
         const goalData = {
-            target_minutes: 10,
+            target_minutes: 60,
             name: "myGoal",
             target_date: new Date(Date.now() + 7 * 24 * 60 * 60_000) // 1 week from now
                 .toISOString()
@@ -191,7 +191,7 @@ Deno.test("Goal is completed and grants xp", async () => {
         const { sessionData, data, error } = await createStudySession(
             client,
             edgeFunctionName,
-            10,
+            60,
         );
 
         assertEquals(error, null);
@@ -205,8 +205,9 @@ Deno.test("Goal is completed and grants xp", async () => {
         assertEquals(fetchError, null);
         assertExists(goal?.[0]);
         assertEquals(goal?.[0].user_id, user.id);
-        assertEquals(goal?.[0].current_minutes, 10);
+        assertEquals(goal?.[0].current_minutes, 60);
         assertEquals(goal?.[0].completed, true);
+        assertEquals(goal?.[0].xp_reward, 1); // 1 xp for completing the goal
 
         const { data: userData, error: fetchErrorUsers } = await client
             .from("users")
@@ -215,8 +216,8 @@ Deno.test("Goal is completed and grants xp", async () => {
         assertEquals(fetchErrorUsers, null);
         assertExists(userData?.[0]);
         assertEquals(userData?.[0].id, user.id);
-        assertEquals(userData?.[0].level, 2);
-        assertEquals(userData?.[0].xp, 15); //10 xp from session, 10 from daily sessions challenge, 10 from total sessions challenge, 10 from goal
+        assertEquals(userData?.[0].level, 4);
+        assertEquals(userData?.[0].xp, 1); //10 xp from session, 10 from daily sessions challenge, 10 from total sessions challenge, 10 from goal
     });
 });
 
