@@ -43,7 +43,7 @@ class StatsRepository {
       xp: userResponse['xp'] ?? 0,
       xpToNext: nextLevelResponse?['xp_required'],
       levelName: currentLevelResponse['name'] as String,
-      levelIcon: currentLevelResponse['icon'] as String?,
+      levelIcon: currentLevelResponse['icon'] as String,
       totalStudyTime: userResponse['total_study_time'] ?? 0,
       totalStudySessions: userResponse['total_study_sessions'] ?? 0,
     );
@@ -56,7 +56,7 @@ class StatsRepository {
 
     final response = await supabaseClient
         .from('study_days')
-        .select('study_date, total_study_time')
+        .select('study_date, total_study_time, total_study_sessions')
         .gte('study_date', weekAgo.toIso8601String().substring(0, 10))
         .lte('study_date', today.toIso8601String().substring(0, 10))
         .order('study_date');

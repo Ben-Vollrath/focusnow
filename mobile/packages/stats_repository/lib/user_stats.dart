@@ -3,7 +3,7 @@ class UserStats {
   final int xp;
   final int? xpToNext; // null if max level
   final String levelName;
-  final String? levelIcon;
+  final String levelIcon;
   final int totalStudyTime;
   final int totalStudySessions;
 
@@ -23,7 +23,7 @@ class UserStats {
       xp: map['xp'] as int,
       xpToNext: map['xpToNext'] as int?,
       levelName: map['levelName'] as String,
-      levelIcon: map['levelIcon'] as String?,
+      levelIcon: map['levelIcon'] as String,
       totalStudyTime: map['totalStudyTime'] as int,
       totalStudySessions: map['totalStudySessions'] as int,
     );
