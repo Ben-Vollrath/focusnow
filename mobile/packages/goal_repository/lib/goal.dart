@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class Goal extends Equatable {
   final String id;
-  final DateTime? createdAt;
+  final DateTime createdAt;
   final DateTime? targetDate;
   final int targetMinutes;
   final int currentMinutes;
@@ -37,7 +37,10 @@ class Goal extends Equatable {
     return Goal(
       id: json['id'],
       createdAt: DateTime.parse(json['created_at']),
-      targetDate: DateTime.parse(json['target_date']),
+      targetDate:
+          json['target_date'] != null
+              ? DateTime.parse(json['target_date'])
+              : null,
       targetMinutes: json['target_minutes'],
       currentMinutes: json['current_minutes'],
       completed: json['completed'],
