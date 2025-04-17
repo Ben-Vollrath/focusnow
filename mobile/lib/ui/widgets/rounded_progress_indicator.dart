@@ -4,7 +4,7 @@ class RoundedProgressIndicator extends StatelessWidget {
   final int progress;
   final int fullAmount;
   final String textLeft;
-  final String textRight;
+  final Widget textRight;
   const RoundedProgressIndicator(
       {super.key,
       required this.progress,
@@ -23,13 +23,7 @@ class RoundedProgressIndicator extends StatelessWidget {
               textLeft,
               style: const TextStyle(),
             ),
-            Text(
-              textRight,
-              style: TextStyle(
-                  fontSize: 12,
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withAlpha(200)),
-            ),
+            textRight,
           ],
         ),
         const SizedBox(height: 4),

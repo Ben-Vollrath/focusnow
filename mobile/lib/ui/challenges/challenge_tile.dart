@@ -69,9 +69,10 @@ class ChallengeTile extends StatelessWidget {
                   progress: progress.progress,
                   fullAmount: challenge.condition_amount,
                   textLeft: challenge.description,
-                  textRight: progress.progress != challenge.condition_amount
+                  textRight: Text(progress.progress !=
+                          challenge.condition_amount
                       ? '${progress.progress} / ${challenge.condition_amount}'
-                      : 'Done',
+                      : 'Done'),
                 ),
                 const SizedBox(height: 4),
               ],

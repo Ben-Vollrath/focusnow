@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/challenge/challenge_bloc.dart';
 import 'package:focusnow/bloc/stats/stats_bloc.dart';
+import 'package:focusnow/ui/stats/goal/goal_box.dart';
+import 'package:focusnow/ui/widgets/duration_text.dart';
 import 'package:focusnow/ui/widgets/rounded_progress_indicator.dart';
 import 'package:stats_repository/stats_repository.dart';
 
@@ -52,6 +54,8 @@ class StatsPage extends StatelessWidget {
                   todaysStudyTime: _getTodayMinutes(state.weeklyStudyData),
                   todaysSessions: _getTodaySessions(state.weeklyStudyData),
                 ),
+                const SizedBox(height: 24),
+                GoalBox(),
               ],
             );
           },
@@ -164,7 +168,12 @@ class _LevelBox extends StatelessWidget {
             progress: progress,
             fullAmount: full_amount,
             textLeft: 'Progress to Level ${level + 1}',
-            textRight: '$xp / $xpToNext XP',
+            textRight: Text('$xp / $xpToNext XP',
+                style: TextStyle(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withAlpha(200))),
           ),
           const SizedBox(height: 6),
         ],
@@ -244,7 +253,7 @@ class _StudyChart extends StatelessWidget {
                       reservedSize: 30, // <- increase this from 28
                       getTitlesWidget: (value, _) {
                         return Text(
-                          '${value.toInt()}m',
+                          formatDuration(value.toInt(), showUnitShort: true),
                           textAlign:
                               TextAlign.right, // <- align right to avoid wrap
                           style: const TextStyle(
@@ -292,7 +301,7 @@ class _StudyChart extends StatelessWidget {
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
                       final minutes = rod.toY.toInt();
                       return BarTooltipItem(
-                        '$minutes min',
+                        formatDuration(minutes),
                         TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
@@ -361,7 +370,10 @@ class _TodaysAchievements extends StatelessWidget {
                 child: _StatCard(
                   color: Theme.of(context).colorScheme.primary,
                   label: 'Duration',
-                  value: '$todaysStudyTime min',
+                  value: DurationText(
+                      minutes: todaysStudyTime,
+                      style: textTheme.titleMedium!
+                          .copyWith(fontWeight: FontWeight.bold)),
                 ),
               ),
               const SizedBox(width: 12),
@@ -369,7 +381,11 @@ class _TodaysAchievements extends StatelessWidget {
                 child: _StatCard(
                   color: Theme.of(context).colorScheme.primary,
                   label: 'Sessions',
-                  value: '$todaysSessions',
+                  value: Text(
+                    '$todaysSessions',
+                    style: textTheme.titleMedium!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
             ],
@@ -456,7 +472,7 @@ class _TodaysAchievements extends StatelessWidget {
 class _StatCard extends StatelessWidget {
   final Color color;
   final String label;
-  final String value;
+  final Widget value;
 
   const _StatCard({
     required this.color,
@@ -486,10 +502,7 @@ class _StatCard extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        Text(
-          value,
-          style: textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
-        ),
+        value
       ],
     );
   }
