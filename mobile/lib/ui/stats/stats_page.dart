@@ -18,6 +18,7 @@ class StatsPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Stats'),
+          scrolledUnderElevation: 0.0,
         ),
         body: BlocBuilder<StatsBloc, StatsState>(
           builder: (context, state) {
