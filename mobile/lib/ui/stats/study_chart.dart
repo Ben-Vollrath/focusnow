@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:focusnow/ui/widgets/duration_text.dart';
+import 'package:focusnow/ui/widgets/flat_container.dart';
 
 class StudyChart extends StatelessWidget {
   final List<Map<String, dynamic>> weeklyData;
@@ -49,12 +50,7 @@ class StudyChart extends StatelessWidget {
       );
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      padding: const EdgeInsets.all(12),
+    return FlatContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

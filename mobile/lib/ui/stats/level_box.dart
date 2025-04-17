@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusnow/ui/widgets/flat_container.dart';
 import 'package:focusnow/ui/widgets/rounded_progress_indicator.dart';
 
 class LevelBox extends StatelessWidget {
@@ -22,12 +23,7 @@ class LevelBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      padding: const EdgeInsets.all(20),
+    return FlatContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

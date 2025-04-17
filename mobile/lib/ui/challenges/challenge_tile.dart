@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:challenge_repository/challenge_repository.dart';
+import 'package:focusnow/ui/widgets/flat_container.dart';
 import 'package:focusnow/ui/widgets/rounded_progress_indicator.dart';
 
 class ChallengeTile extends StatelessWidget {
@@ -12,12 +13,7 @@ class ChallengeTile extends StatelessWidget {
     final challenge = entry.challenge;
     final progress = entry.progress;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      padding: const EdgeInsets.all(12),
+    return FlatContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

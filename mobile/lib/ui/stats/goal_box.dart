@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/goal/goal_bloc.dart';
 import 'package:focusnow/ui/widgets/duration_text.dart';
+import 'package:focusnow/ui/widgets/flat_container.dart';
 import 'package:focusnow/ui/widgets/rounded_progress_indicator.dart';
 import 'package:goal_repository/goal.dart';
 import 'package:intl/intl.dart';
@@ -13,18 +14,13 @@ class GoalBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return BlocBuilder<GoalBloc, GoalState>(
-      builder: (context, state) {
-        final goal = state.goal;
-        final isExpired = goal?.targetDate?.isBefore(DateTime.now()) ?? false;
+    return FlatContainer(
+      child: BlocBuilder<GoalBloc, GoalState>(
+        builder: (context, state) {
+          final goal = state.goal;
+          final isExpired = goal?.targetDate?.isBefore(DateTime.now()) ?? false;
 
-        return Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHigh,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          padding: const EdgeInsets.all(20),
-          child: switch (state.status) {
+          return switch (state.status) {
             GoalStatus.loading ||
             GoalStatus.initial =>
               const Center(child: CircularProgressIndicator()),
@@ -123,9 +119,9 @@ class GoalBox extends StatelessWidget {
                   const SizedBox(height: 12),
                 ],
               ),
-          },
-        );
-      },
+          };
+        },
+      ),
     );
   }
 }

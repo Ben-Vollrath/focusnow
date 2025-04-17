@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/challenge/challenge_bloc.dart';
 import 'package:focusnow/ui/widgets/duration_text.dart';
+import 'package:focusnow/ui/widgets/flat_container.dart';
 
 class TodaysAchievements extends StatelessWidget {
   final int todaysSessions;
@@ -16,12 +17,7 @@ class TodaysAchievements extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      padding: const EdgeInsets.all(20),
+    return FlatContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

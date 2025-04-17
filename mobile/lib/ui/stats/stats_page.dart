@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/stats/stats_bloc.dart';
-import 'package:focusnow/ui/stats/goal/goal_box.dart';
+import 'package:focusnow/ui/stats/goal_box.dart';
 import 'package:focusnow/ui/stats/level_box.dart';
 import 'package:focusnow/ui/stats/study_chart.dart';
 import 'package:focusnow/ui/stats/todays_achievement.dart';
