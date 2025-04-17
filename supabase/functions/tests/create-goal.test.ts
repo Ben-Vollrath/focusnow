@@ -39,7 +39,7 @@ Deno.test("Edge function creates a goal for anonymous user", async () => {
         assertEquals(inserted.target_date, goalData.target_date);
         assertEquals(
             inserted.xp_reward,
-            Math.round(goalData.target_minutes / 60),
+            Math.round(goalData.target_minutes / 20),
         );
     });
 });

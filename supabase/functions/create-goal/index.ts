@@ -23,7 +23,7 @@ Deno.serve(async (req) => {
       name: goalData.name,
       target_date: goalData.target_date,
       target_minutes: goalData.target_minutes,
-      xp_reward: Math.round(goalData.target_minutes / 60),
+      xp_reward: Math.round(goalData.target_minutes / 20),
     });
 
   if (insertError) {
