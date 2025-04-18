@@ -97,7 +97,7 @@ class GoalBox extends StatelessWidget {
                       children: [
                         DurationText(
                             minutes: goal.currentMinutes,
-                            showUnit: false,
+                            showUnit: true,
                             style: TextStyle(
                                 fontSize: 12,
                                 color: Theme.of(context)

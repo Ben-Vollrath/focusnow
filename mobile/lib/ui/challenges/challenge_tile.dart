@@ -1,5 +1,8 @@
+import 'package:challenge_repository/challenge.dart';
+import 'package:challenge_repository/challenge_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:challenge_repository/challenge_repository.dart';
+import 'package:focusnow/ui/widgets/duration_text.dart';
 import 'package:focusnow/ui/widgets/flat_container.dart';
 import 'package:focusnow/ui/widgets/rounded_progress_indicator.dart';
 import 'package:focusnow/ui/widgets/xp_badge.dart';
@@ -54,23 +57,83 @@ class ChallengeTile extends StatelessWidget {
                   progress: progress.progress,
                   fullAmount: challenge.condition_amount,
                   textLeft: challenge.description,
-                  textRight: Text(progress.progress !=
-                          challenge.condition_amount
-                      ? '${progress.progress} / ${challenge.condition_amount}'
-                      : 'Done'),
+                  textRight: ChallengeProgressText(
+                    progress: progress,
+                    challenge: challenge,
+                  ),
                 ),
                 const SizedBox(height: 4),
               ],
             ),
           if (progress == null)
-            Text('Locked',
-                style: TextStyle(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withAlpha(150))),
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Row(
+                children: [
+                  Transform.translate(
+                    offset: const Offset(0, -2),
+                    child: Icon(Icons.lock,
+                        size: 16,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withAlpha(150)),
+                  ),
+                  const SizedBox(width: 4),
+                  Text('Locked',
+                      style: TextStyle(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withAlpha(150))),
+                ],
+              ),
+            ),
         ],
       ),
     );
+  }
+}
+
+class ChallengeProgressText extends StatelessWidget {
+  final ChallengeProgress progress;
+  final Challenge challenge;
+
+  const ChallengeProgressText({
+    super.key,
+    required this.progress,
+    required this.challenge,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.onSurface.withAlpha(200);
+    final isDone = progress.progress == challenge.condition_amount;
+
+    if (isDone) {
+      return const Text('Done');
+    }
+
+    return switch (challenge.category) {
+      ChallengeCategory.total_hours => Row(
+          children: [
+            DurationText(
+              minutes: progress.progress,
+              showUnit: true,
+              showUnitShort: true,
+              style: TextStyle(fontSize: 12, color: color),
+            ),
+            Text(' / ', style: TextStyle(fontSize: 12, color: color)),
+            DurationText(
+              minutes: challenge.condition_amount,
+              style: TextStyle(fontSize: 12, color: color),
+            ),
+          ],
+        ),
+      _ => Text(
+          '${progress.progress} / ${challenge.condition_amount}',
+          style: TextStyle(fontSize: 12, color: color),
+        ),
+    };
   }
 }
