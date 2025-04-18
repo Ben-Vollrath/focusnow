@@ -1,5 +1,6 @@
 import 'dart:isolate';
 
+import 'package:flutter/services.dart';
 import 'package:focusnow/ui/app/app.dart';
 import 'package:focusnow/ui/app/bloc_observer.dart';
 import 'package:focusnow/firebase_options.dart';
@@ -21,6 +22,10 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: const Color(0xFF1A1A1D),
+      systemNavigationBarIconBrightness: Brightness.light));
 
   // Display splash screen while initializing
   runApp(MaterialApp(
