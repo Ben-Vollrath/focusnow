@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:focusnow/bloc/study_timer/study_timer_bloc.dart';
 
 class CircularTimer extends StatelessWidget {
   final Duration remaining;
@@ -31,15 +33,21 @@ class CircularTimer extends StatelessWidget {
         SizedBox(
           width: 250,
           height: 250,
-          child: CircularProgressIndicator(
-            value: percent,
-            strokeWidth: 12,
-            strokeCap: StrokeCap.round,
-            backgroundColor:
-                Theme.of(context).colorScheme.shadow.withAlpha(127),
-            valueColor: AlwaysStoppedAnimation<Color>(
-              Theme.of(context).colorScheme.primary,
-            ),
+          child: BlocBuilder<StudyTimerBloc, StudyTimerState>(
+            builder: (context, state) {
+              return CircularProgressIndicator(
+                value: percent,
+                strokeWidth: 12,
+                strokeCap: StrokeCap.round,
+                backgroundColor:
+                    Theme.of(context).colorScheme.shadow.withAlpha(127),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  state.phase == TimerPhase.work
+                      ? Theme.of(context).colorScheme.primary
+                      : Color(0xFF3FBF7F),
+                ),
+              );
+            },
           ),
         ),
         Column(
