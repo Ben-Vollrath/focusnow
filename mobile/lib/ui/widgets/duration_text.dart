@@ -17,7 +17,7 @@ class DurationText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      formatDuration(minutes, showUnit: showUnit),
+      formatDuration(minutes, showUnit: showUnit, showUnitShort: showUnitShort),
       style: style,
     );
   }

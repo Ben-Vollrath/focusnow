@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/challenge/challenge_bloc.dart';
 import 'package:focusnow/ui/widgets/duration_text.dart';
 import 'package:focusnow/ui/widgets/flat_container.dart';
+import 'package:focusnow/ui/widgets/icon_title.dart';
 import 'package:focusnow/ui/widgets/xp_badge.dart';
 
 class TodaysAchievements extends StatelessWidget {
@@ -22,7 +23,8 @@ class TodaysAchievements extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Today\'s Achievements', style: textTheme.titleMedium),
+          IconTitle(
+              title: "Today's Achievement", icon: Icons.emoji_events_outlined),
           const SizedBox(height: 12),
           Row(
             children: [

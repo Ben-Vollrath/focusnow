@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/goal/goal_bloc.dart';
 import 'package:focusnow/ui/widgets/duration_text.dart';
 import 'package:focusnow/ui/widgets/flat_container.dart';
+import 'package:focusnow/ui/widgets/icon_title.dart';
 import 'package:focusnow/ui/widgets/rounded_progress_indicator.dart';
 import 'package:focusnow/ui/widgets/xp_badge.dart';
 import 'package:goal_repository/goal.dart';
@@ -53,28 +54,26 @@ class GoalBox extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.flag_outlined,
-                        size: 24,
-                        color: Theme.of(context).colorScheme.primary,
+                      IconTitle(
+                        title: "Goal",
+                        icon: Icons.flag_outlined,
+                        offsetX: -4,
                       ),
-                      const SizedBox(width: 8),
-                      Text('Goal', style: textTheme.titleMedium),
                       const SizedBox(width: 12),
                       XpBadge(text: '${goal!.xpReward} XP'),
                       Spacer(),
-                      IconButton(
-                        onPressed: () async {
+                      GestureDetector(
+                        onTap: () async {
                           final confirm = await _confirmGoalDeletion(context);
                           if (confirm) {
                             context.read<GoalBloc>().add(DeleteGoal(goal!.id));
                           }
                         },
-                        icon: Icon(
-                          Icons.delete,
+                        child: Icon(
+                          Icons.delete_outline,
                           color: Theme.of(context).colorScheme.error,
                         ),
-                      )
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -98,7 +97,7 @@ class GoalBox extends StatelessWidget {
                       children: [
                         DurationText(
                             minutes: goal.currentMinutes,
-                            showUnit: false,
+                            showUnit: true,
                             style: TextStyle(
                                 fontSize: 12,
                                 color: Theme.of(context)
@@ -215,7 +214,7 @@ class _GoalInputSheetState extends State<GoalInputSheet> {
                   color: colorScheme.primary,
                 ),
                 const SizedBox(width: 8),
-                const Text('Create Goal',
+                const Text('Set your Goal',
                     style:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
               ],

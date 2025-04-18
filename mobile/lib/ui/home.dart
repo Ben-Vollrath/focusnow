@@ -63,23 +63,43 @@ class _HomePageState extends State<HomePage> {
               opacity: isVisible ? 1.0 : 0.0,
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
-              child: BottomNavigationBar(
-                currentIndex: _selectedIndex,
-                onTap: _onItemTapped,
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.bar_chart),
-                    label: 'Stats',
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color:
+                          Theme.of(context).colorScheme.surfaceContainerHighest,
+                      width: 1,
+                    ),
                   ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.timer),
-                    label: 'Timer',
+                ),
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    splashFactory: NoSplash.splashFactory,
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
                   ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.emoji_events),
-                    label: 'Challenges',
+                  child: BottomNavigationBar(
+                    currentIndex: _selectedIndex,
+                    onTap: _onItemTapped,
+                    showSelectedLabels: false,
+                    showUnselectedLabels: false,
+                    items: const [
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.show_chart_outlined),
+                        label: 'Stats',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.hourglass_bottom_outlined),
+                        label: 'Timer',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.emoji_events_outlined),
+                        label: 'Challenges',
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           );
