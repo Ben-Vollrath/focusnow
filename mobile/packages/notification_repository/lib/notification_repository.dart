@@ -21,7 +21,7 @@ class NotificationRepository {
   /// Initializes local notifications
   Future<void> initialize() async {
     const AndroidInitializationSettings androidInit =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@drawable/ic_notification_icon');
 
     const InitializationSettings initSettings = InitializationSettings(
       android: androidInit,
