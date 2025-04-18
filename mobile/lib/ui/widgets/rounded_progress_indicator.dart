@@ -33,7 +33,7 @@ class RoundedProgressIndicator extends StatelessWidget {
             value: (progress / fullAmount).clamp(0.0, 1.0),
             backgroundColor:
                 Theme.of(context).colorScheme.onSurface.withAlpha(200),
-            color: progress == fullAmount
+            color: progress >= fullAmount
                 ? Color(0xFF3FBF7F)
                 : Theme.of(context).colorScheme.primary,
             minHeight: 6,

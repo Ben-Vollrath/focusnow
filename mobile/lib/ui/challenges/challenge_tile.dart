@@ -108,7 +108,7 @@ class ChallengeProgressText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.onSurface.withAlpha(200);
-    final isDone = progress.progress == challenge.condition_amount;
+    final isDone = progress.progress >= challenge.condition_amount;
 
     if (isDone) {
       return const Text('Done');
