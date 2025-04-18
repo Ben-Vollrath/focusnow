@@ -1,5 +1,6 @@
 import 'dart:isolate';
 
+import 'package:flutter/services.dart';
 import 'package:focusnow/ui/app/app.dart';
 import 'package:focusnow/ui/app/bloc_observer.dart';
 import 'package:focusnow/firebase_options.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:notification_repository/notification_repository.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:subscription_repository/subscription_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -20,6 +22,10 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: const Color(0xFF1A1A1D),
+      systemNavigationBarIconBrightness: Brightness.light));
 
   // Display splash screen while initializing
   runApp(MaterialApp(
@@ -60,9 +66,14 @@ Future<void> main() async {
   final subscriptionRepository =
       SubscriptionRepository(dotenv.env['REVENUECAT_PROJECT_GOOGLE_API_KEY']!);
 
+  final notificationRepository = NotificationRepository();
+  await notificationRepository.initialize();
+  await notificationRepository.requestPermission();
+
   // After initialization, run the main app
   runApp(App(
     authenticationRepository: authenticationRepository,
     subscriptionRepository: subscriptionRepository,
+    notificationRepository: notificationRepository,
   ));
 }

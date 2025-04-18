@@ -26,6 +26,8 @@ dependencies:
     path: packages/stats_repository
   goal_repository:
     path: packages/goal_repository
+  notification_repository:
+    path: packages/notification_repository
 
 
   supabase_flutter: ^2.5.7

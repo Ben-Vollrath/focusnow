@@ -16,6 +16,7 @@ import 'package:focusnow/static/theme/theme.dart';
 import 'package:focusnow/static/theme/util.dart';
 import 'package:focusnow/ui/app/routes/routes.dart';
 import 'package:goal_repository/goal_repository.dart';
+import 'package:notification_repository/notification_repository.dart';
 import 'package:stats_repository/stats_repository.dart';
 import 'package:study_session_repository/study_session_repository.dart';
 import 'package:subscription_repository/subscription_repository.dart';
@@ -25,10 +26,12 @@ class App extends StatelessWidget {
   const App(
       {required this.authenticationRepository,
       required this.subscriptionRepository,
-      super.key});
+      super.key,
+      required this.notificationRepository});
 
   final AuthenticationRepository authenticationRepository;
   final SubscriptionRepository subscriptionRepository;
+  final NotificationRepository notificationRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +55,8 @@ class App extends StatelessWidget {
               create: (context) =>
                   LoginCubit(context.read<AuthenticationRepository>())),
           BlocProvider(
-            create: (context) => StudyTimerBloc(StudySessionRepository()),
+            create: (context) => StudyTimerBloc(
+                StudySessionRepository(), notificationRepository),
           ),
           BlocProvider(
             create: (context) => ChallengeBloc(
