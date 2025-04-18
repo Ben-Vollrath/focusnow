@@ -63,7 +63,7 @@ export async function updateChallengeProgress(
         .eq("category", category)
         .eq("difficulty", 1)
         .limit(1)
-        .maybeSingle();
+        .single();
 
       if (firstError) {
         console.error(
@@ -261,7 +261,7 @@ async function setChallengeProgress(
       .order("difficulty", { ascending: true })
       .limit(1);
 
-    if (data) {
+    if (data && data.length > 0) {
       await setChallengeProgress(
         supabase,
         userId,
