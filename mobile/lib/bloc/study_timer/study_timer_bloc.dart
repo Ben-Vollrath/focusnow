@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:focusnow/bloc/study_timer/timer_variant.dart';
 import 'package:meta/meta.dart';
+import 'package:notification_repository/notification_repository.dart';
 import 'package:study_session_repository/study_session.dart';
 import 'package:study_session_repository/study_session_repository.dart';
 
@@ -11,9 +13,11 @@ part 'study_timer_state.dart';
 
 class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
   final StudySessionRepository sessionRepository;
+  final NotificationRepository notificationRepository;
   Timer? _ticker;
 
-  StudyTimerBloc(this.sessionRepository) : super(StudyTimerState.initial()) {
+  StudyTimerBloc(this.sessionRepository, this.notificationRepository)
+      : super(StudyTimerState.initial()) {
     on<SelectTimerVariant>((event, emit) {
       emit(state.copyWith(variant: event.variant));
     });
@@ -51,8 +55,10 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
               phase: TimerPhase.breakTime,
               status: TimerStatus.running,
               startTime: DateTime.now(),
-              elapsed: workDuration, // don't increase during break
+              elapsed: workDuration,
             ));
+
+            notificationRepository.showStudySessionBreakNotification();
           } else {
             emit(state.copyWith(elapsed: elapsed));
           }
@@ -61,6 +67,8 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
             _ticker?.cancel();
             emit(StudyTimerState.initial()
                 .copyWith(status: TimerStatus.completed));
+
+            notificationRepository.showStudySessionCompletedNotification();
           } else {
             emit(state.copyWith(
               elapsed: elapsed,
@@ -78,6 +86,7 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
               status: TimerStatus.completed,
               elapsed: workDuration,
               phase: TimerPhase.work));
+          notificationRepository.showStudySessionCompletedNotification();
         } else {
           emit(state.copyWith(elapsed: elapsed));
         }
