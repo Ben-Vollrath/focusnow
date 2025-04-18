@@ -5,7 +5,7 @@ enum StatsStatus { initial, loading, success, failure }
 class StatsState extends Equatable {
   final StatsStatus status;
   final UserStats? userStats;
-  final List<Map<String, dynamic>> weeklyStudyData;
+  final List<DailyStudyData> weeklyStudyData;
   final String? errorMessage;
 
   const StatsState({
@@ -18,7 +18,7 @@ class StatsState extends Equatable {
   StatsState copyWith({
     StatsStatus? status,
     UserStats? userStats,
-    List<Map<String, dynamic>>? weeklyStudyData,
+    List<DailyStudyData>? weeklyStudyData,
     String? errorMessage,
   }) {
     return StatsState(

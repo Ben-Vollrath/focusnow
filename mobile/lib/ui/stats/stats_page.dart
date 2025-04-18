@@ -5,6 +5,7 @@ import 'package:focusnow/ui/stats/goal_box.dart';
 import 'package:focusnow/ui/stats/level_box.dart';
 import 'package:focusnow/ui/stats/study_chart.dart';
 import 'package:focusnow/ui/stats/todays_achievement.dart';
+import 'package:stats_repository/daily_study_data.dart';
 import 'package:stats_repository/stats_repository.dart';
 
 class StatsPage extends StatelessWidget {
@@ -64,29 +65,43 @@ class StatsPage extends StatelessWidget {
     );
   }
 
-  int _getTodayMinutes(List<Map<String, dynamic>> weeklyData) {
+  int _getTodayMinutes(List<DailyStudyData> weeklyData) {
     final today = DateTime.now();
     final todayStr = DateTime(today.year, today.month, today.day)
         .toIso8601String()
         .split('T')
         .first;
+
     final todayEntry = weeklyData.firstWhere(
-      (e) => e['study_date'] == todayStr,
-      orElse: () => {},
+      (e) => e.studyDate == todayStr,
+      orElse: () => DailyStudyData(
+        studyDate: todayStr,
+        totalStudyTime: 0,
+        totalStudySessions: 0,
+        streakDay: 0,
+      ),
     );
-    return (todayEntry['total_study_time'] ?? 0);
+
+    return todayEntry.totalStudyTime ?? 0;
   }
 
-  int _getTodaySessions(List<Map<String, dynamic>> weeklyData) {
+  int _getTodaySessions(List<DailyStudyData> weeklyData) {
     final today = DateTime.now();
     final todayStr = DateTime(today.year, today.month, today.day)
         .toIso8601String()
         .split('T')
         .first;
+
     final todayEntry = weeklyData.firstWhere(
-      (e) => e['study_date'] == todayStr,
-      orElse: () => {},
+      (e) => e.studyDate == todayStr,
+      orElse: () => DailyStudyData(
+        studyDate: todayStr,
+        totalStudyTime: 0,
+        totalStudySessions: 0,
+        streakDay: 0,
+      ),
     );
-    return todayEntry['total_study_sessions'] ?? 0;
+
+    return todayEntry.totalStudySessions ?? 0;
   }
 }

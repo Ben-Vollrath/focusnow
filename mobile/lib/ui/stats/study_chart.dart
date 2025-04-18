@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:focusnow/ui/widgets/duration_text.dart';
 import 'package:focusnow/ui/widgets/flat_container.dart';
 import 'package:focusnow/ui/widgets/icon_title.dart';
+import 'package:stats_repository/daily_study_data.dart';
 
 class StudyChart extends StatelessWidget {
-  final List<Map<String, dynamic>> weeklyData;
+  final List<DailyStudyData> weeklyData;
 
   const StudyChart({required this.weeklyData});
 
@@ -18,9 +19,7 @@ class StudyChart extends StatelessWidget {
           .subtract(Duration(days: 6 - i)),
     );
 
-    final studyMap = {
-      for (var e in weeklyData) e['study_date']: e['total_study_time']
-    };
+    final studyMap = {for (var e in weeklyData) e.studyDate: e.totalStudyTime};
 
     final barGroups = <BarChartGroupData>[];
     final labels = <String>[];

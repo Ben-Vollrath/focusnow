@@ -2,6 +2,7 @@ library stat_repository;
 
 import 'package:analytics_repository/analytics_repository.dart';
 import 'package:stats_repository/user_stats.dart';
+import 'package:stats_repository/daily_study_data.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class StatsRepository {
@@ -50,17 +51,24 @@ class StatsRepository {
   }
 
   /// Get study data for the last 7 days for a user
-  Future<List<Map<String, dynamic>>> getWeeklyStudyData() async {
+  Future<List<DailyStudyData>> getWeeklyStudyData() async {
     final today = DateTime.now();
     final weekAgo = today.subtract(const Duration(days: 6));
 
     final response = await supabaseClient
         .from('study_days')
-        .select('study_date, total_study_time, total_study_sessions')
+        .select(
+          'study_date, total_study_time, total_study_sessions, streak_day',
+        )
         .gte('study_date', weekAgo.toIso8601String().substring(0, 10))
         .lte('study_date', today.toIso8601String().substring(0, 10))
         .order('study_date');
 
-    return List<Map<String, dynamic>>.from(response);
+    final List<DailyStudyData> weeklyStudyData =
+        (response as List)
+            .map((e) => DailyStudyData.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+    return weeklyStudyData;
   }
 }
