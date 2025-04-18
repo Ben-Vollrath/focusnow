@@ -214,7 +214,7 @@ class _GoalInputSheetState extends State<GoalInputSheet> {
                   color: colorScheme.primary,
                 ),
                 const SizedBox(width: 8),
-                const Text('Create Goal',
+                const Text('Set your Goal',
                     style:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
               ],
