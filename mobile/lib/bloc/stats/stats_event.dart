@@ -13,3 +13,10 @@ class LoadStats extends StatsEvent {
   @override
   List<Object?> get props => [];
 }
+
+class ReloadUserStats extends StatsEvent {
+  const ReloadUserStats();
+
+  @override
+  List<Object?> get props => [];
+}
