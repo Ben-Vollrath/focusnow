@@ -43,15 +43,10 @@ class _StudyTimerPageState extends State<StudyTimerPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<StudyTimerBloc, StudyTimerState>(
-      listenWhen: (_, state) =>
-          state.status == TimerStatus.completed ||
-          state.status == TimerStatus.stopped,
+      listenWhen: (_, state) => state.status == TimerStatus.completed,
       listener: (context, state) {
-        if (state.status == TimerStatus.completed ||
-            state.status == TimerStatus.stopped) {
-          context.read<StatsBloc>().add(ReloadUserStats());
-          context.read<ChallengeBloc>().add(LoadChallenges());
-        }
+        context.read<StatsBloc>().add(ReloadUserStats());
+        context.read<ChallengeBloc>().add(LoadChallenges());
       },
       child: Scaffold(
         appBar: AppBar(title: const Text('Study Timer')),

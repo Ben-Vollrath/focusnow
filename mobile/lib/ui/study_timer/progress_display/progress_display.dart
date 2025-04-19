@@ -34,6 +34,18 @@ class _ProgressDisplayState extends State<ProgressDisplay>
   @override
   bool get wantKeepAlive => true;
 
+  void _setVisible() {
+    setState(() {
+      _visible = true;
+    });
+    _hideTimer?.cancel();
+    _hideTimer = Timer(const Duration(seconds: 15), () {
+      setState(() {
+        _visible = false;
+      });
+    });
+  }
+
   void _handleStatsUpdate(UserStats? stats) {
     if (stats == null) return;
     setState(() {
@@ -41,7 +53,7 @@ class _ProgressDisplayState extends State<ProgressDisplay>
       _currentStats = stats;
 
       if (_statsInitialized) {
-        _visible = true;
+        _setVisible();
       } else {
         _statsInitialized = true;
       }
@@ -121,6 +133,7 @@ class _ProgressDisplayState extends State<ProgressDisplay>
               children: [
                 if (_currentStats != null && _previousStats != null) ...[
                   AnimatedLevelBar(
+                    key: ValueKey('${_previousStats!.xp}-${_currentStats!.xp}'),
                     onLevelUp: widget.onLevelUp,
                     previous: _previousStats!,
                     current: _currentStats!,
@@ -128,6 +141,7 @@ class _ProgressDisplayState extends State<ProgressDisplay>
                   const SizedBox(height: 12),
                 ],
                 CompletedChallengesList(
+                  key: ValueKey(_recentlyCompletedChallenges.hashCode),
                   challenges: _recentlyCompletedChallenges,
                 ),
                 //]

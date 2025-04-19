@@ -84,7 +84,7 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
           ));
           emit(state.copyWith(
               status: TimerStatus.completed,
-              elapsed: workDuration,
+              elapsed: Duration.zero,
               phase: TimerPhase.work));
           notificationRepository.showStudySessionCompletedNotification();
         } else {
@@ -103,19 +103,27 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
       emit(state.copyWith(status: TimerStatus.running));
     });
 
-    on<StopTimer>((event, emit) {
+    on<StopTimer>((event, emit) async {
       _ticker?.cancel();
-      if (state.startTime != null && state.elapsed.inMinutes > 5) {
-        sessionRepository.submitStudySession(StudySession(
+      if (state.startTime != null && state.elapsed.inMinutes >= 5) {
+        await sessionRepository.submitStudySession(StudySession(
             startTime: state.startTime!,
             endTime: state.startTime!.add(state.elapsed)));
+
+        emit(state.copyWith(
+          phase: TimerPhase.work,
+          status: TimerStatus.completed,
+          elapsed: Duration.zero,
+          startTime: null,
+        ));
+      } else {
+        emit(state.copyWith(
+          phase: TimerPhase.work,
+          status: TimerStatus.stopped,
+          elapsed: Duration.zero,
+          startTime: null,
+        ));
       }
-      emit(state.copyWith(
-        phase: TimerPhase.work,
-        status: TimerStatus.stopped,
-        elapsed: Duration.zero,
-        startTime: null,
-      ));
     });
   }
 
