@@ -33,8 +33,6 @@ export async function updateChallengeProgress(
   const activeChallenges: Challenge[] = [];
 
   for (const category of categories) {
-    let challenge: Challenge | null = null;
-
     // Try to fetch the current active challenge from challenge_progress
     const { data: active, error: activeError } = await supabase
       .from("challenges")
@@ -52,34 +50,8 @@ export async function updateChallengeProgress(
       );
       continue;
     }
-
-    if (active && active.length > 0) {
-      challenge = active[0];
-    } else {
-      // No active challenge — fetch first challenge of this category (difficulty = 1)
-      const { data: first, error: firstError } = await supabase
-        .from("challenges")
-        .select("*")
-        .eq("category", category)
-        .eq("difficulty", 1)
-        .limit(1)
-        .single();
-
-      if (firstError) {
-        console.error(
-          `Error fetching fallback challenge for ${category}:`,
-          firstError,
-        );
-        continue;
-      }
-
-      if (first) {
-        challenge = first;
-      }
-    }
-
-    if (challenge) {
-      activeChallenges.push(challenge);
+    if (active.length >= 1) {
+      activeChallenges.push(active[0]);
     }
   }
 

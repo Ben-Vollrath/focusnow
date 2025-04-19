@@ -1,6 +1,7 @@
 library stat_repository;
 
 import 'package:analytics_repository/analytics_repository.dart';
+import 'package:stats_repository/level.dart';
 import 'package:stats_repository/user_stats.dart';
 import 'package:stats_repository/daily_study_data.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -28,21 +29,14 @@ class StatsRepository {
     final currentLevelResponse =
         await supabaseClient
             .from('levels')
-            .select('name, icon')
+            .select('name, icon, xp_required')
             .eq('level', level)
             .single();
-
-    final nextLevelResponse =
-        await supabaseClient
-            .from('levels')
-            .select('xp_required')
-            .eq('level', level + 1)
-            .maybeSingle();
 
     return UserStats(
       level: level,
       xp: userResponse['xp'] ?? 0,
-      xpToNext: nextLevelResponse?['xp_required'],
+      xpToNext: currentLevelResponse['xp_required'],
       levelName: currentLevelResponse['name'] as String,
       levelIcon: currentLevelResponse['icon'] as String,
       totalStudyTime: userResponse['total_study_time'] ?? 0,
@@ -70,5 +64,16 @@ class StatsRepository {
             .toList();
 
     return weeklyStudyData;
+  }
+
+  Future<List<Level>> getLevels() async {
+    final response = await supabaseClient
+        .from('levels')
+        .select('level, name, icon, xp_required')
+        .order('level', ascending: true);
+
+    return (response as List)
+        .map((e) => Level.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }
