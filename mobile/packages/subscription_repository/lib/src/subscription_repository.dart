@@ -19,7 +19,6 @@ class SubscriptionRepository {
   final String _publicSdkKey;
   final SupabaseClient _supabaseClient = Supabase.instance.client;
   final AnalyticsRepository _analyticsRepository;
-  late PayWallInformation _payWallInformation;
 
   final _subscriptionController = StreamController<Subscription>.broadcast();
 
@@ -42,9 +41,7 @@ class SubscriptionRepository {
     await Purchases.configure(
         PurchasesConfiguration(_publicSdkKey)..appUserID = userId);
 
-    _payWallInformation = PayWallInformation.loadDefault();
     final offerings = await Purchases.getOfferings();
-    _payWallInformation = PayWallInformation.fromOffering(offerings.current!);
   }
 
   /// Fetches the user subscription from RevenueCat
@@ -70,43 +67,6 @@ class SubscriptionRepository {
   void reloadSubscription() async {
     final subscription = await getUserSubscription();
     _subscriptionController.add(subscription);
-  }
-
-  PayWallInformation getPayWallInformation() {
-    try {
-      return _payWallInformation;
-    } catch (e, stackTrace) {
-      _analyticsRepository.logError(e, stackTrace, "Failed to fetch offering");
-      rethrow;
-    }
-  }
-
-  Future<void> purchasePackage(Package package) async {
-    try {
-      final purchaserInfo = await Purchases.purchasePackage(package);
-    } on PlatformException catch (e, stackTrace) {
-      if (e.code == '1') {
-        _analyticsRepository.logEvent("User cancelled purchase");
-      } else {
-        _analyticsRepository.logError(
-            e, stackTrace, "Failed to purchase package");
-        rethrow;
-      }
-    } catch (e, stackTrace) {
-      _analyticsRepository.logError(
-          e, stackTrace, "Failed to purchase package");
-      rethrow;
-    }
-  }
-
-  Future<void> restorePurchases() async {
-    try {
-      await Purchases.restorePurchases();
-    } catch (e, stackTrace) {
-      _analyticsRepository.logError(
-          e, stackTrace, "Failed to Restore Purchases");
-      rethrow;
-    }
   }
 
   /// Dispose the StreamController when done
