@@ -19,7 +19,7 @@ class StudyTimerState {
     this.startTime,
   });
 
-  bool get canChangeVariant =>
+  bool get canInteractOutsideTimer =>
       status != TimerStatus.running && status != TimerStatus.paused;
 
   Duration get totalDuration {

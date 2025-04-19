@@ -45,11 +45,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        children: _pages,
-        onPageChanged: _onPageChanged,
-        physics: const BouncingScrollPhysics(),
+      body: BlocBuilder<StudyTimerBloc, StudyTimerState>(
+        builder: (context, state) {
+          return PageView(
+            controller: _pageController,
+            children: _pages,
+            onPageChanged: _onPageChanged,
+            physics: state.canInteractOutsideTimer
+                ? const BouncingScrollPhysics()
+                : const NeverScrollableScrollPhysics(),
+          );
+        },
       ),
       bottomNavigationBar: BlocBuilder<StudyTimerBloc, StudyTimerState>(
         builder: (context, state) {
