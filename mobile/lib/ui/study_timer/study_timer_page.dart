@@ -10,6 +10,7 @@ import 'package:focusnow/bloc/study_timer/timer_variant.dart';
 import 'package:focusnow/ui/study_timer/circular_timer.dart';
 import 'package:focusnow/ui/study_timer/progress_display/progress_display.dart';
 import 'package:focusnow/ui/study_timer/timer_button.dart';
+import 'package:focusnow/ui/widgets/profile_dropdown.dart';
 
 class StudyTimerPage extends StatefulWidget {
   const StudyTimerPage({super.key});
@@ -48,165 +49,189 @@ class _StudyTimerPageState extends State<StudyTimerPage> {
         context.read<StatsBloc>().add(ReloadUserStats());
         context.read<ChallengeBloc>().add(LoadChallenges());
       },
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Study Timer')),
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: BlocBuilder<StudyTimerBloc, StudyTimerState>(
-            builder: (context, state) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: BlocBuilder<StudyTimerBloc, StudyTimerState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+                title: AnimatedSlide(
+              offset:
+                  state.canChangeVariant ? Offset.zero : const Offset(0, -1),
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Stack(
+                  const Text('Study Timer'),
+                  const ProfileDropdownButton(),
+                ],
+              ),
+            )),
+            body: Padding(
+              padding: const EdgeInsets.all(16),
+              child: BlocBuilder<StudyTimerBloc, StudyTimerState>(
+                builder: (context, state) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      ProgressDisplay(
-                        onLevelUp: () {
-                          _confettiController.play();
-                        },
-                      ),
-                      Center(
-                        child: ConfettiWidget(
-                          confettiController: _confettiController,
-                          blastDirectionality: BlastDirectionality.explosive,
-                          shouldLoop: false,
-                          emissionFrequency: 0.6,
-                          numberOfParticles: 25,
-                          maxBlastForce: 15,
-                          minBlastForce: 5,
-                          minimumSize: const Size(5, 5),
-                          maximumSize: const Size(10, 10),
-                          gravity: 0.3,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  // Timer Display
-                  Align(
-                    alignment: Alignment.center,
-                    child: GestureDetector(
-                      onTap: () {
-                        if (state.canChangeVariant) {
-                          _showVariantSelector(context);
-                        }
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                              color: state.canChangeVariant
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withAlpha(124)),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(state.variant.icon,
-                                style: const TextStyle(fontSize: 20)),
-                            const SizedBox(width: 8),
-                            Text(
-                              state.variant.name,
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w500),
+                      Stack(
+                        children: [
+                          ProgressDisplay(
+                            onLevelUp: () {
+                              _confettiController.play();
+                            },
+                          ),
+                          Center(
+                            child: ConfettiWidget(
+                              confettiController: _confettiController,
+                              blastDirectionality:
+                                  BlastDirectionality.explosive,
+                              shouldLoop: false,
+                              emissionFrequency: 0.6,
+                              numberOfParticles: 25,
+                              maxBlastForce: 15,
+                              minBlastForce: 5,
+                              minimumSize: const Size(5, 5),
+                              maximumSize: const Size(10, 10),
+                              gravity: 0.3,
                             ),
-                            const SizedBox(width: 4),
-                            state.canChangeVariant
-                                ? const Icon(Icons.arrow_drop_down)
-                                : Container(),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      // Timer Display
+                      Align(
+                        alignment: Alignment.center,
+                        child: GestureDetector(
+                          onTap: () {
+                            if (state.canChangeVariant) {
+                              _showVariantSelector(context);
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                  color: state.canChangeVariant
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withAlpha(124)),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(state.variant.icon,
+                                    style: const TextStyle(fontSize: 20)),
+                                const SizedBox(width: 8),
+                                Text(
+                                  state.variant.name,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                const SizedBox(width: 4),
+                                state.canChangeVariant
+                                    ? const Icon(Icons.arrow_drop_down)
+                                    : Container(),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 26),
+                      GestureDetector(
+                        onTap: () {
+                          switch (state.status) {
+                            case TimerStatus.initial:
+                            case TimerStatus.stopped:
+                            case TimerStatus.completed:
+                              context.read<StudyTimerBloc>().add(StartTimer());
+                              break;
+                            case TimerStatus.running:
+                              context.read<StudyTimerBloc>().add(PauseTimer());
+                              break;
+                            case TimerStatus.paused:
+                              context.read<StudyTimerBloc>().add(ResumeTimer());
+                              break;
+                          }
+                        },
+                        child: CircularTimer(
+                          remaining: state.variant == TimerVariant.endless
+                              ? state.elapsed
+                              : state.remaining,
+                          total: state.totalDuration,
+                          label: state.phase == TimerPhase.work
+                              ? 'Work Phase'
+                              : 'Break Time',
+                          isWorkPhase: state.phase == TimerPhase.work,
+                        ),
+                      ),
+
+                      const SizedBox(height: 48),
+                      // Action Buttons
+                      if (state.status == TimerStatus.initial ||
+                          state.status == TimerStatus.stopped ||
+                          state.status == TimerStatus.completed)
+                        Align(
+                          alignment: Alignment.center,
+                          child: TimerButton(
+                            onPressed: () => context
+                                .read<StudyTimerBloc>()
+                                .add(StartTimer()),
+                            icon: Icons.play_arrow,
+                          ),
+                        )
+                      else if (state.status == TimerStatus.running)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TimerButton(
+                              onPressed: () => context
+                                  .read<StudyTimerBloc>()
+                                  .add(PauseTimer()),
+                              icon: Icons.pause,
+                            ),
+                            const SizedBox(width: 24),
+                            TimerButton(
+                              onPressed: () => context
+                                  .read<StudyTimerBloc>()
+                                  .add(StopTimer()),
+                              icon: Icons.stop,
+                            )
+                          ],
+                        )
+                      else if (state.status == TimerStatus.paused)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TimerButton(
+                              onPressed: () => context
+                                  .read<StudyTimerBloc>()
+                                  .add(ResumeTimer()),
+                              icon: Icons.play_arrow,
+                            ),
+                            const SizedBox(width: 24),
+                            TimerButton(
+                              onPressed: () => context
+                                  .read<StudyTimerBloc>()
+                                  .add(StopTimer()),
+                              icon: Icons.stop,
+                            ),
                           ],
                         ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 26),
-                  GestureDetector(
-                    onTap: () {
-                      switch (state.status) {
-                        case TimerStatus.initial:
-                        case TimerStatus.stopped:
-                        case TimerStatus.completed:
-                          context.read<StudyTimerBloc>().add(StartTimer());
-                          break;
-                        case TimerStatus.running:
-                          context.read<StudyTimerBloc>().add(PauseTimer());
-                          break;
-                        case TimerStatus.paused:
-                          context.read<StudyTimerBloc>().add(ResumeTimer());
-                          break;
-                      }
-                    },
-                    child: CircularTimer(
-                      remaining: state.variant == TimerVariant.endless
-                          ? state.elapsed
-                          : state.remaining,
-                      total: state.totalDuration,
-                      label: state.phase == TimerPhase.work
-                          ? 'Work Phase'
-                          : 'Break Time',
-                      isWorkPhase: state.phase == TimerPhase.work,
-                    ),
-                  ),
-
-                  const SizedBox(height: 48),
-                  // Action Buttons
-                  if (state.status == TimerStatus.initial ||
-                      state.status == TimerStatus.stopped ||
-                      state.status == TimerStatus.completed)
-                    Align(
-                      alignment: Alignment.center,
-                      child: TimerButton(
-                        onPressed: () =>
-                            context.read<StudyTimerBloc>().add(StartTimer()),
-                        icon: Icons.play_arrow,
-                      ),
-                    )
-                  else if (state.status == TimerStatus.running)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TimerButton(
-                          onPressed: () =>
-                              context.read<StudyTimerBloc>().add(PauseTimer()),
-                          icon: Icons.pause,
-                        ),
-                        const SizedBox(width: 24),
-                        TimerButton(
-                          onPressed: () =>
-                              context.read<StudyTimerBloc>().add(StopTimer()),
-                          icon: Icons.stop,
-                        )
-                      ],
-                    )
-                  else if (state.status == TimerStatus.paused)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TimerButton(
-                          onPressed: () =>
-                              context.read<StudyTimerBloc>().add(ResumeTimer()),
-                          icon: Icons.play_arrow,
-                        ),
-                        const SizedBox(width: 24),
-                        TimerButton(
-                          onPressed: () =>
-                              context.read<StudyTimerBloc>().add(StopTimer()),
-                          icon: Icons.stop,
-                        ),
-                      ],
-                    ),
-                  Spacer(),
-                ],
-              );
-            },
-          ),
-        ),
+                      Spacer(),
+                    ],
+                  );
+                },
+              ),
+            ),
+          );
+        },
       ),
     );
   }
