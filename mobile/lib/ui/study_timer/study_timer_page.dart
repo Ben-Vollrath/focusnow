@@ -168,39 +168,51 @@ class _StudyTimerPageState extends State<StudyTimerPage> {
                       ),
                     )
                   else if (state.status == TimerStatus.running)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TimerButton(
-                          onPressed: () =>
-                              context.read<StudyTimerBloc>().add(PauseTimer()),
-                          icon: Icons.pause,
-                        ),
-                        const SizedBox(width: 24),
-                        TimerButton(
-                          onPressed: () =>
-                              context.read<StudyTimerBloc>().add(StopTimer()),
-                          icon: Icons.stop,
-                        )
-                      ],
-                    )
-                  else if (state.status == TimerStatus.paused)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TimerButton(
-                          onPressed: () =>
-                              context.read<StudyTimerBloc>().add(ResumeTimer()),
-                          icon: Icons.play_arrow,
-                        ),
-                        const SizedBox(width: 24),
-                        TimerButton(
+                    if (state.phase == TimerPhase.work)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TimerButton(
+                            onPressed: () => context
+                                .read<StudyTimerBloc>()
+                                .add(PauseTimer()),
+                            icon: Icons.pause,
+                          ),
+                          const SizedBox(width: 24),
+                          TimerButton(
+                            onPressed: () =>
+                                context.read<StudyTimerBloc>().add(StopTimer()),
+                            icon: Icons.stop,
+                          )
+                        ],
+                      )
+                    else if (state.phase == TimerPhase.breakTime)
+                      Align(
+                        alignment: Alignment.center,
+                        child: TimerButton(
                           onPressed: () =>
                               context.read<StudyTimerBloc>().add(StopTimer()),
-                          icon: Icons.stop,
+                          icon: Icons.fast_forward_sharp,
                         ),
-                      ],
-                    ),
+                      )
+                    else if (state.status == TimerStatus.paused)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TimerButton(
+                            onPressed: () => context
+                                .read<StudyTimerBloc>()
+                                .add(ResumeTimer()),
+                            icon: Icons.play_arrow,
+                          ),
+                          const SizedBox(width: 24),
+                          TimerButton(
+                            onPressed: () =>
+                                context.read<StudyTimerBloc>().add(StopTimer()),
+                            icon: Icons.stop,
+                          ),
+                        ],
+                      ),
                   Spacer(),
                 ],
               );
