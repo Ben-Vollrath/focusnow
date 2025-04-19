@@ -137,17 +137,46 @@ CREATE POLICY "Users can read their own challenge progress"
   TO authenticated
   USING (user_id = auth.uid());
 
---- Create new user on auth signup
+create or replace function initialize_challenge_progress(p_user_id uuid)
+returns void as $$
+declare
+  challenge_id uuid;
+begin
+  -- Loop through all difficulty=1 challenges not yet started by this user
+  for challenge_id in
+    select c.id
+    from public.challenges c
+    where c.difficulty = 1
+      and not exists (
+        select 1
+        from public.challenge_progress cp
+        where cp.challenge_id = c.id
+          and cp.user_id = p_user_id
+      )
+  loop
+    insert into public.challenge_progress (
+      challenge_id,
+      user_id
+    )
+    values (
+      challenge_id,
+      p_user_id
+    );
+  end loop;
+end;
+$$ language plpgsql SECURITY DEFINER;
 
+--- Create new user on auth signup
 CREATE OR REPLACE FUNCTION handle_new_auth_user()
 RETURNS TRIGGER AS $$
 BEGIN
   INSERT INTO public.users (id)
   VALUES (NEW.id);
+
+  PERFORM public.initialize_challenge_progress(NEW.id);
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
-
 
 CREATE TRIGGER on_auth_user_created
 AFTER INSERT ON auth.users
