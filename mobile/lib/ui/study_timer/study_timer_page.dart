@@ -87,7 +87,7 @@ class _StudyTimerPageState extends State<StudyTimerPage> {
                     alignment: Alignment.center,
                     child: GestureDetector(
                       onTap: () {
-                        if (state.canChangeVariant) {
+                        if (state.canInteractOutsideTimer) {
                           _showVariantSelector(context);
                         }
                       },
@@ -97,7 +97,7 @@ class _StudyTimerPageState extends State<StudyTimerPage> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                              color: state.canChangeVariant
+                              color: state.canInteractOutsideTimer
                                   ? Theme.of(context).colorScheme.primary
                                   : Theme.of(context)
                                       .colorScheme
@@ -117,7 +117,7 @@ class _StudyTimerPageState extends State<StudyTimerPage> {
                                   fontSize: 16, fontWeight: FontWeight.w500),
                             ),
                             const SizedBox(width: 4),
-                            state.canChangeVariant
+                            state.canInteractOutsideTimer
                                 ? const Icon(Icons.arrow_drop_down)
                                 : Container(),
                           ],
