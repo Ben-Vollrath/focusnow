@@ -1,101 +1,100 @@
-level,xp_required,name,icon
-1,0,Daydreamer,💭
-2,25,Note Taker,📝
-3,30,Fresh Starter,🌱
-4,35,Focus Finder,🔍
-5,40,Pomodoro Pupil,⏱️
-6,45,Task Tackler,✅
-7,50,Study Sprinter,🏃‍♂️
-8,55,Time Tracker,⌛
-9,60,Desk Dweller,🪑
-10,65,Momentum Builder,🔄
-11,70,Schedule Smasher,📅
-12,75,Planner,🗂️
-13,80,Notebook Knight,📓
-14,85,Consistency Seeker,🔁
-15,90,Focus Apprentice,🧘‍♂️
-16,95,Timer Technician,⏳
-17,100,Deep Diver,🌊
-18,105,Pomodoro Pro,🍅
-19,110,Study Streaker,📈
-20,115,Concentration Cadet,🎯
-21,120,Calendar Conqueror,📆
-22,125,XP Explorer,🧭
-23,130,Study Strategist,🧩
-24,135,Brainstormer,⚡
-25,140,Routine Riser,🌄
-26,145,Grind Guru,🔨
-27,150,Discipline Dabbler,🪞
-28,155,Homework Hero,🦸‍♂️
-29,160,Tracker Titan,📊
-30,165,Focused Flame,🔥
-31,170,Zen Zoner,🧘
-32,175,Mental Mechanic,⚙️
-33,180,Study Scientist,🔬
-34,185,Review Ruler,🧾
-35,190,Focus Master,🎓
-36,195,Academic Adventurer,🗺️
-37,200,XP Architect,🏗️
-38,205,Study Samurai,🥷
-39,210,Learning Locksmith,🗝️
-40,215,XP Engineer,🧑‍💻
-41,220,Planner Prodigy,✍️
-42,225,Session Slayer,💥
-43,230,Brain Builder,🧱
-44,235,Reading Rocket,🚀
-45,240,Knowledge Keeper,📚
-46,245,Study Strategist,♟️
-47,250,Task Titan,🗻
-48,255,Goal Getter,🎯
-49,260,Brainstorm Beast,🧠
-50,265,Deep Work Disciple,🧘‍♀️
-51,270,Knowledge Knight,🛡️
-52,275,Distraction Dodger,🌀
-53,280,Focus Finisher,🏁
-54,285,Productivity Paladin,⚔️
-55,290,Habit Hacker,🧱
-56,295,Time Tactician,🧭
-57,300,Pomodoro Pioneer,🛰️
-58,305,Study Sleuth,🕵️‍♂️
-59,310,Routine Renegade,🛤️
-60,315,Mental Maestro,🎼
-61,320,Time Mage,🧙‍♂️
-62,325,Distraction Slayer,🛡️
-63,330,Ritual Master,📜
-64,335,Cognition Commander,🧠
-65,340,Flowstate Ascender,🌌
-66,345,Peak Performer,⛰️
-67,350,Study Sage,🔮
-68,355,Focus Astronaut,🧑‍🚀
-69,360,Idea Alchemist,💡
-70,365,Mind Tamer,🐉
-71,370,XP Alchemist,⚗️
-72,375,Mindful Monk,🛕
-73,380,Willpower Warrior,🥋
-74,385,Thought Tinkerer,🧠
-75,390,Brainwave Surfer,🌊
-76,395,Deep Thought Diver,🤿
-77,400,Focus Forgemaster,🔨
-78,405,Zen Mastermind,🧘‍♂️
-79,410,Discipline Demigod,🏛️
-80,415,Scholar Supreme,👑
-81,420,Study Strategist X,🧠
-82,425,XP Whisperer,🐾
-83,430,Hyperfocus Herald,📢
-84,435,Productivity Oracle,🪬
-85,440,Thoughtsmith,🔩
-86,445,Learning Luminary,✨
-87,450,Routine Revenant,👻
-88,455,Study Spellcaster,✨
-89,460,Master of Momentum,🎡
-90,465,Time Lord,⏱️
-91,470,Knowledge Conductor,🎼
-92,475,Focus Nomad,🧳
-93,480,XP Voyager,🚀
-94,485,Study Sentinel,🛡️
-95,490,Attention Ascetic,🕯️
-96,495,Memory Mechanic,🛠️
-97,500,Leveling Legend,🏆
-98,505,Learning Phoenix,🔥
-99,510,Mind Monk,🧘‍♂️
-100,515,Grandmaster of Focus,🎓
+,level,xp_required,name,icon
+0,1,25,Daydreamer,💭
+1,2,30,Note Taker,📝
+2,3,35,Fresh Starter,🌱
+3,4,40,Focus Finder,🔍
+4,5,45,Pomodoro Pupil,⏱️
+5,6,50,Task Tackler,✅
+6,7,55,Study Sprinter,🏃‍♂️
+7,8,60,Time Tracker,⌛
+8,9,65,Desk Dweller,🪑
+9,10,70,Momentum Builder,🔄
+10,11,75,Schedule Smasher,📅
+11,12,80,Planner,🗂️
+12,13,85,Notebook Knight,📓
+13,14,90,Consistency Seeker,🔁
+14,15,95,Focus Apprentice,🧘‍♂️
+15,16,100,Timer Technician,⏳
+16,17,105,Deep Diver,🌊
+17,18,110,Pomodoro Pro,🍅
+18,19,115,Study Streaker,📈
+19,20,120,Concentration Cadet,🎯
+20,21,125,Calendar Conqueror,📆
+21,22,130,XP Explorer,🧭
+22,23,135,Study Strategist,🧩
+23,24,140,Brainstormer,⚡
+24,25,145,Routine Riser,🌄
+25,26,150,Grind Guru,🔨
+26,27,155,Discipline Dabbler,🪞
+27,28,160,Homework Hero,🦸‍♂️
+28,29,165,Tracker Titan,📊
+29,30,170,Focused Flame,🔥
+30,31,175,Zen Zoner,🧘
+31,32,180,Mental Mechanic,⚙️
+32,33,185,Study Scientist,🔬
+33,34,190,Review Ruler,🧾
+34,35,195,Focus Master,🎓
+35,36,200,Academic Adventurer,🗺️
+36,37,205,XP Architect,🏗️
+37,38,210,Study Samurai,🥷
+38,39,215,Learning Locksmith,🗝️
+39,40,220,XP Engineer,🧑‍💻
+40,41,225,Planner Prodigy,✍️
+41,42,230,Session Slayer,💥
+42,43,235,Brain Builder,🧱
+43,44,240,Reading Rocket,🚀
+44,45,245,Knowledge Keeper,📚
+45,46,250,Study Strategist,♟️
+46,47,255,Task Titan,🗻
+47,48,260,Goal Getter,🎯
+48,49,265,Brainstorm Beast,🧠
+49,50,270,Deep Work Disciple,🧘‍♀️
+50,51,275,Knowledge Knight,🛡️
+51,52,280,Distraction Dodger,🌀
+52,53,285,Focus Finisher,🏁
+53,54,290,Productivity Paladin,⚔️
+54,55,295,Habit Hacker,🧱
+55,56,300,Time Tactician,🧭
+56,57,305,Pomodoro Pioneer,🛰️
+57,58,310,Study Sleuth,🕵️‍♂️
+58,59,315,Routine Renegade,🛤️
+59,60,320,Mental Maestro,🎼
+60,61,325,Time Mage,🧙‍♂️
+61,62,330,Distraction Slayer,🛡️
+62,63,335,Ritual Master,📜
+63,64,340,Cognition Commander,🧠
+64,65,345,Flowstate Ascender,🌌
+65,66,350,Peak Performer,⛰️
+66,67,355,Study Sage,🔮
+67,68,360,Focus Astronaut,🧑‍🚀
+68,69,365,Idea Alchemist,💡
+69,70,370,Mind Tamer,🐉
+70,71,375,XP Alchemist,⚗️
+71,72,380,Mindful Monk,🛕
+72,73,385,Willpower Warrior,🥋
+73,74,390,Thought Tinkerer,🧠
+74,75,395,Brainwave Surfer,🌊
+75,76,400,Deep Thought Diver,🤿
+76,77,405,Focus Forgemaster,🔨
+77,78,410,Zen Mastermind,🧘‍♂️
+78,79,415,Discipline Demigod,🏛️
+79,80,420,Scholar Supreme,👑
+80,81,425,Study Strategist X,🧠
+81,82,430,XP Whisperer,🐾
+82,83,435,Hyperfocus Herald,📢
+83,84,440,Productivity Oracle,🪬
+84,85,445,Thoughtsmith,🔩
+85,86,450,Learning Luminary,✨
+86,87,455,Routine Revenant,👻
+87,88,460,Study Spellcaster,✨
+88,89,465,Master of Momentum,🎡
+89,90,470,Time Lord,⏱️
+90,91,475,Knowledge Conductor,🎼
+91,92,480,Focus Nomad,🧳
+92,93,485,XP Voyager,🚀
+93,94,490,Study Sentinel,🛡️
+94,95,495,Attention Ascetic,🕯️
+95,96,500,Memory Mechanic,🛠️
+96,97,505,Leveling Legend,🏆
+97,98,510,Learning Phoenix,🔥
+98,99,515,Mind Monk,🧘‍♂️

@@ -221,7 +221,7 @@ BEGIN
     -- Get the XP required for the next level
     SELECT xp_required INTO next_level_xp
     FROM levels
-    WHERE level = current_level + 1;
+    WHERE level = current_level;
 
     -- Stop if no next level (user is at max level)
     EXIT WHEN next_level_xp IS NULL;

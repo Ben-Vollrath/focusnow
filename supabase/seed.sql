@@ -12,16 +12,16 @@ INSERT INTO username_words (type, word) VALUES
 
 
 INSERT INTO levels (level, xp_required, name, icon) VALUES
-(1, 0, 'Daydreamer', '💭'),
-(2, 25, 'Note Taker', '📝'),
-(3, 30, 'Fresh Starter', '🌱'),
-(4, 35, 'Focus Finder', '🔍'),
-(5, 40, 'Pomodoro Pupil', '⏱️'),
-(6, 45, 'Task Tackler', '✅'),
-(7, 50, 'Study Sprinter', '🏃‍♂️'),
-(8, 55, 'Time Tracker', '⌛'),
-(9, 60, 'Desk Dweller', '🪑'),
-(10, 65, 'Momentum Builder', '🔄');
+(1, 25, 'Daydreamer', '💭'),
+(2, 30, 'Note Taker', '📝'),
+(3, 35, 'Fresh Starter', '🌱'),
+(4, 40, 'Focus Finder', '🔍'),
+(5, 45, 'Pomodoro Pupil', '⏱️'),
+(6, 50, 'Task Tackler', '✅'),
+(7, 55, 'Study Sprinter', '🏃‍♂️'),
+(8, 60, 'Time Tracker', '⌛'),
+(9, 65, 'Desk Dweller', '🪑'),
+(10, 70, 'Momentum Builder', '🔄');
 
 INSERT INTO challenges (name, description, icon, category, condition_amount, reward_xp, is_repeatable, difficulty) VALUES
 ('First Focus', 'Complete 1 study session in a day', '📍', 'daily_sessions', 1, 10, true, 1),
