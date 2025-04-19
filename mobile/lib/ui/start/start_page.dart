@@ -44,15 +44,17 @@ class _StartPageState extends State<StartPage> {
                     child: Center(
                       child: Row(
                         children: [
-                          SizedBox(
-                            width: 80,
-                            height: 80,
-                            child: Image.asset(
-                              'assets/icon_round.png',
+                          Transform.translate(
+                            offset: Offset(0, -4),
+                            child: SizedBox(
+                              width: 80,
                               height: 80,
+                              child: Image.asset(
+                                'assets/icon_round.png',
+                                height: 80,
+                              ),
                             ),
                           ),
-                          SizedBox(width: 16),
                           Flexible(
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
