@@ -4,13 +4,13 @@ import { useAuthStore } from '@/stores/AuthStore.ts'
 import { useRouter } from 'vue-router'
 import { onMounted, watchEffect } from 'vue'
 import EmailLoginForm from '@/components/AuthEmailLoginForm.vue'
-import OAuthLoginButton from '@/components/AuthGitHubLogin.vue'
+import GoogleSignIn from '@/components/GoogleSignIn.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
 watchEffect(() => {
-  if (authStore.id) router.push('/dashboard')
+  if (authStore.id) router.push('/delete')
 })
 </script>
 
@@ -25,7 +25,7 @@ watchEffect(() => {
         <div class="flex flex-col gap-y-4">
           <EmailLoginForm />
           <div class="h-0.5 w-full bg-secondary"></div>
-          <OAuthLoginButton />
+          <GoogleSignIn />
         </div>
       </CardContent>
     </Card>
