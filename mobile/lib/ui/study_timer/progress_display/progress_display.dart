@@ -42,6 +42,7 @@ class _ProgressDisplayState extends State<ProgressDisplay>
     _hideTimer = Timer(const Duration(seconds: 15), () {
       setState(() {
         _visible = false;
+        _recentlyCompletedChallenges = [];
       });
     });
   }

@@ -55,7 +55,7 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
               phase: TimerPhase.breakTime,
               status: TimerStatus.running,
               startTime: DateTime.now(),
-              elapsed: Duration.zero,
+              elapsed: Duration(seconds: 1),
             ));
 
             notificationRepository.showStudySessionBreakNotification();
@@ -105,9 +105,17 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
 
     on<StopTimer>((event, emit) async {
       _ticker?.cancel();
-      final sessionIsCounted = state.startTime != null &&
-          state.elapsed.inMinutes >= 5 &&
-          state.phase != TimerPhase.breakTime;
+
+      if (state.phase == TimerPhase.breakTime) {
+        emit(state.copyWith(
+          phase: TimerPhase.work,
+          status: TimerStatus.completed,
+          elapsed: Duration.zero,
+        ));
+      }
+
+      final sessionIsCounted =
+          state.startTime != null && state.elapsed.inMinutes >= 5;
 
       if (sessionIsCounted) {
         await sessionRepository.submitStudySession(StudySession(

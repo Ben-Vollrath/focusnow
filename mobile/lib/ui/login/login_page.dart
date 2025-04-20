@@ -32,6 +32,9 @@ class _LoginPageState extends State<LoginPage> {
         }
       },
       child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Login'),
+        ),
         resizeToAvoidBottomInset: true,
         body: const LoginForm(),
       ),
