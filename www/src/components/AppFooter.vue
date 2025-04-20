@@ -1,3 +1,7 @@
+<script setup lang="ts">
+// No logic needed
+</script>
+
 <template>
   <footer
     class="w-full text-center text-sm py-4 border-t border-border text-muted-foreground bg-background"
@@ -8,10 +12,6 @@
     </div>
   </footer>
 </template>
-
-<script setup>
-// No logic needed
-</script>
 
 <style scoped>
 footer {

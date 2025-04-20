@@ -1,3 +1,7 @@
+<script setup lang="ts">
+// No logic needed yet
+</script>
+
 <template>
   <div class="landing">
     <header>
@@ -129,10 +133,6 @@
     </footer>
   </div>
 </template>
-
-<script setup>
-// No logic needed yet
-</script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
