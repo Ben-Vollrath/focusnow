@@ -49,7 +49,6 @@ app.*.map.json
 lcov.info
 
 /node_modules
-package.json
 package-lock.json
 
 build/
