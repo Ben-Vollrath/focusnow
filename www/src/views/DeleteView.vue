@@ -51,6 +51,13 @@ const deleteAccount = async () => {
 
   isDeleting.value = false
 }
+
+const logout = async () => {
+  await supabase.auth.signOut()
+  authStore.id = null
+  authStore.email = null
+  router.push('/auth')
+}
 </script>
 
 <template>
@@ -71,12 +78,20 @@ const deleteAccount = async () => {
     <button
       @click="deleteAccount"
       :disabled="confirmationText !== 'delete' || isDeleting"
-      class="bg-red-600 text-white px-4 py-2 rounded disabled:opacity-50"
+      class="bg-red-600 text-white px-4 py-2 rounded disabled:opacity-50 mb-4"
     >
       {{ isDeleting ? 'Deleting...' : 'Delete Account' }}
     </button>
 
-    <p v-if="errorMessage" class="text-red-400 mt-4">{{ errorMessage }}</p>
-    <p v-if="successMessage" class="text-green-400 mt-4">{{ successMessage }}</p>
+    <p v-if="errorMessage" class="text-red-400 mt-2">{{ errorMessage }}</p>
+    <p v-if="successMessage" class="text-green-400 mt-2">{{ successMessage }}</p>
+
+    <hr class="my-6 border-border" />
+
+    <div class="text-center">
+      <button @click="logout" class="text-sm text-foreground underline hover:text-red-400">
+        Log out instead
+      </button>
+    </div>
   </div>
 </template>
