@@ -375,7 +375,13 @@ SELECT cron.schedule(
   $$
   DELETE FROM challenge_progress
   WHERE challenge_id IN (
-    SELECT id FROM challenges WHERE repeatable = true
+    SELECT id FROM challenges WHERE is_repeatable = true AND difficulty != 1
+  );
+
+  UPDATE challenge_progress
+  SET progress = 0, completed = false
+  WHERE challenge_id IN (
+    SELECT id FROM challenges WHERE is_repeatable = true AND difficulty <= 1
   );
   $$
 );
