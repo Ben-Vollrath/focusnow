@@ -59,7 +59,7 @@ class _AnimatedLevelBarState extends State<AnimatedLevelBar>
       _currentLevel = current;
 
       final fromXP = (i == 0) ? widget.previous.xp : 0;
-      final toXP = isLast ? widget.current.xp : current.xpRequired;
+      final toXP = isLast ? widget.current.xp : current.xpRequired ?? 0;
 
       final int animationStart = fromXP;
       final int animationEnd = toXP;
@@ -106,7 +106,7 @@ class _AnimatedLevelBarState extends State<AnimatedLevelBar>
       children: [
         RoundedProgressIndicator(
             progress: _xpProgress,
-            fullAmount: _currentLevel.xpRequired * 10,
+            fullAmount: (_currentLevel.xpRequired ?? 0) * 10,
             textLeft: '${_currentLevel.icon} ${_currentLevel.name}',
             textRight: Text(
                 '${(_xpProgress / 10).round()} / ${_currentLevel.xpRequired} XP')),
