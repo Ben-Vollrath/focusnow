@@ -12,6 +12,7 @@ import 'package:focusnow/bloc/stats/stats_bloc.dart';
 import 'package:focusnow/bloc/study_timer/study_timer_bloc.dart';
 import 'package:focusnow/bloc/login/login_cubit.dart';
 import 'package:focusnow/bloc/subscription/subscription_bloc.dart';
+import 'package:focusnow/bloc/user/user_bloc.dart';
 import 'package:focusnow/static/theme/theme.dart';
 import 'package:focusnow/static/theme/util.dart';
 import 'package:focusnow/ui/app/routes/routes.dart';
@@ -70,6 +71,9 @@ class App extends StatelessWidget {
           BlocProvider(
             create: (_) =>
                 GoalBloc(goalRepository: GoalRepository())..add(LoadGoal()),
+          ),
+          BlocProvider(
+            create: (_) => UserBloc(),
           ),
         ],
         child: const AppView(),

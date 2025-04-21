@@ -385,3 +385,10 @@ SELECT cron.schedule(
   );
   $$
 );
+
+CREATE OR REPLACE FUNCTION delete_account()
+RETURNS VOID AS $$
+BEGIN
+  DELETE FROM auth.users WHERE id = auth.uid();
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

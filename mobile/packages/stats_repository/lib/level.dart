@@ -4,7 +4,7 @@ class Level extends Equatable {
   final int level;
   final String name;
   final String icon;
-  final int xpRequired;
+  final int? xpRequired;
 
   const Level({
     required this.level,
@@ -21,7 +21,7 @@ class Level extends Equatable {
       level: json['level'] as int,
       name: json['name'] as String,
       icon: json['icon'] as String,
-      xpRequired: json['xp_required'] as int,
+      xpRequired: json['xp_required'] as int?,
     );
   }
 }

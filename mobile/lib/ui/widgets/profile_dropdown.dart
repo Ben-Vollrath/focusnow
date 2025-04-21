@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/app/app_bloc.dart';
 import 'package:focusnow/ui/login/login_page.dart';
+import 'package:focusnow/ui/user_management/user_management_page.dart';
 
 class ProfileDropdownButton extends StatelessWidget {
   const ProfileDropdownButton({super.key});
@@ -52,9 +53,39 @@ class ProfileDropdownButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           onSelected: (value) {
-            // Handle selection
+            switch (value) {
+              case 'login':
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginPage(),
+                  ),
+                );
+                break;
+              case 'logout':
+                context.read<AppBloc>().add(AppLogoutRequested());
+                break;
+              case 'settings':
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const UserManagementPage(),
+                  ),
+                );
+                break;
+            }
           },
           itemBuilder: (BuildContext context) => [
+            PopupMenuItem(
+              value: "settings",
+              child: Row(
+                children: const [
+                  Icon(Icons.settings, size: 20),
+                  SizedBox(width: 8),
+                  Text('Manage Account'),
+                ],
+              ),
+            ),
             state.user.isAnonymous
                 ? PopupMenuItem(
                     value: 'login',

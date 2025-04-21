@@ -13,65 +13,61 @@ class StatsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) =>
-          StatsBloc(statsRepository: StatsRepository())..add(LoadStats()),
-      child: BlocBuilder<StatsBloc, StatsState>(
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return BlocBuilder<StatsBloc, StatsState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Stats'),
+                StreakBadge(streak: _getCurrentStreak(state.weeklyStudyData)),
+              ],
+            ),
+            scrolledUnderElevation: 0.0,
+          ),
+          body: Builder(
+            builder: (context) {
+              if (state.status == StatsStatus.loading ||
+                  state.status == StatsStatus.initial) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (state.status == StatsStatus.failure) {
+                return Center(child: Text('Error: ${state.errorMessage}'));
+              }
+
+              final userStats = state.userStats!;
+              final xpToNext =
+                  userStats.xpToNext ?? userStats.xp; // fallback for max level
+
+              return ListView(
+                padding: const EdgeInsets.all(16),
                 children: [
-                  const Text('Stats'),
-                  StreakBadge(streak: _getCurrentStreak(state.weeklyStudyData)),
+                  LevelBox(
+                    levelIcon: userStats.levelIcon,
+                    level: userStats.level,
+                    levelName: userStats.levelName,
+                    xp: userStats.xp,
+                    xpToNext: xpToNext,
+                    progress: userStats.xp,
+                    full_amount: xpToNext,
+                  ),
+                  const SizedBox(height: 24),
+                  StudyChart(weeklyData: state.weeklyStudyData),
+                  const SizedBox(height: 24),
+                  TodaysAchievements(
+                    todaysStudyTime: _getTodayMinutes(state.weeklyStudyData),
+                    todaysSessions: _getTodaySessions(state.weeklyStudyData),
+                  ),
+                  const SizedBox(height: 24),
+                  GoalBox(),
                 ],
-              ),
-              scrolledUnderElevation: 0.0,
-            ),
-            body: Builder(
-              builder: (context) {
-                if (state.status == StatsStatus.loading ||
-                    state.status == StatsStatus.initial) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (state.status == StatsStatus.failure) {
-                  return Center(child: Text('Error: ${state.errorMessage}'));
-                }
-
-                final userStats = state.userStats!;
-                final xpToNext = userStats.xpToNext ??
-                    userStats.xp; // fallback for max level
-
-                return ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    LevelBox(
-                      levelIcon: userStats.levelIcon,
-                      level: userStats.level,
-                      levelName: userStats.levelName,
-                      xp: userStats.xp,
-                      xpToNext: xpToNext,
-                      progress: userStats.xp,
-                      full_amount: xpToNext,
-                    ),
-                    const SizedBox(height: 24),
-                    StudyChart(weeklyData: state.weeklyStudyData),
-                    const SizedBox(height: 24),
-                    TodaysAchievements(
-                      todaysStudyTime: _getTodayMinutes(state.weeklyStudyData),
-                      todaysSessions: _getTodaySessions(state.weeklyStudyData),
-                    ),
-                    const SizedBox(height: 24),
-                    GoalBox(),
-                  ],
-                );
-              },
-            ),
-          );
-        },
-      ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
