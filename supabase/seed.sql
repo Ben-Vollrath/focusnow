@@ -21,7 +21,7 @@ INSERT INTO levels (level, xp_required, name, icon) VALUES
 (7, 55, 'Study Sprinter', '🏃‍♂️'),
 (8, 60, 'Time Tracker', '⌛'),
 (9, 65, 'Desk Dweller', '🪑'),
-(10, 70, 'Momentum Builder', '🔄');
+(10, null, 'Momentum Builder', '🔄');
 
 INSERT INTO challenges (name, description, icon, category, condition_amount, reward_xp, is_repeatable, difficulty) VALUES
 ('First Focus', 'Complete 1 study session in a day', '📍', 'daily_sessions', 1, 10, true, 1),
