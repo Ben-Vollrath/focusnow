@@ -38,7 +38,7 @@ const deleteAccount = async () => {
   errorMessage.value = ''
   successMessage.value = ''
 
-  const { error } = await supabase.rpc('delete-account')
+  const { error } = await supabase.rpc('delete_account')
 
   if (error) {
     errorMessage.value = error.message
