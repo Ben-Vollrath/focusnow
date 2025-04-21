@@ -10,5 +10,14 @@
             "type": "dart",
             "program": "mobile/lib/main.dart"
         },
+        {
+            "name": "focusnow (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "program": "mobile/lib/main.dart",
+            "args": [
+                "--release"
+            ]
+        }
     ]
 }
