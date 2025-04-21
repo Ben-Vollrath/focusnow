@@ -4,7 +4,7 @@ CREATE TYPE challenge_category AS ENUM ('daily_sessions', 'streak_days', 'total_
 -- levels table
 CREATE TABLE levels (
   level INT PRIMARY KEY,
-  xp_required INT NOT NULL,
+  xp_required INT,
   name TEXT NOT NULL,
   icon TEXT
 );
