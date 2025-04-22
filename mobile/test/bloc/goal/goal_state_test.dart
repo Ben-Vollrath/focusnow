@@ -8,8 +8,8 @@ void main() {
     test('copywith works correclty', () {
       final goal = Goal(
           id: "id",
-          createdAt: DateTime.now(),
-          targetDate: DateTime.now(),
+          createdAt: DateTime(2024, 1, 1),
+          targetDate: DateTime(2024, 1, 1),
           targetMinutes: 10,
           currentMinutes: 100,
           completed: false,
