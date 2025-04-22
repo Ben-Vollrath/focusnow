@@ -32,7 +32,6 @@ class ChallengeState extends Equatable {
     List<ChallengeWithProgress>? challenges,
     ChallengeCategory? selectedCategory,
     Status? status,
-    bool? showCompleted,
   }) {
     return ChallengeState(
       challenges: challenges ?? this.challenges,
