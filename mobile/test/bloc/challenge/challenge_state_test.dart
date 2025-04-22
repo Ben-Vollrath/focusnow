@@ -1,11 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:challenge_repository/challenge.dart';
 import 'package:challenge_repository/challenge_repository.dart';
-import 'package:focusnow/bloc/app/app_bloc.dart';
 import 'package:focusnow/bloc/challenge/challenge_bloc.dart';
-import 'package:focusnow/ui/app/app.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 
 void main() {
   group('ChallengeState', () {
