@@ -27,7 +27,8 @@ class StudySessionRepository {
       if (response.status != 200) {
         throw Exception('Failed to submit study session');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _analyticsRepository.logError(e, stackTrace, "submitStudySession");
       throw Exception('Failed to submit study session');
     }
   }

@@ -10,12 +10,17 @@ class UserRepository {
   UserRepository({
     SupabaseClient? supabaseClient,
     AnalyticsRepository? analyticsRepository,
-  })  : supabaseClient = supabaseClient ?? Supabase.instance.client,
-        _analyticsRepository = analyticsRepository ?? AnalyticsRepository();
+  }) : supabaseClient = supabaseClient ?? Supabase.instance.client,
+       _analyticsRepository = analyticsRepository ?? AnalyticsRepository();
 
   Future<void> deleteAccount() async {
-    _analyticsRepository.logEvent("delete_account");
-    await supabaseClient.rpc("delete_account");
-    await supabaseClient.auth.signOut();
+    try {
+      _analyticsRepository.logEvent("delete_account");
+      await supabaseClient.rpc("delete_account");
+      await supabaseClient.auth.signOut();
+    } catch (e, stackTrace) {
+      _analyticsRepository.logError(e, stackTrace, "deleteAccount");
+      throw Exception('Failed to delete account: $e');
+    }
   }
 }
