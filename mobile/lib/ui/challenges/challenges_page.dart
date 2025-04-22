@@ -10,19 +10,24 @@ class ChallengesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Challenges'),
-        scrolledUnderElevation: 0.0,
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const CategoryFilterBar(),
-          const SizedBox(height: 2),
-          _CompletedCounter(),
-          Expanded(child: _ChallengeList()),
-        ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<ChallengeBloc>().add(LoadChallenges());
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Challenges'),
+          scrolledUnderElevation: 0.0,
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const CategoryFilterBar(),
+            const SizedBox(height: 2),
+            _CompletedCounter(),
+            Expanded(child: _ChallengeList()),
+          ],
+        ),
       ),
     );
   }
