@@ -65,7 +65,7 @@ class _AuthedNavFlowBuilderState extends State<AuthedNavFlowBuilder> {
     return FlowBuilder<SubscriptionStatus>(
       state: context.select((SubscriptionBloc bloc) => bloc.state.status),
       onGeneratePages: (state, pages) =>
-          authedOnGenerateAppViewPages(state, pages, context),
+          authedOnGenerateAppViewPages(state, pages),
     );
   }
 }
@@ -73,7 +73,6 @@ class _AuthedNavFlowBuilderState extends State<AuthedNavFlowBuilder> {
 List<Page<dynamic>> authedOnGenerateAppViewPages(
   SubscriptionStatus state,
   List<Page<dynamic>> pages,
-  BuildContext context,
 ) {
   switch (state) {
     case SubscriptionStatus.active:
