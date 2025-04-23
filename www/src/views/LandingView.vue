@@ -8,7 +8,9 @@
       <h1>Level Up Your Study Game</h1>
       <p>Timers, challenges, and analytics to stay focused and motivated.</p>
       <div class="cta-buttons">
-        <a href="#"><i class="fab fa-android"></i> Download for Android</a>
+        <a href="https://play.google.com/store/apps/details?id=io.vollrath.focusnow"
+          ><i class="fab fa-android"></i> Download for Android</a
+        >
       </div>
     </header>
 
@@ -125,7 +127,9 @@
       <h2>Ready to Stay Focused?</h2>
       <p>Download FocusNow today and start leveling up your productivity.</p>
       <br />
-      <a href="#"><i class="fab fa-android"></i> Get FocusNow Free</a>
+      <a href="https://play.google.com/store/apps/details?id=io.vollrath.focusnow"
+        ><i class="fab fa-android"></i> Get FocusNow Free</a
+      >
     </section>
 
     <footer>

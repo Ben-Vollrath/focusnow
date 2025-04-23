@@ -4,7 +4,7 @@ enum TimerStatus { initial, running, paused, stopped, completed }
 
 enum TimerPhase { work, breakTime }
 
-class StudyTimerState {
+class StudyTimerState extends Equatable {
   final TimerStatus status;
   final Duration elapsed;
   final DateTime? startTime;
@@ -58,4 +58,22 @@ class StudyTimerState {
       phase: phase ?? this.phase,
     );
   }
+
+  StudyTimerState copyWithNullStartTime({
+    TimerStatus? status,
+    Duration? elapsed,
+    TimerVariant? variant,
+    TimerPhase? phase,
+  }) {
+    return StudyTimerState(
+      status: status ?? this.status,
+      elapsed: elapsed ?? this.elapsed,
+      startTime: null,
+      variant: variant ?? this.variant,
+      phase: phase ?? this.phase,
+    );
+  }
+
+  @override
+  List<Object?> get props => [status, elapsed, startTime, variant, phase];
 }

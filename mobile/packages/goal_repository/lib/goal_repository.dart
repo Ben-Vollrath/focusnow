@@ -24,7 +24,8 @@ class GoalRepository {
       }
 
       return Goal.fromJson(response);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _analyticsRepository.logError(e, stackTrace, "getGoal");
       throw Exception('Failed to fetch goal');
     }
   }
@@ -34,7 +35,8 @@ class GoalRepository {
       await supabaseClient.from('goals').delete().eq('id', goalId);
 
       _analyticsRepository.logEvent('goal_deleted');
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _analyticsRepository.logError(e, stackTrace, "deleteGoal");
       throw Exception('Failed to delete goal: $e');
     }
   }
@@ -47,7 +49,8 @@ class GoalRepository {
       );
 
       _analyticsRepository.logEvent('goal_created');
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _analyticsRepository.logError(e, stackTrace, "createGoal");
       throw Exception('Failed to create goal: $e');
     }
   }

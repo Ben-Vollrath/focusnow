@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
+import 'package:equatable/equatable.dart';
 import 'package:focusnow/bloc/study_timer/timer_variant.dart';
-import 'package:meta/meta.dart';
 import 'package:notification_repository/notification_repository.dart';
 import 'package:study_session_repository/study_session.dart';
 import 'package:study_session_repository/study_session_repository.dart';
@@ -24,16 +23,24 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
 
     on<StartTimer>((event, emit) {
       _ticker?.cancel();
-      _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-        add(Tick());
-      });
       emit(state.copyWith(
         status: TimerStatus.running,
         startTime: DateTime.now(),
+        elapsed: Duration(seconds: 1),
       ));
+      _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+        add(Tick());
+      });
     });
 
     on<Tick>((event, emit) {
+      //Hack to have correct elapsed timer after pause
+      if (state.status == TimerStatus.paused) {
+        emit(state.copyWith(
+          startTime: state.startTime!.add(Duration(seconds: 1)),
+        ));
+      }
+
       final now = DateTime.now();
       final elapsed = now.difference(state.startTime!);
 
@@ -65,9 +72,7 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
         } else if (state.phase == TimerPhase.breakTime) {
           if (elapsed >= breakDuration) {
             _ticker?.cancel();
-            emit(StudyTimerState.initial()
-                .copyWith(status: TimerStatus.completed));
-
+            _emitCompletedState(state, emit);
             notificationRepository.showStudySessionCompletedNotification();
           } else {
             emit(state.copyWith(
@@ -82,10 +87,7 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
             startTime: state.startTime!,
             endTime: state.startTime!.add(workDuration),
           ));
-          emit(state.copyWith(
-              status: TimerStatus.completed,
-              elapsed: Duration.zero,
-              phase: TimerPhase.work));
+          _emitCompletedState(state, emit);
           notificationRepository.showStudySessionCompletedNotification();
         } else {
           emit(state.copyWith(elapsed: elapsed));
@@ -94,12 +96,10 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
     });
 
     on<PauseTimer>((event, emit) {
-      _ticker?.cancel();
       emit(state.copyWith(status: TimerStatus.paused));
     });
 
     on<ResumeTimer>((event, emit) {
-      _ticker = Timer.periodic(const Duration(seconds: 1), (_) => add(Tick()));
       emit(state.copyWith(status: TimerStatus.running));
     });
 
@@ -107,11 +107,8 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
       _ticker?.cancel();
 
       if (state.phase == TimerPhase.breakTime) {
-        emit(state.copyWith(
-          phase: TimerPhase.work,
-          status: TimerStatus.completed,
-          elapsed: Duration.zero,
-        ));
+        _emitCompletedState(state, emit);
+        return;
       }
 
       final sessionIsCounted =
@@ -122,21 +119,26 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
             startTime: state.startTime!,
             endTime: state.startTime!.add(state.elapsed)));
 
-        emit(state.copyWith(
-          phase: TimerPhase.work,
-          status: TimerStatus.completed,
-          elapsed: Duration.zero,
-          startTime: null,
-        ));
+        _emitCompletedState(state, emit);
       } else {
-        emit(state.copyWith(
+        emit(state.copyWithNullStartTime(
           phase: TimerPhase.work,
           status: TimerStatus.stopped,
           elapsed: Duration.zero,
-          startTime: null,
         ));
       }
     });
+  }
+
+  Future<void> _emitCompletedState(
+    StudyTimerState state,
+    Emitter<StudyTimerState> emit,
+  ) async {
+    emit(state.copyWithNullStartTime(
+      status: TimerStatus.completed,
+      elapsed: Duration.zero,
+      phase: TimerPhase.work,
+    ));
   }
 
   @override

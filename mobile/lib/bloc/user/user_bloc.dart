@@ -6,11 +6,13 @@ part 'user_event.dart';
 part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  UserBloc() : super(UserInitial()) {
-    final UserRepository userRepository = UserRepository();
+  final UserRepository userRepository;
 
+  UserBloc({UserRepository? userRepository})
+      : userRepository = userRepository ?? UserRepository(),
+        super(UserInitial()) {
     on<UserDeleteAccountEvent>((event, emit) {
-      userRepository.deleteAccount();
+      userRepository!.deleteAccount();
     });
   }
 }

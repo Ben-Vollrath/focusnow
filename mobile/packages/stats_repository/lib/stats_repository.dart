@@ -18,62 +18,77 @@ class StatsRepository {
 
   /// Fetch user's level, XP, and total stats
   Future<UserStats> getUserStats() async {
-    final userResponse =
-        await supabaseClient
-            .from('users')
-            .select('level, xp, total_study_time, total_study_sessions')
-            .single();
+    try {
+      final userResponse =
+          await supabaseClient
+              .from('users')
+              .select('level, xp, total_study_time, total_study_sessions')
+              .single();
 
-    final int level = userResponse['level'] ?? 1;
+      final int level = userResponse['level'] ?? 1;
 
-    final currentLevelResponse =
-        await supabaseClient
-            .from('levels')
-            .select('name, icon, xp_required')
-            .eq('level', level)
-            .single();
+      final currentLevelResponse =
+          await supabaseClient
+              .from('levels')
+              .select('name, icon, xp_required')
+              .eq('level', level)
+              .single();
 
-    return UserStats(
-      level: level,
-      xp: userResponse['xp'] ?? 0,
-      xpToNext: currentLevelResponse['xp_required'],
-      levelName: currentLevelResponse['name'] as String,
-      levelIcon: currentLevelResponse['icon'] as String,
-      totalStudyTime: userResponse['total_study_time'] ?? 0,
-      totalStudySessions: userResponse['total_study_sessions'] ?? 0,
-    );
+      return UserStats(
+        level: level,
+        xp: userResponse['xp'] ?? 0,
+        xpToNext: currentLevelResponse['xp_required'],
+        levelName: currentLevelResponse['name'] as String,
+        levelIcon: currentLevelResponse['icon'] as String,
+        totalStudyTime: userResponse['total_study_time'] ?? 0,
+        totalStudySessions: userResponse['total_study_sessions'] ?? 0,
+      );
+    } catch (e, stackTrace) {
+      _analyticsRepository.logError(e, stackTrace, "getUserStats");
+      throw Exception('Failed to fetch user stats: $e');
+    }
   }
 
   /// Get study data for the last 7 days for a user
   Future<List<DailyStudyData>> getWeeklyStudyData() async {
-    final today = DateTime.now();
-    final weekAgo = today.subtract(const Duration(days: 6));
+    try {
+      final today = DateTime.now();
+      final weekAgo = today.subtract(const Duration(days: 6));
 
-    final response = await supabaseClient
-        .from('study_days')
-        .select(
-          'study_date, total_study_time, total_study_sessions, streak_day',
-        )
-        .gte('study_date', weekAgo.toIso8601String().substring(0, 10))
-        .lte('study_date', today.toIso8601String().substring(0, 10))
-        .order('study_date');
+      final response = await supabaseClient
+          .from('study_days')
+          .select(
+            'study_date, total_study_time, total_study_sessions, streak_day',
+          )
+          .gte('study_date', weekAgo.toIso8601String().substring(0, 10))
+          .lte('study_date', today.toIso8601String().substring(0, 10))
+          .order('study_date');
 
-    final List<DailyStudyData> weeklyStudyData =
-        (response as List)
-            .map((e) => DailyStudyData.fromJson(e as Map<String, dynamic>))
-            .toList();
+      final List<DailyStudyData> weeklyStudyData =
+          (response as List)
+              .map((e) => DailyStudyData.fromJson(e as Map<String, dynamic>))
+              .toList();
 
-    return weeklyStudyData;
+      return weeklyStudyData;
+    } catch (e, stackTrace) {
+      _analyticsRepository.logError(e, stackTrace, "getWeeklyStudyData");
+      throw Exception('Failed to fetch weekly study data: $e');
+    }
   }
 
   Future<List<Level>> getLevels() async {
-    final response = await supabaseClient
-        .from('levels')
-        .select('level, name, icon, xp_required')
-        .order('level', ascending: true);
+    try {
+      final response = await supabaseClient
+          .from('levels')
+          .select('level, name, icon, xp_required')
+          .order('level', ascending: true);
 
-    return (response as List)
-        .map((e) => Level.fromJson(e as Map<String, dynamic>))
-        .toList();
+      return (response as List)
+          .map((e) => Level.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (e, stackTrace) {
+      _analyticsRepository.logError(e, stackTrace, "getLevels");
+      throw Exception('Failed to fetch levels: $e');
+    }
   }
 }

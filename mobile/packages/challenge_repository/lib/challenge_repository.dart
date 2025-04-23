@@ -1,3 +1,4 @@
+import 'package:analytics_repository/analytics_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:challenge_repository/challenge.dart';
 import 'package:challenge_repository/challenge_progress.dart';
@@ -11,9 +12,13 @@ class ChallengeWithProgress {
 
 class ChallengeRepository {
   final SupabaseClient supabaseClient;
+  final AnalyticsRepository _analyticsRepository;
 
-  ChallengeRepository({SupabaseClient? supabaseClient})
-    : supabaseClient = supabaseClient ?? Supabase.instance.client;
+  ChallengeRepository({
+    SupabaseClient? supabaseClient,
+    AnalyticsRepository? analyticsRepository,
+  }) : supabaseClient = supabaseClient ?? Supabase.instance.client,
+       _analyticsRepository = analyticsRepository ?? AnalyticsRepository();
 
   Future<List<ChallengeWithProgress>> getChallengesWithProgress() async {
     try {
@@ -77,7 +82,8 @@ class ChallengeRepository {
       }
 
       return updated;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _analyticsRepository.logError(e, stackTrace, "getChallengesWithProgress");
       throw Exception('Failed to fetch challenges with progress');
     }
   }
