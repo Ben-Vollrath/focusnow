@@ -24,8 +24,8 @@ class ChallengesPage extends StatelessWidget {
           children: [
             const CategoryFilterBar(),
             const SizedBox(height: 2),
-            _CompletedCounter(),
-            Expanded(child: _ChallengeList()),
+            CompletedCounter(),
+            Expanded(child: ChallengeList()),
           ],
         ),
       ),
@@ -33,7 +33,8 @@ class ChallengesPage extends StatelessWidget {
   }
 }
 
-class _ChallengeList extends StatelessWidget {
+@visibleForTesting
+class ChallengeList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChallengeBloc, ChallengeState>(
@@ -60,9 +61,8 @@ class _ChallengeList extends StatelessWidget {
   }
 }
 
-class _CompletedCounter extends StatelessWidget {
-  const _CompletedCounter();
-
+@visibleForTesting
+class CompletedCounter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChallengeBloc, ChallengeState>(

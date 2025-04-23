@@ -171,65 +171,7 @@ class _StudyTimerPageState extends State<StudyTimerPage> {
 
                     const SizedBox(height: 48),
                     // Action Buttons
-                    if (state.status == TimerStatus.initial ||
-                        state.status == TimerStatus.stopped ||
-                        state.status == TimerStatus.completed)
-                      Align(
-                        alignment: Alignment.center,
-                        child: TimerButton(
-                          onPressed: () =>
-                              context.read<StudyTimerBloc>().add(StartTimer()),
-                          icon: Icons.play_arrow,
-                        ),
-                      )
-                    else if (state.status == TimerStatus.running)
-                      if (state.phase == TimerPhase.work)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TimerButton(
-                              onPressed: () => context
-                                  .read<StudyTimerBloc>()
-                                  .add(PauseTimer()),
-                              icon: Icons.pause,
-                            ),
-                            const SizedBox(width: 24),
-                            TimerButton(
-                              onPressed: () => context
-                                  .read<StudyTimerBloc>()
-                                  .add(StopTimer()),
-                              icon: Icons.stop,
-                            )
-                          ],
-                        )
-                      else if (state.phase == TimerPhase.breakTime)
-                        Align(
-                          alignment: Alignment.center,
-                          child: TimerButton(
-                            onPressed: () =>
-                                context.read<StudyTimerBloc>().add(StopTimer()),
-                            icon: Icons.fast_forward_sharp,
-                          ),
-                        )
-                      else if (state.status == TimerStatus.paused)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TimerButton(
-                              onPressed: () => context
-                                  .read<StudyTimerBloc>()
-                                  .add(ResumeTimer()),
-                              icon: Icons.play_arrow,
-                            ),
-                            const SizedBox(width: 24),
-                            TimerButton(
-                              onPressed: () => context
-                                  .read<StudyTimerBloc>()
-                                  .add(StopTimer()),
-                              icon: Icons.stop,
-                            ),
-                          ],
-                        ),
+                    _buildTimerControls(context, state),
                     Spacer(),
                   ],
                 )),
@@ -237,6 +179,68 @@ class _StudyTimerPageState extends State<StudyTimerPage> {
         },
       ),
     );
+  }
+
+  Widget _buildTimerControls(BuildContext context, StudyTimerState state) {
+    final bloc = context.read<StudyTimerBloc>();
+
+    switch (state.status) {
+      case TimerStatus.initial:
+      case TimerStatus.stopped:
+      case TimerStatus.completed:
+        return Align(
+          alignment: Alignment.center,
+          child: TimerButton(
+            onPressed: () => bloc.add(StartTimer()),
+            icon: Icons.play_arrow,
+          ),
+        );
+
+      case TimerStatus.running:
+        if (state.phase == TimerPhase.work) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TimerButton(
+                onPressed: () => bloc.add(PauseTimer()),
+                icon: Icons.pause,
+              ),
+              const SizedBox(width: 24),
+              TimerButton(
+                onPressed: () => bloc.add(StopTimer()),
+                icon: Icons.stop,
+              ),
+            ],
+          );
+        } else if (state.phase == TimerPhase.breakTime) {
+          return Align(
+            alignment: Alignment.center,
+            child: TimerButton(
+              onPressed: () => bloc.add(StopTimer()),
+              icon: Icons.fast_forward_sharp,
+            ),
+          );
+        }
+        break;
+
+      case TimerStatus.paused:
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TimerButton(
+              onPressed: () => bloc.add(ResumeTimer()),
+              icon: Icons.play_arrow,
+            ),
+            const SizedBox(width: 24),
+            TimerButton(
+              onPressed: () => bloc.add(StopTimer()),
+              icon: Icons.stop,
+            ),
+          ],
+        );
+    }
+
+    return const SizedBox(); // fallback for unknown combinations
   }
 
   void _showVariantSelector(BuildContext context) {

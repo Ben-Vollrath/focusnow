@@ -100,9 +100,6 @@ class AppView extends StatelessWidget {
         }
       },
       child: MaterialApp(
-          navigatorObservers: [
-            FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
-          ],
           theme: theme.dark(),
           home: KeyboardDismissOnTap(
             dismissOnCapturedTaps: true,
