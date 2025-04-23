@@ -66,28 +66,28 @@ class ChallengeTile extends StatelessWidget {
               ],
             ),
           if (progress == null)
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Row(
-                children: [
-                  Transform.translate(
-                    offset: const Offset(0, -2),
-                    child: Icon(Icons.lock,
-                        size: 16,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RoundedProgressIndicator(
+                  progress: 0,
+                  fullAmount: challenge.condition_amount,
+                  textLeft: challenge.description,
+                  textRight: Text(
+                    'Locked',
+                    style: TextStyle(
                         color: Theme.of(context)
                             .colorScheme
                             .onSurface
-                            .withAlpha(150)),
+                            .withAlpha(100)),
                   ),
-                  const SizedBox(width: 4),
-                  Text('Locked',
-                      style: TextStyle(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withAlpha(150))),
-                ],
-              ),
+                  textColor:
+                      Theme.of(context).colorScheme.onSurface.withAlpha(100),
+                  backgroundColor:
+                      Theme.of(context).colorScheme.onSurface.withAlpha(100),
+                ),
+                const SizedBox(height: 4),
+              ],
             ),
         ],
       ),
