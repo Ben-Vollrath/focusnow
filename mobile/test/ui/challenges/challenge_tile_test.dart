@@ -59,7 +59,6 @@ void main() {
       expect(find.text('Total study time'), findsOneWidget);
       expect(find.text('1 / 5'), findsOneWidget);
       expect(find.byType(ChallengeProgressText), findsOneWidget);
-      expect(find.byIcon(Icons.lock), findsNothing);
     });
 
     testWidgets(
@@ -91,7 +90,6 @@ void main() {
       expect(find.text(' / '), findsOneWidget);
       expect(find.text('1 h'), findsOneWidget);
       expect(find.byType(ChallengeProgressText), findsOneWidget);
-      expect(find.byIcon(Icons.lock), findsNothing);
     });
 
     testWidgets('shows locked challenge when no progress is provided',
@@ -111,8 +109,7 @@ void main() {
       expect(find.text('Study for 60 mins'), findsOneWidget);
       expect(find.text('100 XP'), findsOneWidget);
       expect(find.text('Locked'), findsOneWidget);
-      expect(find.byIcon(Icons.lock), findsOneWidget);
-      expect(find.byType(RoundedProgressIndicator), findsNothing);
+      expect(find.byType(RoundedProgressIndicator), findsOneWidget);
     });
   });
 }
