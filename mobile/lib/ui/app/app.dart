@@ -98,6 +98,9 @@ class AppView extends StatelessWidget {
               .read<SubscriptionBloc>()
               .add(LoadSubscription(userId: appState.user.id));
         }
+        if (appState.status == AppStatus.unauthenticated) {
+          context.read<SubscriptionBloc>().add(LogOut());
+        }
       },
       child: MaterialApp(
           theme: theme.dark(),

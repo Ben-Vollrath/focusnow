@@ -30,3 +30,5 @@ class SubscriptionUpdated extends SubscriptionEvent {
   @override
   List<Object> get props => [subscription];
 }
+
+class LogOut extends SubscriptionEvent {}
