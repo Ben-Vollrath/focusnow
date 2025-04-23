@@ -12,6 +12,7 @@ class SubscriptionBloc
       : super(SubscriptionState.inactive()) {
     on<LoadSubscription>(_onLoadSubscription);
     on<SubscriptionUpdated>(_onSubscriptionUpdated);
+    on<LogOut>(_onLogOut);
 
     // Listen to the subscription stream and update the state when it changes
     _subscriptionRepository.subscriptionStream.listen((subscription) {
@@ -38,6 +39,12 @@ class SubscriptionBloc
     emit(subscription.isActive
         ? SubscriptionState.active()
         : SubscriptionState.inactive());
+  }
+
+  Future<void> _onLogOut(LogOut event, Emitter<SubscriptionState> emit) async {
+    await _subscriptionRepository.logOut();
+
+    emit(SubscriptionState.inactive());
   }
 
   @override

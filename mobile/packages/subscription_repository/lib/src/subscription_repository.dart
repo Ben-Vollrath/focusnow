@@ -38,10 +38,13 @@ class SubscriptionRepository {
   ///
   /// Is called in the [SubscriptionBloc] when subscription is loaded the first time
   Future<void> configurePurchases(String userId) async {
+    if (await Purchases.isConfigured) {
+      Purchases.logIn(userId);
+      return;
+    }
+
     await Purchases.configure(
         PurchasesConfiguration(_publicSdkKey)..appUserID = userId);
-
-    final offerings = await Purchases.getOfferings();
   }
 
   /// Fetches the user subscription from RevenueCat
@@ -67,6 +70,15 @@ class SubscriptionRepository {
   void reloadSubscription() async {
     final subscription = await getUserSubscription();
     _subscriptionController.add(subscription);
+  }
+
+  Future<void> logOut() async {
+    try {
+      await Purchases.logOut();
+    } on PlatformException catch (e) {
+      FirebaseCrashlytics.instance
+          .recordError(e, null, reason: "Failed to log out from Purchases");
+    }
   }
 
   /// Dispose the StreamController when done
