@@ -23,16 +23,24 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
 
     on<StartTimer>((event, emit) {
       _ticker?.cancel();
-      _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-        add(Tick());
-      });
       emit(state.copyWith(
         status: TimerStatus.running,
         startTime: DateTime.now(),
+        elapsed: Duration(seconds: 1),
       ));
+      _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+        add(Tick());
+      });
     });
 
     on<Tick>((event, emit) {
+      //Hack to have correct elapsed timer after pause
+      if (state.status == TimerStatus.paused) {
+        emit(state.copyWith(
+          startTime: state.startTime!.add(Duration(seconds: 1)),
+        ));
+      }
+
       final now = DateTime.now();
       final elapsed = now.difference(state.startTime!);
 
@@ -88,12 +96,10 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
     });
 
     on<PauseTimer>((event, emit) {
-      _ticker?.cancel();
       emit(state.copyWith(status: TimerStatus.paused));
     });
 
     on<ResumeTimer>((event, emit) {
-      _ticker = Timer.periodic(const Duration(seconds: 1), (_) => add(Tick()));
       emit(state.copyWith(status: TimerStatus.running));
     });
 
