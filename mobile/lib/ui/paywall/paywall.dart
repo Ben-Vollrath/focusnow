@@ -24,33 +24,47 @@ class _PayWallState extends State<PayWall> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-      child: Center(
-        child: FutureBuilder<bool>(
-          future: checkPurchasesConfigured(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            } else {
-              return PaywallView(
-                displayCloseButton: true,
-                onPurchaseCompleted: (customerInfo, storeTrans) {
-                  boughtItem = true;
-                },
-                onRestoreCompleted: (customerInfo) {
-                  boughtItem = true;
-                },
-                onDismiss: () {
-                  if (!boughtItem) {
-                    context.read<AppBloc>().add(
-                          AppLogoutRequested(),
-                        );
-                  }
-                },
-              );
-            }
-          },
+      top: false,
+      child: Stack(children: [
+        Center(
+          child: FutureBuilder<bool>(
+            future: checkPurchasesConfigured(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else {
+                return PaywallView(
+                  displayCloseButton: true,
+                  onPurchaseCompleted: (customerInfo, storeTrans) {
+                    boughtItem = true;
+                  },
+                  onRestoreCompleted: (customerInfo) {
+                    boughtItem = true;
+                  },
+                  onDismiss: () {
+                    if (!boughtItem) {
+                      context.read<AppBloc>().add(
+                            AppLogoutRequested(),
+                          );
+                    }
+                  },
+                );
+              }
+            },
+          ),
         ),
-      ),
+        Positioned(
+          top: 24,
+          right: 16,
+          child: IconButton(
+            iconSize: 30,
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              context.read<AppBloc>().add(AppLogoutRequested());
+            },
+          ),
+        ),
+      ]),
     ));
   }
 }
