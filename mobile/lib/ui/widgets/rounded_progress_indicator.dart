@@ -5,12 +5,16 @@ class RoundedProgressIndicator extends StatelessWidget {
   final int fullAmount;
   final String textLeft;
   final Widget textRight;
+  final Color? backgroundColor;
+  final Color? textColor;
   const RoundedProgressIndicator(
       {super.key,
       required this.progress,
       required this.fullAmount,
       required this.textLeft,
-      required this.textRight});
+      required this.textRight,
+      this.textColor,
+      this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +25,9 @@ class RoundedProgressIndicator extends StatelessWidget {
           children: [
             Text(
               textLeft,
-              style: const TextStyle(),
+              style: TextStyle(
+                color: textColor ?? Theme.of(context).colorScheme.onSurface,
+              ),
             ),
             textRight,
           ],
@@ -31,7 +37,7 @@ class RoundedProgressIndicator extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           child: LinearProgressIndicator(
             value: (progress / fullAmount).clamp(0.0, 1.0),
-            backgroundColor:
+            backgroundColor: backgroundColor ??
                 Theme.of(context).colorScheme.onSurface.withAlpha(200),
             color: progress >= fullAmount
                 ? Color(0xFF3FBF7F)
