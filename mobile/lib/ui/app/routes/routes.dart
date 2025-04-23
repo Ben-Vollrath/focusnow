@@ -54,9 +54,6 @@ class _AuthedNavFlowBuilderState extends State<AuthedNavFlowBuilder> {
   @override
   void initState() {
     super.initState();
-    context
-        .read<SubscriptionBloc>()
-        .add(LoadSubscription(userId: context.read<AppBloc>().state.user.id));
   }
 
   @override
