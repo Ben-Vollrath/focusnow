@@ -21,6 +21,10 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
       emit(state.copyWith(variant: event.variant));
     });
 
+    on<RetryUnsentSessions>((event, emit) async {
+      await sessionRepository.retryUnsentSessions();
+    });
+
     on<StartTimer>((event, emit) {
       _ticker?.cancel();
       emit(state.copyWith(

@@ -8,6 +8,7 @@ import 'package:focusnow/bloc/stats/stats_bloc.dart';
 import 'package:focusnow/bloc/study_timer/study_timer_bloc.dart';
 import 'package:focusnow/bloc/study_timer/timer_variant.dart';
 import 'package:focusnow/ui/study_timer/circular_timer.dart';
+import 'package:focusnow/ui/study_timer/lifecycle_handler.dart';
 import 'package:focusnow/ui/study_timer/progress_display/progress_display.dart';
 import 'package:focusnow/ui/study_timer/timer_button.dart';
 import 'package:focusnow/ui/widgets/profile_dropdown.dart';
@@ -20,6 +21,7 @@ class StudyTimerPage extends StatefulWidget {
 }
 
 class _StudyTimerPageState extends State<StudyTimerPage> {
+  late final StudyLifecycleHandler _lifecycleHandler;
   late ConfettiController _confettiController;
 
   String formatDuration(Duration duration) {
@@ -33,11 +35,19 @@ class _StudyTimerPageState extends State<StudyTimerPage> {
     super.initState();
     _confettiController =
         ConfettiController(duration: const Duration(milliseconds: 300));
+
+    _lifecycleHandler = StudyLifecycleHandler(
+      onResume: () {
+        context.read<StudyTimerBloc>().add(RetryUnsentSessions());
+      },
+    );
+    WidgetsBinding.instance.addObserver(_lifecycleHandler);
   }
 
   @override
   void dispose() {
     _confettiController.dispose();
+    WidgetsBinding.instance.removeObserver(_lifecycleHandler);
     super.dispose();
   }
 
