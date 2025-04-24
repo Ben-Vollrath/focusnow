@@ -15,4 +15,11 @@ class StudySession extends Equatable {
       'end_time': endTime.toIso8601String(),
     };
   }
+
+  factory StudySession.fromJson(Map<String, dynamic> json) {
+    return StudySession(
+      startTime: DateTime.parse(json['start_time']),
+      endTime: DateTime.parse(json['end_time']),
+    );
+  }
 }

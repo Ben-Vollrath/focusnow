@@ -16,3 +16,5 @@ class ResumeTimer extends StudyTimerEvent {}
 class StopTimer extends StudyTimerEvent {}
 
 class Tick extends StudyTimerEvent {}
+
+class RetryUnsentSessions extends StudyTimerEvent {}
