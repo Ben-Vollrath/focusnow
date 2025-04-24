@@ -1,10 +1,18 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/stats/stats_bloc.dart';
 import 'package:focusnow/ui/stats/goal_box.dart';
 import 'package:focusnow/ui/stats/level_box.dart';
+import 'package:focusnow/ui/stats/stats_share_view.dart';
 import 'package:focusnow/ui/stats/study_chart.dart';
 import 'package:focusnow/ui/stats/todays_achievement.dart';
+import 'package:focusnow/ui/stats/utils.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:stats_repository/daily_study_data.dart';
 import 'package:stats_repository/stats_repository.dart';
 
@@ -13,6 +21,8 @@ class StatsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey _shareKey = GlobalKey();
+
     return BlocBuilder<StatsBloc, StatsState>(
       builder: (context, state) {
         return RefreshIndicator(
@@ -24,7 +34,7 @@ class StatsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text('Stats'),
-                  StreakBadge(streak: _getCurrentStreak(state.weeklyStudyData)),
+                  StreakBadge(streak: getCurrentStreak(state.weeklyStudyData)),
                 ],
               ),
               scrolledUnderElevation: 0.0,
@@ -56,14 +66,14 @@ class StatsPage extends StatelessWidget {
                       progress: userStats.xp,
                       full_amount: xpToNext,
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     StudyChart(weeklyData: state.weeklyStudyData),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     TodaysAchievements(
-                      todaysStudyTime: _getTodayMinutes(state.weeklyStudyData),
-                      todaysSessions: _getTodaySessions(state.weeklyStudyData),
+                      todaysStudyTime: getTodayMinutes(state.weeklyStudyData),
+                      todaysSessions: getTodaySessions(state.weeklyStudyData),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     GoalBox(),
                   ],
                 );
@@ -73,73 +83,6 @@ class StatsPage extends StatelessWidget {
         );
       },
     );
-  }
-
-  int _getTodayMinutes(List<DailyStudyData> weeklyData) {
-    final today = DateTime.now();
-    final todayStr = DateTime(today.year, today.month, today.day)
-        .toIso8601String()
-        .split('T')
-        .first;
-
-    final todayEntry = weeklyData.firstWhere(
-      (e) => e.studyDate == todayStr,
-      orElse: () => DailyStudyData(
-        studyDate: todayStr,
-        totalStudyTime: 0,
-        totalStudySessions: 0,
-        streakDay: 0,
-      ),
-    );
-
-    return todayEntry.totalStudyTime ?? 0;
-  }
-
-  int _getTodaySessions(List<DailyStudyData> weeklyData) {
-    final today = DateTime.now();
-    final todayStr = DateTime(today.year, today.month, today.day)
-        .toIso8601String()
-        .split('T')
-        .first;
-
-    final todayEntry = weeklyData.firstWhere(
-      (e) => e.studyDate == todayStr,
-      orElse: () => DailyStudyData(
-        studyDate: todayStr,
-        totalStudyTime: 0,
-        totalStudySessions: 0,
-        streakDay: 0,
-      ),
-    );
-
-    return todayEntry.totalStudySessions ?? 0;
-  }
-
-  int _getCurrentStreak(List<DailyStudyData> weeklyData) {
-    final today = DateTime.now();
-    final todayDate = DateTime(today.year, today.month, today.day);
-
-    // Convert studyData to a map for fast lookup
-    final studyMap = {
-      for (final data in weeklyData)
-        DateTime.parse(data.studyDate): data.totalStudyTime ?? 0
-    };
-
-    int streak = 0;
-
-    // Check consecutive days backwards from today
-    for (int i = 0; i < 7; i++) {
-      final date = todayDate.subtract(Duration(days: i));
-      final studyTime = studyMap[date] ?? 0;
-
-      if (studyTime > 0) {
-        streak++;
-      } else {
-        break; // streak ends
-      }
-    }
-
-    return streak;
   }
 }
 
