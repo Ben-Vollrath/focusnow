@@ -1,7 +1,7 @@
 name: focusnow
 description: "A new Flutter project."
 publish_to: "none"
-version: 1.0.2+6
+version: 1.0.3+7
 environment:
   sdk: ">=3.3.4 <4.0.0"
 
@@ -59,6 +59,8 @@ dependencies:
   fl_chart: ^0.71.0
   intl: ^0.20.2
   confetti: ^0.8.0
+  share_plus: ^11.0.0
+  path_provider: ^2.1.5
 
 dev_dependencies:
   bloc_test: ^9.0.0
