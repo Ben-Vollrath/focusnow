@@ -22,38 +22,6 @@ class StatsShareView extends StatelessWidget {
     return BlocBuilder<StatsBloc, StatsState>(
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Transform.translate(
-                  offset: Offset(0, -4),
-                  child: SizedBox(
-                    width: 40,
-                    height: 40,
-                    child: Image.asset(
-                      'assets/icon_round.png',
-                      height: 80,
-                    ),
-                  ),
-                ),
-                Flexible(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: AutoSizeText(
-                      'FocusNow',
-                      maxLines: 1,
-                      style: Theme.of(context).textTheme.titleLarge,
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                ),
-                Spacer(),
-                StreakBadge(streak: getCurrentStreak(state.weeklyStudyData)),
-              ],
-            ),
-            scrolledUnderElevation: 0.0,
-          ),
           body: Builder(
             builder: (context) {
               if (state.status == StatsStatus.loading ||
@@ -72,6 +40,37 @@ class StatsShareView extends StatelessWidget {
               return ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Transform.translate(
+                        offset: Offset(0, -4),
+                        child: SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: Image.asset(
+                            'assets/icon_round.png',
+                            height: 80,
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: AutoSizeText(
+                            'FocusNow',
+                            maxLines: 1,
+                            style: Theme.of(context).textTheme.titleLarge,
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                      ),
+                      Spacer(),
+                      StreakBadge(
+                          streak: getCurrentStreak(state.weeklyStudyData)),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
                   LevelBox(
                     levelIcon: userStats.levelIcon,
                     level: userStats.level,
