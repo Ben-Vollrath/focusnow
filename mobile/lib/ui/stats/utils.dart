@@ -116,7 +116,7 @@ Future<void> captureAndShareStatsImage({
     final boundary =
         shareKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
 
-    if (boundary == null || boundary.debugNeedsPaint) {
+    if (boundary == null) {
       await Future.delayed(const Duration(milliseconds: 100));
       return captureAndShareStatsImage(context: context); // retry once
     }
@@ -133,6 +133,7 @@ Future<void> captureAndShareStatsImage({
       files: [XFile(imagePath.path)],
     ));
   } catch (e) {
+    print('Error capturing image: $e');
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Couldnt share stats, try a gain later')),
     );
