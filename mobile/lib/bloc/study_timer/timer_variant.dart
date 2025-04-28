@@ -1,4 +1,10 @@
-enum TimerVariant { pomodoro, fiftyTwoSeventeen, endless, ninetyThirty }
+enum TimerVariant {
+  pomodoro,
+  fiftyTwoSeventeen,
+  endless,
+  ninetyThirty,
+  motivation
+}
 
 extension TimerVariantExtension on TimerVariant {
   bool get hasPause {
@@ -10,6 +16,8 @@ extension TimerVariantExtension on TimerVariant {
       case TimerVariant.ninetyThirty:
         return true;
       case TimerVariant.endless:
+        return false;
+      case TimerVariant.motivation:
         return false;
     }
   }
@@ -24,6 +32,8 @@ extension TimerVariantExtension on TimerVariant {
         return '90:30';
       case TimerVariant.endless:
         return 'Endless';
+      case TimerVariant.motivation:
+        return 'Motivation';
     }
   }
 
@@ -37,6 +47,8 @@ extension TimerVariantExtension on TimerVariant {
         return '90 minutes of work followed by a 30-minute break.';
       case TimerVariant.endless:
         return 'No time limit, work at your own pace.';
+      case TimerVariant.motivation:
+        return 'A short burst of motivation to get you started.';
     }
   }
 
@@ -50,19 +62,23 @@ extension TimerVariantExtension on TimerVariant {
         return '🕒';
       case TimerVariant.endless:
         return '♾️';
+      case TimerVariant.motivation:
+        return '💪';
     }
   }
 
   Duration getWorkDuration() {
     switch (this) {
       case TimerVariant.pomodoro:
-        return const Duration(minutes: 25);
+        return const Duration(seconds: 25);
       case TimerVariant.ninetyThirty:
         return const Duration(minutes: 90);
       case TimerVariant.fiftyTwoSeventeen:
         return const Duration(minutes: 52);
       case TimerVariant.endless:
         return const Duration(hours: 4);
+      case TimerVariant.motivation:
+        return const Duration(minutes: 5);
     }
   }
 
@@ -75,6 +91,8 @@ extension TimerVariantExtension on TimerVariant {
       case TimerVariant.fiftyTwoSeventeen:
         return const Duration(minutes: 17);
       case TimerVariant.endless:
+        return Duration.zero;
+      case TimerVariant.motivation:
         return Duration.zero;
     }
   }
