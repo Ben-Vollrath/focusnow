@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:focusnow/bloc/goal/goal_bloc.dart';
 import 'package:focusnow/bloc/stats/stats_bloc.dart';
 import 'package:focusnow/ui/stats/goal_box.dart';
 import 'package:focusnow/ui/stats/level_box.dart';
@@ -16,8 +17,10 @@ class StatsPage extends StatelessWidget {
     return BlocBuilder<StatsBloc, StatsState>(
       builder: (context, state) {
         return RefreshIndicator(
-          onRefresh: () async =>
-              context.read<StatsBloc>().add(ReloadUserStats()),
+          onRefresh: () async {
+            context.read<StatsBloc>().add(ReloadUserStats());
+            context.read<GoalBloc>().add(LoadGoal());
+          },
           child: Scaffold(
             appBar: AppBar(
               title: Row(
