@@ -12,7 +12,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       : userRepository = userRepository ?? UserRepository(),
         super(UserInitial()) {
     on<UserDeleteAccountEvent>((event, emit) {
-      userRepository!.deleteAccount();
+      this.userRepository.deleteAccount();
     });
   }
 }

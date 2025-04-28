@@ -26,6 +26,8 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
     });
 
     on<StartTimer>((event, emit) {
+      if (state.status == TimerStatus.running) return;
+
       _ticker?.cancel();
       emit(state.copyWith(
         status: TimerStatus.running,
@@ -37,7 +39,7 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
       });
     });
 
-    on<Tick>((event, emit) {
+    on<Tick>((event, emit) async {
       //Hack to have correct elapsed timer after pause
       if (state.status == TimerStatus.paused) {
         emit(state.copyWith(
@@ -87,7 +89,7 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
       } else {
         if (elapsed >= workDuration) {
           _ticker?.cancel();
-          sessionRepository.submitStudySession(StudySession(
+          await sessionRepository.submitStudySession(StudySession(
             startTime: state.startTime!,
             endTime: state.startTime!.add(workDuration),
           ));

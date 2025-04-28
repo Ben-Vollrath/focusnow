@@ -1,9 +1,16 @@
+import 'package:flutter/material.dart';
+import 'package:focusnow/ui/start/onboarding/onboarding_demo.dart';
+import 'package:focusnow/ui/study_timer/progress_display/study_timer_view.dart';
+import 'package:focusnow/ui/study_timer/study_timer_page.dart';
+
 class OnboardingPageModel {
+  final Widget? demoWidget;
   final String imageAsset;
   final String title;
   final String description;
 
   const OnboardingPageModel({
+    required this.demoWidget,
     required this.imageAsset,
     required this.title,
     required this.description,
@@ -12,33 +19,21 @@ class OnboardingPageModel {
 
 const onboardingPages = [
   OnboardingPageModel(
+    demoWidget: null,
     imageAsset: 'assets/onboarding/onboarding1.png',
-    title: "Welcome to FocusNow",
-    description:
-        "Your cozy corner for distraction-free studying. Built to help you focus and feel accomplished.",
+    title: "No more feeling stuck.",
+    description: "Turn overwhelm into small wins you can see",
   ),
   OnboardingPageModel(
+    demoWidget: null,
     imageAsset: 'assets/onboarding/onboarding2.png',
-    title: "Set the vibe & focus",
-    description:
-        "Use the timer to focus, track your streaks, and stay consistent.",
+    title: "Starting is the hardest part.",
+    description: "Stay consistent, level up, and beat procrastination",
   ),
   OnboardingPageModel(
-    imageAsset: 'assets/onboarding/onboarding3.png',
-    title: "Earn XP and level up",
-    description:
-        "Each session earns XP. Level up, stay motivated, and make focus rewarding.",
-  ),
-  OnboardingPageModel(
-    imageAsset: 'assets/onboarding/onboarding4.png',
-    title: "Stay motivated",
-    description:
-        "Track your streaks, study time, and milestones — build habits that last.",
-  ),
-  OnboardingPageModel(
-    imageAsset: 'assets/onboarding/onboarding5.png',
-    title: "Make focus fun",
-    description:
-        "Complete daily & streak challenges to earn bonus XP and push your limits.",
+    demoWidget: OnboardingDemo(),
+    imageAsset: 'assets/onboarding/onboarding2.png',
+    title: "Lets start small.",
+    description: "That's how progress begins.",
   ),
 ];

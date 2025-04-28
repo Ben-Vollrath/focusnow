@@ -1,33 +1,26 @@
-import 'dart:io';
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:focusnow/bloc/goal/goal_bloc.dart';
 import 'package:focusnow/bloc/stats/stats_bloc.dart';
 import 'package:focusnow/ui/stats/goal_box.dart';
 import 'package:focusnow/ui/stats/level_box.dart';
-import 'package:focusnow/ui/stats/stats_share_view.dart';
 import 'package:focusnow/ui/stats/study_chart.dart';
 import 'package:focusnow/ui/stats/todays_achievement.dart';
 import 'package:focusnow/ui/stats/utils.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:stats_repository/daily_study_data.dart';
-import 'package:stats_repository/stats_repository.dart';
 
 class StatsPage extends StatelessWidget {
   const StatsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey _shareKey = GlobalKey();
-
     return BlocBuilder<StatsBloc, StatsState>(
       builder: (context, state) {
         return RefreshIndicator(
-          onRefresh: () async =>
-              context.read<StatsBloc>().add(ReloadUserStats()),
+          onRefresh: () async {
+            context.read<StatsBloc>().add(ReloadUserStats());
+            context.read<GoalBloc>().add(LoadGoal());
+          },
           child: Scaffold(
             appBar: AppBar(
               title: Row(
