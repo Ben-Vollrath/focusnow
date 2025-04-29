@@ -39,7 +39,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
-      AnalyticsRepository().logEvent("onboarding_page: ${_currentPage + 1}");
+      AnalyticsRepository().logScreen("onboarding_page: ${_currentPage + 1}");
     } else {
       if (!mounted) return;
       Navigator.pop(context);
