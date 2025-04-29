@@ -1,3 +1,4 @@
+import 'package:analytics_repository/analytics_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:challenge_repository/challenge_progress.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,13 @@ import 'package:challenge_repository/challenge_repository.dart';
 class MockChallengeBloc extends MockBloc<ChallengeEvent, ChallengeState>
     implements ChallengeBloc {}
 
+class MockAnalyticsRepository extends Mock implements AnalyticsRepository {}
+
 void main() {
+  setUpAll(() {
+    AnalyticsRepository.setInstance(MockAnalyticsRepository());
+  });
+
   late MockChallengeBloc mockBloc;
 
   final testChallenge = Challenge(

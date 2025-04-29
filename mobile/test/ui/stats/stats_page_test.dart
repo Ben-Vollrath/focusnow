@@ -1,3 +1,4 @@
+import 'package:analytics_repository/analytics_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,7 +25,13 @@ class MockChallengeBloc extends MockBloc<ChallengeEvent, ChallengeState>
 
 class MockGoalBloc extends MockBloc<GoalEvent, GoalState> implements GoalBloc {}
 
+class MockAnalyticsRepository extends Mock implements AnalyticsRepository {}
+
 void main() {
+  setUpAll(() {
+    AnalyticsRepository.setInstance(MockAnalyticsRepository());
+  });
+
   late MockStatsBloc mockBloc;
   late MockChallengeBloc mockChallengeBloc;
   late MockGoalBloc mockGoalBloc;

@@ -1,3 +1,4 @@
+import 'package:analytics_repository/analytics_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:challenge_repository/challenge.dart';
 import 'package:challenge_repository/challenge_repository.dart';
@@ -7,11 +8,14 @@ import 'package:focusnow/bloc/challenge/challenge_bloc.dart';
 
 class MockChallengeRepository extends Mock implements ChallengeRepository {}
 
+class MockAnalyticsRepository extends Mock implements AnalyticsRepository {}
+
 void main() {
   late MockChallengeRepository mockChallengeRepository;
 
   setUp(() {
     mockChallengeRepository = MockChallengeRepository();
+    AnalyticsRepository.setInstance(MockAnalyticsRepository());
   });
 
   group('ChallengeBloc', () {

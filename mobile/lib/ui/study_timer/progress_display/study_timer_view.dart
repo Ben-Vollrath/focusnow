@@ -1,3 +1,4 @@
+import 'package:analytics_repository/analytics_repository.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -238,6 +239,8 @@ class _StudyTimerViewState extends State<StudyTimerView> {
   }
 
   void _showVariantSelector(BuildContext context) {
+    AnalyticsRepository().logEvent("variant_selector_opened");
+
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(

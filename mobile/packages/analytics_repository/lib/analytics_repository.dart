@@ -55,15 +55,22 @@ class AnalyticsRepository {
       return;
     }
 
-    _firebaseAnalytics.logScreenView(screenName: screenName);
+    try {
+      _firebaseAnalytics.logScreenView(screenName: screenName);
+    } catch (e) {
+      debugPrint("Error logging screen: $e");
+    }
   }
 
-  void logEvent(String name) {
+  void logEvent(String name, {Map<String, Object>? parameters}) {
     if (kDebugMode) {
       return;
     }
-
-    _firebaseAnalytics.logEvent(name: name);
+    try {
+      _firebaseAnalytics.logEvent(name: name, parameters: parameters);
+    } catch (e) {
+      debugPrint("Error logging event: $e");
+    }
   }
 
   void logError(dynamic exception, StackTrace stackTrace, String reason) {
@@ -71,12 +78,16 @@ class AnalyticsRepository {
       return;
     }
 
-    _firebaseCrashlytics.recordError(
-      exception,
-      stackTrace,
-      reason: reason,
-      fatal: true,
-      printDetails: true,
-    );
+    try {
+      _firebaseCrashlytics.recordError(
+        exception,
+        stackTrace,
+        reason: reason,
+        fatal: true,
+        printDetails: true,
+      );
+    } catch (e) {
+      debugPrint("Error logging error: $e");
+    }
   }
 }
