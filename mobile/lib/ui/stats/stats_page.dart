@@ -32,6 +32,7 @@ class _StatsPageState extends State<StatsPage> {
           onRefresh: () async {
             context.read<StatsBloc>().add(ReloadUserStats());
             context.read<GoalBloc>().add(LoadGoal());
+            AnalyticsRepository().logEvent("stats_page_refreshed");
           },
           child: Scaffold(
             appBar: AppBar(

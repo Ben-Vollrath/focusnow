@@ -25,6 +25,7 @@ class _ChallengesPageState extends State<ChallengesPage> {
     return RefreshIndicator(
       onRefresh: () async {
         context.read<ChallengeBloc>().add(LoadChallenges());
+        AnalyticsRepository().logEvent("challenges_page_refreshed");
       },
       child: Scaffold(
         appBar: AppBar(
