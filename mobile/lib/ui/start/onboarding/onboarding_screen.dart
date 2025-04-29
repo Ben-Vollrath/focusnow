@@ -19,7 +19,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   bool _demoCompleted = false;
-  get _lastPage => _currentPage == onboardingPages.length - 1;
+  get _demoPage => onboardingPages[_currentPage].demoWidget != null;
 
   @override
   void initState() {
@@ -29,7 +29,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _handleTap() async {
-    if (_lastPage && !_demoCompleted) {
+    if (_demoPage && !_demoCompleted) {
       context.read<StudyTimerBloc>().add(StartTimer());
       return;
     }
@@ -89,7 +89,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: Column(
                 children: [
                   // Top: Back + Centered Progress Bar
-                  if (!_lastPage)
+                  if (!_demoPage)
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 12),
@@ -143,7 +143,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 24),
                     child: Text(
-                      (_lastPage && !_demoCompleted)
+                      (_demoPage && !_demoCompleted)
                           ? "TAP TO START"
                           : "TAP TO CONTINUE",
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
