@@ -1,3 +1,4 @@
+import 'package:analytics_repository/analytics_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:challenge_repository/challenge_repository.dart';
@@ -5,8 +6,19 @@ import 'package:focusnow/bloc/challenge/challenge_bloc.dart';
 import 'package:focusnow/ui/challenges/category_filter_bar.dart';
 import 'package:focusnow/ui/challenges/challenge_tile.dart';
 
-class ChallengesPage extends StatelessWidget {
+class ChallengesPage extends StatefulWidget {
   const ChallengesPage({super.key});
+
+  @override
+  State<ChallengesPage> createState() => _ChallengesPageState();
+}
+
+class _ChallengesPageState extends State<ChallengesPage> {
+  @override
+  void initState() {
+    super.initState();
+    AnalyticsRepository().logScreen("challenges_page");
+  }
 
   @override
   Widget build(BuildContext context) {

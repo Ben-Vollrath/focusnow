@@ -1,3 +1,4 @@
+import 'package:analytics_repository/analytics_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/study_timer/study_timer_bloc.dart';
@@ -12,6 +13,12 @@ class StudyTimerPage extends StatefulWidget {
 }
 
 class _StudyTimerPageState extends State<StudyTimerPage> {
+  @override
+  void initState() {
+    super.initState();
+    AnalyticsRepository().logScreen("study_timer_page");
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<StudyTimerBloc, StudyTimerState>(
