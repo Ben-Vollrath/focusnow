@@ -27,96 +27,107 @@ class _StartPageState extends State<StartPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SizedBox(
-              height: constraints.maxHeight,
-              width: double.infinity,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const SizedBox(height: 20), // Top padding
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Center(
-                      child: Row(
-                        children: [
-                          Transform.translate(
-                            offset: Offset(0, -4),
-                            child: SizedBox(
-                              width: 80,
-                              height: 80,
-                              child: Image.asset(
-                                'assets/icon_round.png',
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            settings: const RouteSettings(name: "Onboarding"),
+            builder: (context) => const OnboardingScreen(),
+          ),
+        );
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SizedBox(
+                height: constraints.maxHeight,
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const SizedBox(height: 20), // Top padding
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Center(
+                        child: Row(
+                          children: [
+                            Transform.translate(
+                              offset: Offset(0, -4),
+                              child: SizedBox(
+                                width: 80,
                                 height: 80,
+                                child: Image.asset(
+                                  'assets/icon_round.png',
+                                  height: 80,
+                                ),
                               ),
                             ),
-                          ),
-                          Flexible(
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: AutoSizeText(
-                                'FocusNow',
-                                maxLines: 1,
-                                style: theme.textTheme.displayLarge,
-                                textAlign: TextAlign.center,
+                            Flexible(
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: AutoSizeText(
+                                  'FocusNow',
+                                  maxLines: 1,
+                                  style: theme.textTheme.displayLarge,
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          SizedBox(
+                            height: 54,
+                            child: FilledButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    settings:
+                                        const RouteSettings(name: "Onboarding"),
+                                    builder: (context) =>
+                                        const OnboardingScreen(),
+                                  ),
+                                );
+                              },
+                              child: const Text('Get Started'),
+                            ),
                           ),
+                          const SizedBox(height: 12),
+                          SizedBox(
+                            height: 54,
+                            child: OutlinedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    settings:
+                                        const RouteSettings(name: "LoginPage"),
+                                    builder: (context) => LoginPage(),
+                                  ),
+                                );
+                              },
+                              child: const Text('Login'),
+                            ),
+                          ),
+                          const SizedBox(height: 12)
                         ],
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(
-                          height: 54,
-                          child: FilledButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  settings:
-                                      const RouteSettings(name: "Onboarding"),
-                                  builder: (context) =>
-                                      const OnboardingScreen(),
-                                ),
-                              );
-                            },
-                            child: const Text('Get Started'),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          height: 54,
-                          child: OutlinedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  settings:
-                                      const RouteSettings(name: "LoginPage"),
-                                  builder: (context) => LoginPage(),
-                                ),
-                              );
-                            },
-                            child: const Text('Login'),
-                          ),
-                        ),
-                        const SizedBox(height: 12)
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
