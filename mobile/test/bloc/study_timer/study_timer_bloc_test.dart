@@ -1,3 +1,4 @@
+import 'package:analytics_repository/analytics_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:focusnow/bloc/study_timer/timer_variant.dart';
@@ -15,6 +16,8 @@ class MockStudySessionRepository extends Mock
 
 class FakeStudySession extends Fake implements StudySession {}
 
+class MockAnalyticsRepository extends Mock implements AnalyticsRepository {}
+
 void main() {
   late MockNotificationRepository mockNotificationRepository;
   late MockStudySessionRepository mockSessionRepository;
@@ -22,6 +25,7 @@ void main() {
   setUpAll(() {
     mockNotificationRepository = MockNotificationRepository();
     mockSessionRepository = MockStudySessionRepository();
+    AnalyticsRepository.setInstance(MockAnalyticsRepository());
 
     registerFallbackValue(FakeStudySession());
 

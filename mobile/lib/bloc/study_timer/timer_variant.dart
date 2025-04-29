@@ -70,7 +70,7 @@ extension TimerVariantExtension on TimerVariant {
   Duration getWorkDuration() {
     switch (this) {
       case TimerVariant.pomodoro:
-        return const Duration(seconds: 25);
+        return const Duration(minutes: 25);
       case TimerVariant.ninetyThirty:
         return const Duration(minutes: 90);
       case TimerVariant.fiftyTwoSeventeen:

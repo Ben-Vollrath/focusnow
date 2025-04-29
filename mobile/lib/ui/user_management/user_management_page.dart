@@ -1,3 +1,4 @@
+import 'package:analytics_repository/analytics_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/user/user_bloc.dart';
@@ -17,6 +18,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
   void initState() {
     super.initState();
     _confirmationController.addListener(_onTextChanged);
+    AnalyticsRepository().logScreen("user_management_page");
   }
 
   void _onTextChanged() {

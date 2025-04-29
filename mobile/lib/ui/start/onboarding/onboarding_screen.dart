@@ -1,3 +1,4 @@
+import 'package:analytics_repository/analytics_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/app/app_bloc.dart';
@@ -24,6 +25,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void initState() {
     super.initState();
     context.read<LoginCubit>().signIgnAnonymously();
+    AnalyticsRepository().logScreen("onboarding_screen");
   }
 
   void _handleTap() async {
@@ -37,6 +39,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
+      AnalyticsRepository().logScreen("onboarding_page: ${_currentPage + 1}");
     } else {
       if (!mounted) return;
       Navigator.pop(context);
@@ -60,8 +63,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return BlocListener<StudyTimerBloc, StudyTimerState>(
       listenWhen: (previous, current) => current.status != previous.status,
       listener: (context, state) {
+        if (state.status == TimerStatus.running) {
+          AnalyticsRepository().logEvent("demo_started");
+        }
         if (state.status == TimerStatus.completed ||
             state.status == TimerStatus.stopped) {
+          AnalyticsRepository().logEvent("demo_completed");
           setState(() {
             _demoCompleted = true;
           });
