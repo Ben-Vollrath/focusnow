@@ -1,3 +1,4 @@
+import 'package:analytics_repository/analytics_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:challenge_repository/challenge.dart';
 import 'package:equatable/equatable.dart';
@@ -29,6 +30,8 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
 
   void _onFilterByCategory(
       FilterByCategory event, Emitter<ChallengeState> emit) {
+    AnalyticsRepository().logEvent("filter_challenges_by_category",
+        parameters: {"category": event.category!.name});
     emit(ChallengeState(
       challenges: state.challenges,
       status: state.status,

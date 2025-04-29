@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:analytics_repository/analytics_repository.dart';
 import 'package:challenge_repository/challenge_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -125,6 +126,7 @@ class _ProgressDisplayState extends State<ProgressDisplay>
           setState(() {
             _visible = false;
           });
+          AnalyticsRepository().logEvent("progress_display_dismissed");
         },
         child: Visibility(
           visible: _visible,

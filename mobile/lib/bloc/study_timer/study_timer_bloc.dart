@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:analytics_repository/analytics_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:focusnow/bloc/study_timer/timer_variant.dart';
@@ -18,6 +19,8 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
   StudyTimerBloc(this.sessionRepository, this.notificationRepository)
       : super(StudyTimerState.initial()) {
     on<SelectTimerVariant>((event, emit) {
+      AnalyticsRepository().logEvent("select_timer_variant",
+          parameters: {"variant": event.variant.name});
       emit(state.copyWith(variant: event.variant));
     });
 
@@ -26,6 +29,9 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
     });
 
     on<StartTimer>((event, emit) {
+      AnalyticsRepository().logEvent("start_timer", parameters: {
+        "variant": state.variant.name,
+      });
       if (state.status == TimerStatus.running) return;
 
       _ticker?.cancel();
@@ -102,14 +108,26 @@ class StudyTimerBloc extends Bloc<StudyTimerEvent, StudyTimerState> {
     });
 
     on<PauseTimer>((event, emit) {
+      AnalyticsRepository().logEvent("pause_timer", parameters: {
+        "elapsed": state.elapsed.inSeconds,
+        "variant": state.variant.name,
+      });
       emit(state.copyWith(status: TimerStatus.paused));
     });
 
     on<ResumeTimer>((event, emit) {
+      AnalyticsRepository().logEvent("resume_timer", parameters: {
+        "elapsed": state.elapsed.inSeconds,
+        "variant": state.variant.name,
+      });
       emit(state.copyWith(status: TimerStatus.running));
     });
 
     on<StopTimer>((event, emit) async {
+      AnalyticsRepository().logEvent("stop_timer", parameters: {
+        "elapsed": state.elapsed.inSeconds,
+        "variant": state.variant.name,
+      });
       _ticker?.cancel();
 
       if (state.phase == TimerPhase.breakTime) {

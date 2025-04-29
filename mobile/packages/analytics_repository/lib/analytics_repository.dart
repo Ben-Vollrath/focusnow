@@ -62,12 +62,12 @@ class AnalyticsRepository {
     }
   }
 
-  void logEvent(String name) {
+  void logEvent(String name, {Map<String, Object>? parameters}) {
     if (kDebugMode) {
       return;
     }
     try {
-      _firebaseAnalytics.logEvent(name: name);
+      _firebaseAnalytics.logEvent(name: name, parameters: parameters);
     } catch (e) {
       debugPrint("Error logging event: $e");
     }
