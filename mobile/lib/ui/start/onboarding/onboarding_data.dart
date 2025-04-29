@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:focusnow/ui/start/onboarding/onboarding_demo.dart';
 import 'package:focusnow/ui/study_timer/progress_display/study_timer_view.dart';
 import 'package:focusnow/ui/study_timer/study_timer_page.dart';
+import 'package:lottie/lottie.dart';
 
 class OnboardingPageModel {
   final Widget? demoWidget;
@@ -17,7 +20,7 @@ class OnboardingPageModel {
   });
 }
 
-const onboardingPages = [
+final onboardingPages = [
   OnboardingPageModel(
     demoWidget: null,
     imageAsset: 'assets/onboarding/onboarding1.png',
@@ -35,5 +38,15 @@ const onboardingPages = [
     imageAsset: 'assets/onboarding/onboarding2.png',
     title: "Lets start small.",
     description: "That's how progress begins.",
+  ),
+  OnboardingPageModel(
+    demoWidget: Lottie.asset(
+      'assets/onboarding/unlocklottie.json',
+      width: 250,
+      height: 250,
+    ),
+    imageAsset: 'assets/onboarding/onboarding2.png',
+    title: "Unlock your full journey.",
+    description: "Get unlimited access and keep building momentum.",
   ),
 ];
