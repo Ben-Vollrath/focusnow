@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - "production"
+      - "main"
 
 jobs:
   test-app:
