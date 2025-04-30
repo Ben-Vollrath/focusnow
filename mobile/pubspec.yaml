@@ -30,7 +30,8 @@ dependencies:
     path: packages/notification_repository
   user_repository:
     path: packages/user_repository
-
+  leaderboard_repository:
+    path: packages/leaderboard_repository
 
   supabase_flutter: ^2.5.7
   shared_preferences: ^2.5.3
