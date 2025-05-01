@@ -9,6 +9,7 @@ import 'package:focusnow/ui/stats/level_box.dart';
 import 'package:focusnow/ui/stats/study_chart.dart';
 import 'package:focusnow/ui/stats/todays_achievement.dart';
 import 'package:focusnow/ui/stats/utils.dart';
+import 'package:focusnow/ui/widgets/icon_badge.dart';
 
 class StatsPage extends StatefulWidget {
   const StatsPage({super.key});
@@ -99,32 +100,11 @@ class StreakBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.primary;
-
-    return Tooltip(
-      message: 'Current Streak',
-      showDuration: const Duration(seconds: 2),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: color.withAlpha(25),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: color),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.local_fire_department,
-                size: 16, color: Colors.orange),
-            const SizedBox(width: 4),
-            Text('$streak',
-                style: Theme.of(context)
-                    .textTheme
-                    .labelMedium
-                    ?.copyWith(color: color)),
-          ],
-        ),
-      ),
+    return IconBadge(
+      icon: const Icon(Icons.local_fire_department,
+          size: 16, color: Colors.orange),
+      text: "$streak",
+      tooltipMessage: "Current Streak",
     );
   }
 }

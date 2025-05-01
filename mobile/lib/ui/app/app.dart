@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/app/app_bloc.dart';
 import 'package:focusnow/bloc/challenge/challenge_bloc.dart';
 import 'package:focusnow/bloc/goal/goal_bloc.dart';
+import 'package:focusnow/bloc/leaderboard/leaderboard_bloc.dart';
 import 'package:focusnow/bloc/stats/stats_bloc.dart';
 import 'package:focusnow/bloc/study_timer/study_timer_bloc.dart';
 import 'package:focusnow/bloc/login/login_cubit.dart';
@@ -17,6 +18,7 @@ import 'package:focusnow/static/theme/theme.dart';
 import 'package:focusnow/static/theme/util.dart';
 import 'package:focusnow/ui/app/routes/routes.dart';
 import 'package:goal_repository/goal_repository.dart';
+import 'package:leaderboard_repository/leaderboard_repository.dart';
 import 'package:notification_repository/notification_repository.dart';
 import 'package:stats_repository/stats_repository.dart';
 import 'package:study_session_repository/study_session_repository.dart';
@@ -75,6 +77,11 @@ class App extends StatelessWidget {
           BlocProvider(
             create: (_) => UserBloc(),
           ),
+          BlocProvider(
+            create: (_) => LeaderboardBloc(
+              leaderboardRepository: LeaderboardRepository(),
+            ),
+          ),
         ],
         child: const AppView(),
       ),
@@ -97,6 +104,9 @@ class AppView extends StatelessWidget {
           context
               .read<SubscriptionBloc>()
               .add(LoadSubscription(userId: appState.user.id));
+          context
+              .read<LeaderboardBloc>()
+              .add(LoadLeaderboard(userId: appState.user.id));
         }
         if (appState.status == AppStatus.unauthenticated) {
           context.read<SubscriptionBloc>().add(LogOut());
