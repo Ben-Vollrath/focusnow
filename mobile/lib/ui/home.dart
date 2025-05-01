@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/study_timer/study_timer_bloc.dart';
+import 'package:focusnow/ui/leaderboard/leaderboard_page.dart';
 import 'package:focusnow/ui/study_timer/study_timer_page.dart';
 import 'package:focusnow/ui/challenges/challenges_page.dart';
 import 'package:focusnow/ui/stats/stats_page.dart';
@@ -13,10 +14,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final PageController _pageController = PageController(initialPage: 1);
-  int _selectedIndex = 1;
+  final PageController _pageController = PageController(initialPage: 2);
+  int _selectedIndex = 2;
 
   final List<Widget> _pages = [
+    const LeaderboardPage(),
     const StatsPage(),
     const StudyTimerPage(),
     const ChallengesPage(),
@@ -86,11 +88,16 @@ class _HomePageState extends State<HomePage> {
                     splashColor: Colors.transparent,
                   ),
                   child: BottomNavigationBar(
+                    type: BottomNavigationBarType.fixed,
                     currentIndex: _selectedIndex,
                     onTap: _onItemTapped,
                     showSelectedLabels: false,
                     showUnselectedLabels: false,
                     items: const [
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.leaderboard_outlined),
+                        label: 'Leaderboard',
+                      ),
                       BottomNavigationBarItem(
                         icon: Icon(Icons.show_chart_outlined),
                         label: 'Stats',
