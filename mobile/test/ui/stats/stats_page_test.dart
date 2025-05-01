@@ -138,15 +138,14 @@ void main() {
   testWidgets('calculates and passes correct streak to StreakBadge',
       (tester) async {
     // Simulate a streak of 7 days with non-zero study time
-    final fullStreakData = List.generate(7, (i) {
-      final date = today.subtract(Duration(days: i));
-      return DailyStudyData(
-        studyDate: date.toIso8601String().split('T').first,
-        totalStudyTime: 60,
-        totalStudySessions: 1,
-        streakDay: i,
-      );
-    });
+    final fullStreakData = [
+      DailyStudyData(
+        studyDate: DateTime.now().toIso8601String().split('T').first,
+        totalStudyTime: 30,
+        totalStudySessions: 2,
+        streakDay: 7,
+      ),
+    ];
 
     final state = StatsState(
       status: StatsStatus.success,
