@@ -104,6 +104,9 @@ class AppView extends StatelessWidget {
           context
               .read<SubscriptionBloc>()
               .add(LoadSubscription(userId: appState.user.id));
+          context
+              .read<LeaderboardBloc>()
+              .add(LoadLeaderboard(userId: appState.user.id));
         }
         if (appState.status == AppStatus.unauthenticated) {
           context.read<SubscriptionBloc>().add(LogOut());
