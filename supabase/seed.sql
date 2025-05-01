@@ -38,6 +38,7 @@ INSERT INTO challenges (name, description, icon, category, condition_amount, rew
 ('Routine Builder', 'Complete 20 total study sessions', '🧱', 'total_sessions', 20, 35, false, 3);
 
 
+
 INSERT INTO auth.users (
   id,
   instance_id,
@@ -54,12 +55,74 @@ INSERT INTO auth.users (
   updated_at
 )
 VALUES (
-  '00000000-0000-0000-0000-000000000000',  -- 👈 your test user id
-  '00000000-0000-0000-0000-000000000000',  -- default instance
+  '1b7c5014-b164-4d03-9ac1-074edd086aed',
+  '00000000-0000-0000-0000-000000000000',
   'authenticated',
   'authenticated',
-  'test@example.com',
-  '$2b$10$2b2OtqkxKx9bEmJpZL/NfOWmBMO/YZzZgxBSsZTLRkWq9UbLrmrrG', -- password: `password`
+  'testuser3@example.com',
+  '$2b$10$2b2OtqkxKx9bEmJpZL/NfOWmBMO/YZzZgxBSsZTLRkWq9UbLrmrrG',
+  now(),
+  now(),
+  false,
+  '{"provider": "email", "providers": ["email"]}',
+  '{}',
+  now(),
+  now()
+);
+
+INSERT INTO auth.users (
+  id,
+  instance_id,
+  aud,
+  role,
+  email,
+  encrypted_password,
+  email_confirmed_at,
+  confirmation_sent_at,
+  is_sso_user,
+  raw_app_meta_data,
+  raw_user_meta_data,
+  created_at,
+  updated_at
+)
+VALUES (
+  '4b31b026-1793-47ed-897f-fdbc78a76a78',
+  '00000000-0000-0000-0000-000000000000',
+  'authenticated',
+  'authenticated',
+  'testuser4@example.com',
+  '$2b$10$2b2OtqkxKx9bEmJpZL/NfOWmBMO/YZzZgxBSsZTLRkWq9UbLrmrrG',
+  now(),
+  now(),
+  false,
+  '{"provider": "email", "providers": ["email"]}',
+  '{}',
+  now(),
+  now()
+);
+
+INSERT INTO auth.users (
+  id,
+  instance_id,
+  aud,
+  role,
+  email,
+  encrypted_password,
+  email_confirmed_at,
+  confirmation_sent_at,
+  is_sso_user,
+  raw_app_meta_data,
+  raw_user_meta_data,
+  created_at,
+  updated_at
+)
+VALUES (
+  'bac294e7-4171-4f21-a98b-73b7dda5bdc6',
+  '00000000-0000-0000-0000-000000000000',
+  'authenticated',
+  'authenticated',
+  'testuser5@example.com',
+  '$2b$10$2b2OtqkxKx9bEmJpZL/NfOWmBMO/YZzZgxBSsZTLRkWq9UbLrmrrG',
   now(),
   now(),
   false,
@@ -70,3 +133,75 @@ VALUES (
 );
 
 
+INSERT INTO auth.users (
+  id,
+  instance_id,
+  aud,
+  role,
+  email,
+  encrypted_password,
+  email_confirmed_at,
+  confirmation_sent_at,
+  is_sso_user,
+  raw_app_meta_data,
+  raw_user_meta_data,
+  created_at,
+  updated_at
+)
+VALUES (
+  '36cb4c62-5dcc-4726-bc7e-d708889d6874',
+  '00000000-0000-0000-0000-000000000000',
+  'authenticated',
+  'authenticated',
+  'testuser6@example.com',
+  '$2b$10$2b2OtqkxKx9bEmJpZL/NfOWmBMO/YZzZgxBSsZTLRkWq9UbLrmrrG',
+  now(),
+  now(),
+  false,
+  '{"provider": "email", "providers": ["email"]}',
+  '{}',
+  now(),
+  now()
+);
+
+
+
+INSERT INTO auth.users (
+  id,
+  instance_id,
+  aud,
+  role,
+  email,
+  encrypted_password,
+  email_confirmed_at,
+  confirmation_sent_at,
+  is_sso_user,
+  raw_app_meta_data,
+  raw_user_meta_data,
+  created_at,
+  updated_at
+)
+VALUES (
+  '57cf3aef-6600-42dd-9c64-2ab240520e36',
+  '00000000-0000-0000-0000-000000000000',
+  'authenticated',
+  'authenticated',
+  'testuser7@example.com',
+  '$2b$10$2b2OtqkxKx9bEmJpZL/NfOWmBMO/YZzZgxBSsZTLRkWq9UbLrmrrG',
+  now(),
+  now(),
+  false,
+  '{"provider": "email", "providers": ["email"]}',
+  '{}',
+  now(),
+  now()
+);
+
+INSERT INTO fake_users (user_id) VALUES
+  ('1b7c5014-b164-4d03-9ac1-074edd086aed'),
+  ('4b31b026-1793-47ed-897f-fdbc78a76a78'),
+  ('bac294e7-4171-4f21-a98b-73b7dda5bdc6'),
+  ('36cb4c62-5dcc-4726-bc7e-d708889d6874'),
+  ('57cf3aef-6600-42dd-9c64-2ab240520e36');
+
+SELECT update_fake_leaderboard_data();

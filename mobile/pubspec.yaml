@@ -1,7 +1,7 @@
 name: focusnow
 description: "A new Flutter project."
 publish_to: "none"
-version: 1.0.8+12
+version: 1.0.9+13
 environment:
   sdk: ">=3.3.4 <4.0.0"
 
@@ -30,7 +30,8 @@ dependencies:
     path: packages/notification_repository
   user_repository:
     path: packages/user_repository
-
+  leaderboard_repository:
+    path: packages/leaderboard_repository
 
   supabase_flutter: ^2.5.7
   shared_preferences: ^2.5.3
