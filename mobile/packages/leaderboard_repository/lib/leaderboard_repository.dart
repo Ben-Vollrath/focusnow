@@ -60,7 +60,10 @@ class LeaderboardRepository {
             .maybeSingle();
 
     if (userResult != null) {
-      final userEntry = LeaderboardEntry.fromMap(userResult);
+      LeaderboardEntry userEntry = LeaderboardEntry.fromMap(
+        userResult,
+        isCurrentUser: true,
+      );
       return [...topEntries, userEntry];
     } else {
       return topEntries;
@@ -68,10 +71,28 @@ class LeaderboardRepository {
   }
 
   Future<List<LeaderboardEntry>> fetchDailyLeaderboard(String userId) {
-    return fetchLeaderboardWithUser(LeaderboardType.daily, userId);
+    try {
+      return fetchLeaderboardWithUser(LeaderboardType.daily, userId);
+    } catch (e, stackTrace) {
+      _analyticsRepository.logError(
+        e,
+        stackTrace,
+        'Error fetching daily leaderboard',
+      );
+      rethrow;
+    }
   }
 
   Future<List<LeaderboardEntry>> fetchTotalLeaderboard(String userId) {
-    return fetchLeaderboardWithUser(LeaderboardType.total, userId);
+    try {
+      return fetchLeaderboardWithUser(LeaderboardType.total, userId);
+    } catch (e, stackTrace) {
+      _analyticsRepository.logError(
+        e,
+        stackTrace,
+        'Error fetching total leaderboard',
+      );
+      rethrow;
+    }
   }
 }
