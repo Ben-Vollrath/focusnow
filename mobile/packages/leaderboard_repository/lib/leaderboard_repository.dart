@@ -44,9 +44,15 @@ class LeaderboardRepository {
         .from(type.top5ViewName)
         .select()
         .limit(5);
+
     final topEntries =
         (topResult as List<dynamic>)
-            .map((row) => LeaderboardEntry.fromMap(row as Map<String, dynamic>))
+            .map(
+              (row) => LeaderboardEntry.fromMap(
+                row as Map<String, dynamic>,
+                isCurrentUser: row['user_id'] == userId,
+              ),
+            )
             .toList();
 
     final isUserInTop = topEntries.any((entry) => entry.userId == userId);

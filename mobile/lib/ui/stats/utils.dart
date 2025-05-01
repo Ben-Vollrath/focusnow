@@ -52,25 +52,20 @@ int getTodaySessions(List<DailyStudyData> weeklyData) {
 int getCurrentStreak(List<DailyStudyData> weeklyData) {
   final today = DateTime.now();
   final todayDate = DateTime(today.year, today.month, today.day);
+  final yesterdayDate = todayDate.subtract(const Duration(days: 1));
 
   // Convert studyData to a map for fast lookup
   final studyMap = {
-    for (final data in weeklyData)
-      DateTime.parse(data.studyDate): data.totalStudyTime ?? 0
+    for (final data in weeklyData) DateTime.parse(data.studyDate): data
   };
 
   int streak = 0;
 
   // Check consecutive days backwards from today
-  for (int i = 0; i < 7; i++) {
-    final date = todayDate.subtract(Duration(days: i));
-    final studyTime = studyMap[date] ?? 0;
-
-    if (studyTime > 0) {
-      streak++;
-    } else {
-      break; // streak ends
-    }
+  if (studyMap[todayDate] != null) {
+    streak = studyMap[todayDate]?.streakDay ?? 0;
+  } else if (studyMap[yesterdayDate] != null) {
+    streak = studyMap[yesterdayDate]?.streakDay ?? 0;
   }
 
   return streak;
