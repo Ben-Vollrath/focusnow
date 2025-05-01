@@ -70,17 +70,6 @@ VALUES (
   now()
 );
 
-UPDATE users
-SET level = 9, xp = 639, total_study_time = 348, total_study_sessions = 7
-WHERE id = '1b7c5014-b164-4d03-9ac1-074edd086aed';
-
-INSERT INTO study_days (user_id, study_date, total_study_time, total_study_sessions, streak_day)
-VALUES (
-  '1b7c5014-b164-4d03-9ac1-074edd086aed', CURRENT_DATE,
-  348, 7, 5
-);
-
-
 INSERT INTO auth.users (
   id,
   instance_id,
@@ -112,17 +101,6 @@ VALUES (
   now()
 );
 
-UPDATE users
-SET level = 10, xp = 592, total_study_time = 490, total_study_sessions = 13
-WHERE id = '4b31b026-1793-47ed-897f-fdbc78a76a78';
-
-INSERT INTO study_days (user_id, study_date, total_study_time, total_study_sessions, streak_day)
-VALUES (
-  '4b31b026-1793-47ed-897f-fdbc78a76a78', CURRENT_DATE,
-  490, 13, 6
-);
-
-
 INSERT INTO auth.users (
   id,
   instance_id,
@@ -152,16 +130,6 @@ VALUES (
   '{}',
   now(),
   now()
-);
-
-UPDATE users
-SET level = 9, xp = 770, total_study_time = 290, total_study_sessions = 9
-WHERE id = 'bac294e7-4171-4f21-a98b-73b7dda5bdc6';
-
-INSERT INTO study_days (user_id, study_date, total_study_time, total_study_sessions, streak_day)
-VALUES (
-  'bac294e7-4171-4f21-a98b-73b7dda5bdc6', CURRENT_DATE,
-  290, 9, 5
 );
 
 
@@ -196,15 +164,6 @@ VALUES (
   now()
 );
 
-UPDATE users
-SET level = 3, xp = 166, total_study_time = 413, total_study_sessions = 14
-WHERE id = '36cb4c62-5dcc-4726-bc7e-d708889d6874';
-
-INSERT INTO study_days (user_id, study_date, total_study_time, total_study_sessions, streak_day)
-VALUES (
-  '36cb4c62-5dcc-4726-bc7e-d708889d6874', CURRENT_DATE,
-  413, 14, 2
-);
 
 
 INSERT INTO auth.users (
@@ -238,12 +197,11 @@ VALUES (
   now()
 );
 
-UPDATE users
-SET level = 3, xp = 432, total_study_time = 80, total_study_sessions = 20
-WHERE id = '57cf3aef-6600-42dd-9c64-2ab240520e36';
+INSERT INTO fake_users (user_id) VALUES
+  ('1b7c5014-b164-4d03-9ac1-074edd086aed'),
+  ('4b31b026-1793-47ed-897f-fdbc78a76a78'),
+  ('bac294e7-4171-4f21-a98b-73b7dda5bdc6'),
+  ('36cb4c62-5dcc-4726-bc7e-d708889d6874'),
+  ('57cf3aef-6600-42dd-9c64-2ab240520e36');
 
-INSERT INTO study_days (user_id, study_date, total_study_time, total_study_sessions, streak_day)
-VALUES (
-  '57cf3aef-6600-42dd-9c64-2ab240520e36', CURRENT_DATE,
-  80, 20, 1
-);
+SELECT update_fake_leaderboard_data();
