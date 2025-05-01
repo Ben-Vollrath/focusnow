@@ -31,7 +31,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
   void _onFilterByCategory(
       FilterByCategory event, Emitter<ChallengeState> emit) {
     AnalyticsRepository().logEvent("filter_challenges_by_category",
-        parameters: {"category": event.category!.name});
+        parameters: {"category": event.category?.name ?? "all"});
     emit(ChallengeState(
       challenges: state.challenges,
       status: state.status,
