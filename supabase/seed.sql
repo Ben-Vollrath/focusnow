@@ -205,3 +205,25 @@ INSERT INTO fake_users (user_id) VALUES
   ('57cf3aef-6600-42dd-9c64-2ab240520e36');
 
 SELECT update_fake_leaderboard_data();
+
+
+INSERT INTO study_groups (id, name, description, owner_id, isPublic) VALUES ('695064a1-43c6-466e-b9d9-aa0ddb378c0f', 'Group of 1b7c5014', 'A test study group', '1b7c5014-b164-4d03-9ac1-074edd086aed', true);
+INSERT INTO study_groups (id, name, description, owner_id, isPublic) VALUES ('b5570e48-cd0c-400f-b057-f16d0f888707', 'Group of 4b31b026', 'A test study group', '4b31b026-1793-47ed-897f-fdbc78a76a78', true);
+INSERT INTO study_groups (id, name, description, owner_id, isPublic) VALUES ('24385dd3-14ac-40bd-9a2a-4e63df61411b', 'Group of bac294e7', 'A test study group', 'bac294e7-4171-4f21-a98b-73b7dda5bdc6', true);
+INSERT INTO study_groups (id, name, description, owner_id, isPublic) VALUES ('649b9b3e-36c1-496e-bb27-ba56447191f0', 'Group of 36cb4c62', 'A test study group', '36cb4c62-5dcc-4726-bc7e-d708889d6874', true);
+INSERT INTO study_groups (id, name, description, owner_id, isPublic) VALUES ('be2f2a57-e048-4215-aeeb-7a24ad806c60', 'Group of 57cf3aef', 'A test study group', '57cf3aef-6600-42dd-9c64-2ab240520e36', true);
+INSERT INTO study_group_members (study_group_id, user_id) VALUES ('695064a1-43c6-466e-b9d9-aa0ddb378c0f', '1b7c5014-b164-4d03-9ac1-074edd086aed');
+INSERT INTO study_group_members (study_group_id, user_id) VALUES ('b5570e48-cd0c-400f-b057-f16d0f888707', '4b31b026-1793-47ed-897f-fdbc78a76a78');
+INSERT INTO study_group_members (study_group_id, user_id) VALUES ('24385dd3-14ac-40bd-9a2a-4e63df61411b', 'bac294e7-4171-4f21-a98b-73b7dda5bdc6');
+INSERT INTO study_group_members (study_group_id, user_id) VALUES ('649b9b3e-36c1-496e-bb27-ba56447191f0', '36cb4c62-5dcc-4726-bc7e-d708889d6874');
+INSERT INTO study_group_members (study_group_id, user_id) VALUES ('be2f2a57-e048-4215-aeeb-7a24ad806c60', '57cf3aef-6600-42dd-9c64-2ab240520e36');
+INSERT INTO goals (id, name, description, target_minutes, target_date, xp_reward, study_group_id, user_id) VALUES ('fceb4338-0d12-4fc8-a2df-acbb89049fd2', 'Template Goal', 'Group challenge goal', 240, '2025-05-10', 30, '695064a1-43c6-466e-b9d9-aa0ddb378c0f', NULL);
+INSERT INTO goals (id, name, description, target_minutes, target_date, xp_reward, study_group_id, user_id) VALUES ('d84aa432-e65f-401e-a8f5-82b2f8026aad', 'Template Goal', 'Group challenge goal', 120, '2025-05-10', 10, 'b5570e48-cd0c-400f-b057-f16d0f888707', NULL);
+INSERT INTO goals (id, name, description, target_minutes, target_date, xp_reward, study_group_id, user_id) VALUES ('9868a63a-de87-4671-a5f1-1657ffaf10df', 'Template Goal', 'Group challenge goal', 240, '2025-05-10', 30, '24385dd3-14ac-40bd-9a2a-4e63df61411b', NULL);
+INSERT INTO goals (id, name, description, target_minutes, target_date, xp_reward, study_group_id, user_id) VALUES ('08d21952-5f2d-4794-ac73-b918d051414e', 'Template Goal', 'Group challenge goal', 240, '2025-05-10', 30, '649b9b3e-36c1-496e-bb27-ba56447191f0', NULL);
+INSERT INTO goals (id, name, description, target_minutes, target_date, xp_reward, study_group_id, user_id) VALUES ('195eabdc-a5e9-4d35-9930-40e037d4e7bd', 'Template Goal', 'Group challenge goal', 120, '2025-05-10', 20, 'be2f2a57-e048-4215-aeeb-7a24ad806c60', NULL);
+INSERT INTO goals (id, name, description, target_minutes, current_minutes, target_date, xp_reward, study_group_id, user_id) VALUES ('e9a7b99c-ae46-4144-8e8b-6b60bf16e6b3', 'User Goal', 'User progress on group goal', 240, 88, '2025-05-10', 30, '695064a1-43c6-466e-b9d9-aa0ddb378c0f', '1b7c5014-b164-4d03-9ac1-074edd086aed');
+INSERT INTO goals (id, name, description, target_minutes, current_minutes, target_date, xp_reward, study_group_id, user_id) VALUES ('830570ea-9b09-4de9-a52e-20326b7fd349', 'User Goal', 'User progress on group goal', 120, 49, '2025-05-10', 10, 'b5570e48-cd0c-400f-b057-f16d0f888707', '4b31b026-1793-47ed-897f-fdbc78a76a78');
+INSERT INTO goals (id, name, description, target_minutes, current_minutes, target_date, xp_reward, study_group_id, user_id) VALUES ('c7a44131-5b6e-43f6-a9dc-315371bcbb80', 'User Goal', 'User progress on group goal', 240, 157, '2025-05-10', 30, '24385dd3-14ac-40bd-9a2a-4e63df61411b', 'bac294e7-4171-4f21-a98b-73b7dda5bdc6');
+INSERT INTO goals (id, name, description, target_minutes, current_minutes, target_date, xp_reward, study_group_id, user_id) VALUES ('ee5466b0-c12d-41e3-b31c-7e222873ee48', 'User Goal', 'User progress on group goal', 240, 156, '2025-05-10', 30, '649b9b3e-36c1-496e-bb27-ba56447191f0', '36cb4c62-5dcc-4726-bc7e-d708889d6874');
+INSERT INTO goals (id, name, description, target_minutes, current_minutes, target_date, xp_reward, study_group_id, user_id) VALUES ('5fc2c66d-6b5a-4a05-8441-d3461f659f5d', 'User Goal', 'User progress on group goal', 120, 67, '2025-05-10', 20, 'be2f2a57-e048-4215-aeeb-7a24ad806c60', '57cf3aef-6600-42dd-9c64-2ab240520e36');
