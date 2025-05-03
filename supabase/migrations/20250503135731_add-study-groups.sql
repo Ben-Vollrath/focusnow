@@ -14,6 +14,54 @@ CREATE TABLE study_group_members (
     PRIMARY KEY (study_group_id, user_id)
 );
 
+ALTER TABLE goals
+ADD COLUMN study_group_id UUID REFERENCES study_groups(id) ON DELETE CASCADE,
+ADD COLUMN description TEXT DEFAULT '-';
+
+ALTER TABLE goals DROP CONSTRAINT one_goal_per_user;
+DROP POLICY IF EXISTS "Users can read their own goals" ON goals;
+DROP POLICY IF EXISTS "Users can read delete their goals" ON goals;
+CREATE POLICY "Authenticated users can read all goals"
+  ON goals
+  FOR SELECT
+  TO authenticated
+  USING (true);
+
+
+create or replace view study_group_stats
+with (security_barrier = true) as
+select
+  sg.id,
+  sg.name,
+  sg.description,
+  sg.created_at,
+  sg.isPublic,
+  count(distinct sgm.user_id) as member_count,
+  coalesce((
+    select g.target_minutes
+    from goals g
+    where g.study_group_id = sg.id
+      and g.user_id is null
+    limit 1
+  ), 0) as total_goal_minutes
+from study_groups sg
+left join study_group_members sgm on sgm.study_group_id = sg.id
+group by sg.id;
+
+
+create or replace view goal_progress_leaderboard 
+with (security_barrier = true) as
+select
+  g.study_group_id,
+  u.id as user_id,
+  u.username,
+  g.current_minutes,
+  g.target_minutes
+from goals g
+join users u on g.user_id = u.id
+where g.study_group_id is not null and g.user_id is not null;
+
+
 
 ALTER TABLE study_groups ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Read public study_groups"
@@ -55,12 +103,6 @@ CREATE POLICY "Read study_group_members if group is public or user is member"
         )
     )
   );
-
-
-ALTER TABLE goals
-ADD COLUMN study_group_id UUID REFERENCES study_groups(id) ON DELETE CASCADE,
-ADD COLUMN description TEXT DEFAULT '-';
-
 
 create unique index one_goal_template_per_group
 on goals(study_group_id)
@@ -185,3 +227,4 @@ begin
   end if;
 end;
 $$;
+
