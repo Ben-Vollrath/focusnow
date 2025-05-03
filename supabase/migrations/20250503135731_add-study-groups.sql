@@ -84,26 +84,6 @@ CREATE POLICY "Read private study_groups if member"
   );
 
 
-ALTER TABLE study_group_members ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Read study_group_members if group is public or user is member"
-  ON study_group_members
-  FOR SELECT
-  TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1 FROM study_groups
-      WHERE study_groups.id = study_group_members.study_group_id
-        AND (
-          study_groups.isPublic = true OR
-          EXISTS (
-            SELECT 1 FROM study_group_members AS sgm
-            WHERE sgm.study_group_id = study_groups.id
-              AND sgm.user_id = auth.uid()
-          )
-        )
-    )
-  );
-
 create unique index one_goal_template_per_group
 on goals(study_group_id)
 where user_id is null;
@@ -126,7 +106,7 @@ begin
 
   perform join_study_group(new_group_id);
 end;
-$$;
+$$ SECURITY DEFINER;
 
 
 create or replace function join_study_group(
@@ -142,8 +122,9 @@ begin
 
   perform join_goals(p_study_group_id);
 end;
-$$;
+$$ SECURITY DEFINER;
 
+--- TODO RLS
 
 create or replace function join_goals(
   p_study_group_id uuid
@@ -163,7 +144,7 @@ as $$
   from goals g
   where g.study_group_id = p_study_group_id
     and g.user_id is null;
-$$;
+$$ SECURITY DEFINER;
 
 
 create or replace function create_goal_template(
@@ -202,7 +183,7 @@ begin
 
   perform join_goals(study_group_id);
 end;
-$$;
+$$ SECURITY DEFINER;
 
 
 create or replace function leave_or_delete_study_group(
@@ -226,5 +207,5 @@ begin
       and user_id = auth.uid();
   end if;
 end;
-$$;
+$$ SECURITY DEFINER;
 
