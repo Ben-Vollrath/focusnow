@@ -1,6 +1,8 @@
 library study_group_repository;
 
 import 'package:analytics_repository/analytics_repository.dart';
+import 'package:study_group_repository/goal_leaderboard_entry.dart';
+import 'package:study_group_repository/leaderboard_entry.dart';
 import 'package:study_group_repository/study_group.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -114,7 +116,10 @@ class StudyGroupRepository {
   }
 
   Future<void> joinStudyGroup(String studyGroupId) async {
-    await supabaseClient.rpc('join_study_group');
+    await supabaseClient.rpc(
+      'join_study_group',
+      params: {'p_study_group_id': studyGroupId},
+    );
 
     _analyticsRepository.logEvent('study_group_joined');
   }
@@ -125,9 +130,12 @@ class StudyGroupRepository {
     _analyticsRepository.logEvent('study_group_left');
   }
 
-  Future<List<Map<String, dynamic>>> fetchGroupMemberDailyLeaderboard(
+  Future<List<LeaderboardEntry>> fetchGroupMemberDailyLeaderboard(
     String groupId,
   ) async {
+    final currentUserId = supabaseClient.auth.currentUser?.id;
+    if (currentUserId == null) throw Exception('User not authenticated');
+
     final userRes = await supabaseClient
         .from('study_group_members')
         .select('user_id')
@@ -143,6 +151,7 @@ class StudyGroupRepository {
         .inFilter('user_id', userIds);
 
     final leaderboard = leaderboardRes as List<dynamic>;
+
     leaderboard.sort(
       (a, b) => (b['total_study_time'] as int).compareTo(
         a['total_study_time'] as int,
@@ -151,14 +160,20 @@ class StudyGroupRepository {
 
     return leaderboard.asMap().entries.map((entry) {
       final item = Map<String, dynamic>.from(entry.value);
-      item['rank'] = entry.key + 1;
-      return item;
+      final rank = entry.key + 1;
+      return LeaderboardEntry.fromMap({
+        ...item,
+        'rank': rank,
+      }, isCurrentUser: item['user_id'] == currentUserId);
     }).toList();
   }
 
-  Future<List<Map<String, dynamic>>> fetchGroupMemberTotalLeaderboard(
+  Future<List<LeaderboardEntry>> fetchGroupMemberTotalLeaderboard(
     String groupId,
   ) async {
+    final currentUserId = supabaseClient.auth.currentUser?.id;
+    if (currentUserId == null) throw Exception('User not authenticated');
+
     final userRes = await supabaseClient
         .from('study_group_members')
         .select('user_id')
@@ -174,6 +189,7 @@ class StudyGroupRepository {
         .inFilter('user_id', userIds);
 
     final leaderboard = leaderboardRes as List<dynamic>;
+
     leaderboard.sort(
       (a, b) => (b['total_study_time'] as int).compareTo(
         a['total_study_time'] as int,
@@ -182,12 +198,15 @@ class StudyGroupRepository {
 
     return leaderboard.asMap().entries.map((entry) {
       final item = Map<String, dynamic>.from(entry.value);
-      item['rank'] = entry.key + 1;
-      return item;
+      final rank = entry.key + 1;
+      return LeaderboardEntry.fromMap({
+        ...item,
+        'rank': rank,
+      }, isCurrentUser: item['user_id'] == currentUserId);
     }).toList();
   }
 
-  Future<List<Map<String, dynamic>>> fetchGroupMemberGoalLeaderboard(
+  Future<List<GoalLeaderboardEntry>> fetchGroupMemberGoalLeaderboard(
     String groupId,
   ) async {
     final leaderboardRes = await supabaseClient
@@ -196,16 +215,19 @@ class StudyGroupRepository {
         .eq('study_group_id', groupId);
 
     final leaderboard = leaderboardRes as List<dynamic>;
+
     leaderboard.sort(
       (a, b) => (b['progress_percentage'] as num).compareTo(
         a['progress_percentage'] as num,
       ),
     );
 
-    return leaderboard.asMap().entries.map((entry) {
-      final item = Map<String, dynamic>.from(entry.value);
-      item['rank'] = entry.key + 1;
-      return item;
+    return leaderboard.map((entry) {
+      final item = Map<String, dynamic>.from(entry);
+      return GoalLeaderboardEntry(
+        userId: item['user_id'],
+        currentMinutes: item['current_minutes'] ?? 0,
+      );
     }).toList();
   }
 }

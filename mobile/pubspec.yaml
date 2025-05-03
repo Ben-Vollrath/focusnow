@@ -32,6 +32,8 @@ dependencies:
     path: packages/user_repository
   leaderboard_repository:
     path: packages/leaderboard_repository
+  study_group_repository:
+    path: packages/study_group_repository
 
   supabase_flutter: ^2.5.7
   shared_preferences: ^2.5.3
