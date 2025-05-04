@@ -6,7 +6,7 @@ import 'package:study_group_repository/leaderboard_entry.dart';
 import 'package:study_group_repository/study_group.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-enum StudyGroupSortBy { createdAt, memberCount, goalMinutes }
+enum StudyGroupSortBy { memberCount, goalMinutes, goalDate, createdAt }
 
 extension StudyGroupSortByExtension on StudyGroupSortBy {
   String get name {
@@ -17,6 +17,21 @@ extension StudyGroupSortByExtension on StudyGroupSortBy {
         return 'member_count';
       case StudyGroupSortBy.goalMinutes:
         return 'total_goal_minutes';
+      case StudyGroupSortBy.goalDate:
+        return 'goal_date';
+    }
+  }
+
+  String get displayName {
+    switch (this) {
+      case StudyGroupSortBy.createdAt:
+        return 'Created At';
+      case StudyGroupSortBy.memberCount:
+        return 'Member Count';
+      case StudyGroupSortBy.goalMinutes:
+        return 'Goal Time';
+      case StudyGroupSortBy.goalDate:
+        return 'Goal Date';
     }
   }
 }
@@ -34,23 +49,23 @@ class StudyGroupRepository {
   Future<List<StudyGroup>> fetchStudyGroups({
     int page = 0,
     int pageSize = 6,
-    StudyGroupSortBy sortBy = StudyGroupSortBy.createdAt,
+    StudyGroupSortBy sortBy = StudyGroupSortBy.memberCount,
     bool ascending = false,
   }) async {
-    final from = page * pageSize;
-    final to = from + pageSize - 1;
-
-    final response = await supabaseClient
-        .from('study_group_stats')
-        .select()
-        .order(sortBy.name, ascending: ascending)
-        .range(from, to);
-
-    final data = response as List<dynamic>;
-    return data.map((json) => StudyGroup.fromJson(json)).toList();
+    return _fetchStudyGroupsFromStats(
+      sortBy: sortBy,
+      ascending: ascending,
+      page: page,
+      pageSize: pageSize,
+    );
   }
 
-  Future<List<StudyGroup>> fetchJoinedStudyGroups() async {
+  Future<List<StudyGroup>> fetchJoinedStudyGroups({
+    int page = 0,
+    int pageSize = 6,
+    StudyGroupSortBy sortBy = StudyGroupSortBy.memberCount,
+    bool ascending = false,
+  }) async {
     final userId = supabaseClient.auth.currentUser?.id;
     if (userId == null) throw Exception('User not authenticated');
 
@@ -66,13 +81,42 @@ class StudyGroupRepository {
 
     if (groupIds.isEmpty) return [];
 
-    final statsRes = await supabaseClient
-        .from('study_group_stats')
-        .select()
-        .inFilter('id', groupIds);
+    return _fetchStudyGroupsFromStats(
+      sortBy: sortBy,
+      ascending: ascending,
+      filterIds: groupIds,
+    );
+  }
 
-    final stats = statsRes as List<dynamic>;
-    return stats.map((json) => StudyGroup.fromJson(json)).toList();
+  Future<List<StudyGroup>> _fetchStudyGroupsFromStats({
+    required StudyGroupSortBy sortBy,
+    required bool ascending,
+    int page = 0,
+    int pageSize = 6,
+    List<String>? filterIds,
+  }) async {
+    final from = page * pageSize;
+    final to = from + pageSize - 1;
+    var query;
+
+    if (filterIds != null && filterIds.isNotEmpty) {
+      query = supabaseClient
+          .from('study_group_stats')
+          .select()
+          .eq('study_group_id', filterIds)
+          .order(sortBy.name, ascending: ascending)
+          .range(from, to);
+    } else {
+      query = supabaseClient
+          .from('study_group_stats')
+          .select()
+          .order(sortBy.name, ascending: ascending)
+          .range(from, to);
+    }
+
+    final response = await query;
+    final data = response as List<dynamic>;
+    return data.map((json) => StudyGroup.fromJson(json)).toList();
   }
 
   Future<void> createStudyGroup({
@@ -130,7 +174,7 @@ class StudyGroupRepository {
     _analyticsRepository.logEvent('study_group_left');
   }
 
-  Future<List<LeaderboardEntry>> fetchGroupMemberDailyLeaderboard(
+  Future<List<StudyGroupLeaderboardEntry>> fetchGroupMemberDailyLeaderboard(
     String groupId,
   ) async {
     final currentUserId = supabaseClient.auth.currentUser?.id;
@@ -161,14 +205,14 @@ class StudyGroupRepository {
     return leaderboard.asMap().entries.map((entry) {
       final item = Map<String, dynamic>.from(entry.value);
       final rank = entry.key + 1;
-      return LeaderboardEntry.fromMap({
+      return StudyGroupLeaderboardEntry.fromMap({
         ...item,
         'rank': rank,
       }, isCurrentUser: item['user_id'] == currentUserId);
     }).toList();
   }
 
-  Future<List<LeaderboardEntry>> fetchGroupMemberTotalLeaderboard(
+  Future<List<StudyGroupLeaderboardEntry>> fetchGroupMemberTotalLeaderboard(
     String groupId,
   ) async {
     final currentUserId = supabaseClient.auth.currentUser?.id;
@@ -199,7 +243,7 @@ class StudyGroupRepository {
     return leaderboard.asMap().entries.map((entry) {
       final item = Map<String, dynamic>.from(entry.value);
       final rank = entry.key + 1;
-      return LeaderboardEntry.fromMap({
+      return StudyGroupLeaderboardEntry.fromMap({
         ...item,
         'rank': rank,
       }, isCurrentUser: item['user_id'] == currentUserId);
@@ -217,17 +261,13 @@ class StudyGroupRepository {
     final leaderboard = leaderboardRes as List<dynamic>;
 
     leaderboard.sort(
-      (a, b) => (b['progress_percentage'] as num).compareTo(
-        a['progress_percentage'] as num,
-      ),
+      (a, b) =>
+          (b['current_minutes'] as int).compareTo(a['current_minutes'] as int),
     );
 
     return leaderboard.map((entry) {
       final item = Map<String, dynamic>.from(entry);
-      return GoalLeaderboardEntry(
-        userId: item['user_id'],
-        currentMinutes: item['current_minutes'] ?? 0,
-      );
+      return GoalLeaderboardEntry.fromJson(item);
     }).toList();
   }
 }
