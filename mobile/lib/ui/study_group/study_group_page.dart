@@ -1,24 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/study_group/study_group_bloc.dart';
+import 'package:focusnow/ui/study_group/group_tile.dart';
+import 'package:focusnow/ui/study_group/study_group_detail_page.dart';
 import 'package:study_group_repository/study_group_repository.dart';
 
-class StudyGroupPage extends StatelessWidget {
+class StudyGroupPage extends StatefulWidget {
   const StudyGroupPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => StudyGroupBloc(StudyGroupRepository())
-        ..add(FetchStudyGroups())
-        ..add(FetchJoinedGroups()),
-      child: const StudyGroupView(),
-    );
-  }
+  State<StudyGroupPage> createState() => _StudyGroupPageState();
 }
 
-class StudyGroupView extends StatelessWidget {
-  const StudyGroupView({super.key});
+class _StudyGroupPageState extends State<StudyGroupPage> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 100) {
+      context.read<StudyGroupBloc>().add(NextPage());
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +40,7 @@ class StudyGroupView extends StatelessWidget {
       appBar: AppBar(title: const Text('Study Groups')),
       body: BlocBuilder<StudyGroupBloc, StudyGroupState>(
         builder: (context, state) {
-          if (state.isLoading) {
+          if (state.isLoading && state.groups.isEmpty) {
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -34,43 +48,63 @@ class StudyGroupView extends StatelessWidget {
             return Center(child: Text('Error: ${state.error}'));
           }
 
-          return ListView(
-            padding: const EdgeInsets.all(16),
+          return Column(
             children: [
-              const Text('Joined Groups',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ...state.joinedGroups.map((group) => ListTile(
-                    title: Text(group.name),
-                    subtitle: Text(group.description),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.exit_to_app),
-                      onPressed: () {
-                        context
-                            .read<StudyGroupBloc>()
-                            .add(LeaveStudyGroup(group.id));
-                      },
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+                  children: [
+                    ChoiceChip(
+                      label: const Text('Only Joined'),
+                      selected: state.showJoined,
+                      onSelected: (_) => context.read<StudyGroupBloc>().add(
+                            ChangeShowJoined(showJoined: !state.showJoined),
+                          ),
                     ),
-                    onTap: () {
-                      context
-                          .read<StudyGroupBloc>()
-                          .add(FetchLeaderboards(group.id));
-                    },
-                  )),
-              const SizedBox(height: 24),
-              const Text('Public Groups',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ...state.groups.map((group) => ListTile(
-                    title: Text(group.name),
-                    subtitle: Text(group.description),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.group_add),
-                      onPressed: () {
-                        context
-                            .read<StudyGroupBloc>()
-                            .add(JoinStudyGroup(group.id));
+                    const Spacer(),
+                    DropdownButton<StudyGroupSortBy>(
+                      value: state.sortBy,
+                      onChanged: (value) {
+                        if (value != null) {
+                          context.read<StudyGroupBloc>().add(
+                                ChangeGroupSortBy(sortBy: value),
+                              );
+                        }
                       },
+                      items: StudyGroupSortBy.values.map((sortOption) {
+                        return DropdownMenuItem(
+                          value: sortOption,
+                          child: Text(sortOption.displayName),
+                        );
+                      }).toList(),
                     ),
-                  )),
+                    IconButton(
+                      icon: Icon(state.ascending
+                          ? Icons.arrow_upward
+                          : Icons.arrow_downward),
+                      onPressed: () {
+                        context.read<StudyGroupBloc>().add(
+                              ChangeGroupSortOrder(ascending: !state.ascending),
+                            );
+                      },
+                    )
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.separated(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.all(12),
+                  itemCount: state.groups.length,
+                  itemBuilder: (context, index) {
+                    return GroupTile(group: state.groups[index]);
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const SizedBox(height: 16);
+                  },
+                ),
+              ),
             ],
           );
         },
