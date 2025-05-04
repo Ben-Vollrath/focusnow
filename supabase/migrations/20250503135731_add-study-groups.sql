@@ -43,10 +43,18 @@ select
     where g.study_group_id = sg.id
       and g.user_id is null
     limit 1
-  ), 0) as total_goal_minutes
+  )) as total_goal_minutes,
+  (
+    select g.target_date
+    from goals g
+    where g.study_group_id = sg.id
+      and g.user_id is null
+    limit 1
+  ) as goal_date
 from study_groups sg
 left join study_group_members sgm on sgm.study_group_id = sg.id
 group by sg.id;
+
 
 
 create or replace view goal_progress_leaderboard 
