@@ -4,17 +4,36 @@ part of 'study_group_bloc.dart';
 abstract class StudyGroupEvent {}
 
 class FetchStudyGroups extends StudyGroupEvent {
-  final int page;
-  final StudyGroupSortBy sortBy;
-  final bool ascending;
+  final bool isNextPage;
 
-  FetchStudyGroups(
-      {this.page = 0,
-      this.sortBy = StudyGroupSortBy.createdAt,
-      this.ascending = false});
+  FetchStudyGroups({this.isNextPage = false});
 }
 
-class FetchJoinedGroups extends StudyGroupEvent {}
+class ChangeGroupSortBy extends StudyGroupEvent {
+  final StudyGroupSortBy sortBy;
+
+  ChangeGroupSortBy({required this.sortBy});
+}
+
+class ChangeShowJoined extends StudyGroupEvent {
+  final bool showJoined;
+
+  ChangeShowJoined({required this.showJoined});
+}
+
+class NextPage extends StudyGroupEvent {}
+
+class ChangeGroupSortOrder extends StudyGroupEvent {
+  final bool ascending;
+
+  ChangeGroupSortOrder({required this.ascending});
+}
+
+class FetchJoinedGroups extends StudyGroupEvent {
+  final int page;
+
+  FetchJoinedGroups({this.page = 0});
+}
 
 class CreateStudyGroup extends StudyGroupEvent {
   final String name;

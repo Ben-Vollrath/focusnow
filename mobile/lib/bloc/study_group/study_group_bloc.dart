@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:leaderboard_repository/leaderboard_entry.dart';
 import 'package:study_group_repository/goal_leaderboard_entry.dart';
+import 'package:study_group_repository/leaderboard_entry.dart';
 import 'package:study_group_repository/study_group.dart';
 import 'package:study_group_repository/study_group_repository.dart';
 
@@ -13,35 +15,45 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
 
   StudyGroupBloc(this.repository) : super(StudyGroupState()) {
     on<FetchStudyGroups>(_onFetchStudyGroups);
-    on<FetchJoinedGroups>(_onFetchJoinedGroups);
     on<CreateStudyGroup>(_onCreateStudyGroup);
     on<JoinStudyGroup>(_onJoinStudyGroup);
     on<LeaveStudyGroup>(_onLeaveStudyGroup);
     on<CreateGroupGoal>(_onCreateGroupGoal);
     on<FetchLeaderboards>(_onFetchLeaderboards);
+    on<ChangeGroupSortBy>(_onChangeGroupSortBy);
+    on<ChangeGroupSortOrder>(_onChangeGroupSortOrder);
+    on<ChangeShowJoined>(_onChangeShowJoined);
+    on<NextPage>(_onNextPage);
   }
 
   Future<void> _onFetchStudyGroups(
       FetchStudyGroups event, Emitter<StudyGroupState> emit) async {
     emit(state.copyWith(isLoading: true));
     try {
-      final groups = await repository.fetchStudyGroups(
-        page: event.page,
-        sortBy: event.sortBy,
-        ascending: event.ascending,
-      );
-      emit(state.copyWith(groups: groups, isLoading: false));
-    } catch (e) {
-      emit(state.copyWith(error: e.toString(), isLoading: false));
-    }
-  }
+      var groups = <StudyGroup>[];
+      if (state.showJoined) {
+        groups = await repository.fetchJoinedStudyGroups(
+          page: state.page,
+          sortBy: state.sortBy,
+          ascending: state.ascending,
+        );
+      } else {
+        groups = await repository.fetchStudyGroups(
+          page: state.page,
+          sortBy: state.sortBy,
+          ascending: state.ascending,
+        );
+      }
 
-  Future<void> _onFetchJoinedGroups(
-      FetchJoinedGroups event, Emitter<StudyGroupState> emit) async {
-    emit(state.copyWith(isLoading: true));
-    try {
-      final joinedGroups = await repository.fetchJoinedStudyGroups();
-      emit(state.copyWith(joinedGroups: joinedGroups, isLoading: false));
+      emit(state.copyWith(
+          groups: event.isNextPage
+              ? [
+                  ...state.groups,
+                  ...groups,
+                ]
+              : groups,
+          isLoading: false,
+          endOfListReached: groups.isEmpty));
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
     }
@@ -113,13 +125,40 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
       final goal =
           await repository.fetchGroupMemberGoalLeaderboard(event.groupId);
       emit(state.copyWith(
-        dailyLeaderboard: daily as List<LeaderboardEntry>?,
-        totalLeaderboard: total as List<LeaderboardEntry>?,
+        dailyLeaderboard: daily,
+        totalLeaderboard: total,
         goalLeaderboard: goal,
         isLoading: false,
       ));
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
     }
+  }
+
+  FutureOr<void> _onChangeGroupSortBy(
+      ChangeGroupSortBy event, Emitter<StudyGroupState> emit) {
+    emit(
+        state.copyWith(sortBy: event.sortBy, endOfListReached: false, page: 0));
+    add(FetchStudyGroups());
+  }
+
+  FutureOr<void> _onChangeGroupSortOrder(
+      ChangeGroupSortOrder event, Emitter<StudyGroupState> emit) {
+    emit(state.copyWith(
+        ascending: event.ascending, endOfListReached: false, page: 0));
+    add(FetchStudyGroups());
+  }
+
+  FutureOr<void> _onChangeShowJoined(
+      ChangeShowJoined event, Emitter<StudyGroupState> emit) {
+    emit(state.copyWith(
+        showJoined: event.showJoined, endOfListReached: false, page: 0));
+    add(FetchStudyGroups());
+  }
+
+  FutureOr<void> _onNextPage(NextPage event, Emitter<StudyGroupState> emit) {
+    if (state.isLoading || state.endOfListReached) return null;
+    emit(state.copyWith(page: state.page + 1));
+    add(FetchStudyGroups(isNextPage: true));
   }
 }
