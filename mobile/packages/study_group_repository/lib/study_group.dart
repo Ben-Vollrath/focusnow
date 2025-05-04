@@ -7,7 +7,8 @@ class StudyGroup extends Equatable {
   final DateTime createdAt;
   final bool isPublic;
   final int memberCount;
-  final int goalMinutes;
+  final int? goalMinutes;
+  final DateTime? goalDate;
 
   const StudyGroup({
     required this.id,
@@ -17,6 +18,7 @@ class StudyGroup extends Equatable {
     required this.isPublic,
     required this.memberCount,
     required this.goalMinutes,
+    required this.goalDate,
   });
 
   factory StudyGroup.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,7 @@ class StudyGroup extends Equatable {
       isPublic: json['ispublic'],
       memberCount: json['member_count'],
       goalMinutes: json['total_goal_minutes'],
+      goalDate: DateTime.tryParse(json['goal_date'] as String? ?? ''),
     );
   }
 
@@ -40,5 +43,6 @@ class StudyGroup extends Equatable {
     isPublic,
     memberCount,
     goalMinutes,
+    goalDate,
   ];
 }

@@ -1,16 +1,16 @@
 import 'package:equatable/equatable.dart';
 
-class LeaderboardEntry extends Equatable {
+class StudyGroupLeaderboardEntry extends Equatable {
   final String userId;
-  final String name;
+  final String userName;
   final int totalStudyTime;
   final int totalStudySessions;
   final int rank;
   final bool isCurrentUser;
 
-  const LeaderboardEntry({
+  const StudyGroupLeaderboardEntry({
     required this.userId,
-    required this.name,
+    required this.userName,
     required this.totalStudyTime,
     required this.totalStudySessions,
     required this.rank,
@@ -20,19 +20,19 @@ class LeaderboardEntry extends Equatable {
   @override
   List<Object?> get props => [
     userId,
-    name,
+    userName,
     totalStudyTime,
     totalStudySessions,
     rank,
   ];
 
-  factory LeaderboardEntry.fromMap(
+  factory StudyGroupLeaderboardEntry.fromMap(
     Map<String, dynamic> map, {
     bool isCurrentUser = false,
   }) {
-    return LeaderboardEntry(
+    return StudyGroupLeaderboardEntry(
       userId: map['user_id'],
-      name: map['username'],
+      userName: map['username'],
       totalStudyTime: map['total_study_time'] ?? 0,
       totalStudySessions: map['total_study_sessions'] ?? 0,
       rank: map['rank'],
