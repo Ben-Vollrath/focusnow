@@ -162,9 +162,8 @@ create or replace function create_goal_template(
   name text,
   description text,
   study_group_id uuid,
-  target_minutes int,
   target_date date,
-  xp_reward int
+  target_minutes int
 )
 returns void
 language plpgsql
@@ -201,7 +200,7 @@ begin
     study_group_id,
     target_minutes,
     target_date,
-    xp_reward,
+    target_minutes / 20,
     null
   )
   returning id into new_goal_id;
@@ -233,8 +232,7 @@ begin
 
   -- Delete the template goal (where user_id is null)
   delete from goals
-  where study_group_id = group_id
-    and user_id is null;
+  where study_group_id = group_id;
 end;
 $$ security definer;
 
