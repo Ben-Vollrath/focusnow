@@ -57,7 +57,7 @@ class _StudyGroupInputSheetState extends State<StudyGroupInputSheet> {
             ),
             TextFormField(
               controller: _descriptionController,
-              maxLength: 50,
+              maxLength: 70,
               decoration: const InputDecoration(labelText: 'Description'),
               maxLines: 1,
             ),
