@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/study_group/study_group_bloc.dart';
+import 'package:focusnow/ui/leaderboard/leaderboard_tile.dart';
+import 'package:focusnow/ui/study_group/goal_leaderboard_tile.dart';
 import 'package:study_group_repository/goal_leaderboard_entry.dart';
 import 'package:study_group_repository/leaderboard_entry.dart';
 import 'package:study_group_repository/study_group.dart';
@@ -16,7 +18,7 @@ class StudyGroupDetailPage extends StatefulWidget {
 }
 
 class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
-  String leaderboardType = 'daily';
+  String leaderboardType = 'goal';
 
   @override
   void initState() {
@@ -31,9 +33,9 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
       body: BlocBuilder<StudyGroupBloc, StudyGroupState>(
         builder: (context, state) {
           final leaderboard = switch (leaderboardType) {
+            'goal' => state.goalLeaderboard,
             'daily' => state.dailyLeaderboard,
             'total' => state.totalLeaderboard,
-            'goal' => state.goalLeaderboard,
             _ => []
           };
 
@@ -49,6 +51,13 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
                 Row(
                   children: [
                     ChoiceChip(
+                      label: const Text('Goal'),
+                      selected: leaderboardType == 'goal',
+                      onSelected: (_) =>
+                          setState(() => leaderboardType = 'goal'),
+                    ),
+                    const SizedBox(width: 8),
+                    ChoiceChip(
                       label: const Text('Daily'),
                       selected: leaderboardType == 'daily',
                       onSelected: (_) =>
@@ -61,13 +70,6 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
                       onSelected: (_) =>
                           setState(() => leaderboardType = 'total'),
                     ),
-                    const SizedBox(width: 8),
-                    ChoiceChip(
-                      label: const Text('Goal'),
-                      selected: leaderboardType == 'goal',
-                      onSelected: (_) =>
-                          setState(() => leaderboardType = 'goal'),
-                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -76,13 +78,23 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
                     itemCount: leaderboard.length,
                     itemBuilder: (context, index) {
                       final entry = leaderboard[index];
-                      return ListTile(
-                        title: Text(entry.userName),
-                        subtitle: Text(entry is StudyGroupLeaderboardEntry
-                            ? '${entry.totalStudyTime} min • ${entry.totalStudySessions} sessions'
-                            : '${(entry as GoalLeaderboardEntry).currentMinutes} min'),
-                        leading: Text('#${index + 1}'),
-                      );
+                      switch (entry) {
+                        case StudyGroupLeaderboardEntry _:
+                          return LeaderboardTile(
+                            rank: entry.rank,
+                            userName: entry.userName,
+                            studyMinutes: entry.totalStudyTime,
+                            studySessions: entry.totalStudySessions,
+                            isCurrentUser: entry.isCurrentUser,
+                          );
+                        case GoalLeaderboardEntry _:
+                          return GoalLeaderboardTile(
+                            userName: entry.userName,
+                            rank: index + 1,
+                            currentMinutes: entry.currentMinutes,
+                            goalMinutes: widget.group.goalMinutes!,
+                          );
+                      }
                     },
                   ),
                 ),

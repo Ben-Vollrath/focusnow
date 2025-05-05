@@ -23,12 +23,13 @@ class RoundedProgressIndicator extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              textLeft,
-              style: TextStyle(
-                color: textColor ?? Theme.of(context).colorScheme.onSurface,
+            if (textLeft.isNotEmpty)
+              Text(
+                textLeft,
+                style: TextStyle(
+                  color: textColor ?? Theme.of(context).colorScheme.onSurface,
+                ),
               ),
-            ),
             textRight,
           ],
         ),
