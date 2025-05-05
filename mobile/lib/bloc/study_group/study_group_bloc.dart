@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:study_group_repository/goal_leaderboard_entry.dart';
+import 'package:study_group_repository/input_goal.dart';
 import 'package:study_group_repository/leaderboard_entry.dart';
 import 'package:study_group_repository/study_group.dart';
 import 'package:study_group_repository/study_group_repository.dart';
@@ -24,6 +25,9 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
     on<ChangeGroupSortOrder>(_onChangeGroupSortOrder);
     on<ChangeShowJoined>(_onChangeShowJoined);
     on<NextPage>(_onNextPage);
+    on<SelectGroup>(_onSelectGroup);
+    on<RefreshSelectedGroup>(_onRefreshSelectedGroup);
+    on<DeleteGroupGoal>(_onDeleteGroupGoal);
   }
 
   Future<void> _onFetchStudyGroups(
@@ -68,7 +72,7 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
         description: event.description,
         isPublic: event.isPublic,
       );
-      add(FetchJoinedGroups());
+      add(FetchStudyGroups());
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
     }
@@ -78,8 +82,9 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
       JoinStudyGroup event, Emitter<StudyGroupState> emit) async {
     emit(state.copyWith(isLoading: true));
     try {
-      await repository.joinStudyGroup(event.groupId);
-      add(FetchJoinedGroups());
+      await repository.joinStudyGroup(state.selectedGroup!.id);
+      add(RefreshSelectedGroup());
+      add(FetchStudyGroups());
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
     }
@@ -89,8 +94,9 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
       LeaveStudyGroup event, Emitter<StudyGroupState> emit) async {
     emit(state.copyWith(isLoading: true));
     try {
-      await repository.leaveStudyGroup(event.groupId);
-      add(FetchJoinedGroups());
+      await repository.leaveStudyGroup(state.selectedGroup!.id);
+      add(RefreshSelectedGroup());
+      add(FetchStudyGroups());
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
     }
@@ -101,14 +107,11 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
     emit(state.copyWith(isLoading: true));
     try {
       await repository.createStudyGroupGoal(
-        name: event.name,
-        description: event.description,
-        studyGroupId: event.groupId,
-        targetMinutes: event.targetMinutes,
-        targetDate: event.targetDate,
-        xpReward: event.xpReward,
+        goal: event.inputGoal,
+        studyGroupId: state.selectedGroup!.id,
       );
-      add(FetchJoinedGroups());
+      add(FetchStudyGroups());
+      add(FetchStudyGroups());
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
     }
@@ -118,12 +121,12 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
       FetchLeaderboards event, Emitter<StudyGroupState> emit) async {
     emit(state.copyWith(isLoading: true));
     try {
-      final daily =
-          await repository.fetchGroupMemberDailyLeaderboard(event.groupId);
-      final total =
-          await repository.fetchGroupMemberTotalLeaderboard(event.groupId);
-      final goal =
-          await repository.fetchGroupMemberGoalLeaderboard(event.groupId);
+      final daily = await repository
+          .fetchGroupMemberDailyLeaderboard(state.selectedGroup!.id);
+      final total = await repository
+          .fetchGroupMemberTotalLeaderboard(state.selectedGroup!.id);
+      final goal = await repository
+          .fetchGroupMemberGoalLeaderboard(state.selectedGroup!.id);
       emit(state.copyWith(
         dailyLeaderboard: daily,
         totalLeaderboard: total,
@@ -160,5 +163,31 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
     if (state.isLoading || state.endOfListReached) return null;
     emit(state.copyWith(page: state.page + 1));
     add(FetchStudyGroups(isNextPage: true));
+  }
+
+  FutureOr<void> _onSelectGroup(
+      SelectGroup event, Emitter<StudyGroupState> emit) {
+    emit(state.copyWith(selectedGroup: event.group));
+    add(FetchLeaderboards());
+  }
+
+  FutureOr<void> _onRefreshSelectedGroup(
+      RefreshSelectedGroup event, Emitter<StudyGroupState> emit) async {
+    final refreshedGroup =
+        await repository.fetchStudyGroup(state.selectedGroup!.id);
+    emit(state.copyWith(
+      selectedGroup: refreshedGroup,
+    ));
+    add(FetchLeaderboards());
+  }
+
+  FutureOr<void> _onDeleteGroupGoal(
+      DeleteGroupGoal event, Emitter<StudyGroupState> emit) async {
+    try {
+      await repository.deleteGroupGoal(state.selectedGroup!.id);
+      add(FetchLeaderboards());
+    } catch (e) {
+      emit(state.copyWith(error: e.toString(), isLoading: false));
+    }
   }
 }

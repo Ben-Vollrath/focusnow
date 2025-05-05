@@ -21,6 +21,12 @@ class ChangeShowJoined extends StudyGroupEvent {
   ChangeShowJoined({required this.showJoined});
 }
 
+class SelectGroup extends StudyGroupEvent {
+  final StudyGroup group;
+
+  SelectGroup(this.group);
+}
+
 class NextPage extends StudyGroupEvent {}
 
 class ChangeGroupSortOrder extends StudyGroupEvent {
@@ -43,35 +49,20 @@ class CreateStudyGroup extends StudyGroupEvent {
   CreateStudyGroup(this.name, this.description, this.isPublic);
 }
 
-class JoinStudyGroup extends StudyGroupEvent {
-  final String groupId;
-  JoinStudyGroup(this.groupId);
-}
+class JoinStudyGroup extends StudyGroupEvent {}
 
-class LeaveStudyGroup extends StudyGroupEvent {
-  final String groupId;
-  LeaveStudyGroup(this.groupId);
-}
+class LeaveStudyGroup extends StudyGroupEvent {}
 
 class CreateGroupGoal extends StudyGroupEvent {
-  final String name;
-  final String description;
-  final String groupId;
-  final int targetMinutes;
-  final DateTime? targetDate;
-  final int xpReward;
+  final InputGoal inputGoal;
 
   CreateGroupGoal({
-    required this.name,
-    required this.description,
-    required this.groupId,
-    required this.targetMinutes,
-    required this.targetDate,
-    required this.xpReward,
+    required this.inputGoal,
   });
 }
 
-class FetchLeaderboards extends StudyGroupEvent {
-  final String groupId;
-  FetchLeaderboards(this.groupId);
-}
+class DeleteGroupGoal extends StudyGroupEvent {}
+
+class FetchLeaderboards extends StudyGroupEvent {}
+
+class RefreshSelectedGroup extends StudyGroupEvent {}

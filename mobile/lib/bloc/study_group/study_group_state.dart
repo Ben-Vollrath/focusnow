@@ -2,6 +2,7 @@ part of 'study_group_bloc.dart';
 
 class StudyGroupState extends Equatable {
   final List<StudyGroup> groups;
+  final StudyGroup? selectedGroup;
   final List<StudyGroupLeaderboardEntry> dailyLeaderboard;
   final List<StudyGroupLeaderboardEntry> totalLeaderboard;
   final List<GoalLeaderboardEntry> goalLeaderboard;
@@ -15,6 +16,7 @@ class StudyGroupState extends Equatable {
 
   StudyGroupState({
     this.groups = const [],
+    this.selectedGroup,
     this.dailyLeaderboard = const [],
     this.totalLeaderboard = const [],
     this.goalLeaderboard = const [],
@@ -29,6 +31,7 @@ class StudyGroupState extends Equatable {
 
   StudyGroupState copyWith({
     List<StudyGroup>? groups,
+    StudyGroup? selectedGroup,
     List<StudyGroupLeaderboardEntry>? dailyLeaderboard,
     List<StudyGroupLeaderboardEntry>? totalLeaderboard,
     List<GoalLeaderboardEntry>? goalLeaderboard,
@@ -42,6 +45,7 @@ class StudyGroupState extends Equatable {
   }) {
     return StudyGroupState(
       groups: groups ?? this.groups,
+      selectedGroup: selectedGroup ?? this.selectedGroup,
       dailyLeaderboard: dailyLeaderboard ?? this.dailyLeaderboard,
       totalLeaderboard: totalLeaderboard ?? this.totalLeaderboard,
       goalLeaderboard: goalLeaderboard ?? this.goalLeaderboard,
@@ -58,6 +62,7 @@ class StudyGroupState extends Equatable {
   @override
   List<Object?> get props => [
         groups,
+        selectedGroup,
         dailyLeaderboard,
         totalLeaderboard,
         goalLeaderboard,
