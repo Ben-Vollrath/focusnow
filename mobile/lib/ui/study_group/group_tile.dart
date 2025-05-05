@@ -17,7 +17,7 @@ class GroupTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.read<StudyGroupBloc>().add(SelectGroup(group));
+        context.read<StudyGroupBloc>().add(SelectGroup(group: group));
         Navigator.push(
           context,
           MaterialPageRoute(

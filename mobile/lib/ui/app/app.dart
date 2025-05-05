@@ -1,4 +1,5 @@
 import 'package:analytics_repository/analytics_repository.dart';
+import 'package:app_links/app_links.dart';
 import 'package:challenge_repository/challenge_repository.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flow_builder/flow_builder.dart';
@@ -18,6 +19,7 @@ import 'package:focusnow/bloc/user/user_bloc.dart';
 import 'package:focusnow/static/theme/theme.dart';
 import 'package:focusnow/static/theme/util.dart';
 import 'package:focusnow/ui/app/routes/routes.dart';
+import 'package:focusnow/ui/study_group/study_group_detail_page.dart';
 import 'package:goal_repository/goal_repository.dart';
 import 'package:leaderboard_repository/leaderboard_repository.dart';
 import 'package:notification_repository/notification_repository.dart';
@@ -124,7 +126,34 @@ class AppView extends StatelessWidget {
           theme: theme.dark(),
           home: KeyboardDismissOnTap(
             dismissOnCapturedTaps: true,
-            child: NavFlowBuilder(),
+            child: Builder(
+              builder: (BuildContext context) {
+                AppLinks().uriLinkStream.listen((uri) {
+                  if (uri.scheme == 'io.vollrath.focusnow' &&
+                      uri.host == 'group') {
+                    final studyGroupId = uri.pathSegments.isNotEmpty
+                        ? uri.pathSegments[0]
+                        : null;
+                    if (studyGroupId != null &&
+                        context.read<AppBloc>().state.status ==
+                            AppStatus.authenticated) {
+                      context
+                          .read<StudyGroupBloc>()
+                          .add(SelectGroup(groupId: studyGroupId));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          settings:
+                              const RouteSettings(name: "StudyGroupDetail"),
+                          builder: (context) => StudyGroupDetailPage(),
+                        ),
+                      );
+                    }
+                  }
+                });
+                return NavFlowBuilder();
+              },
+            ),
           )),
     );
   }

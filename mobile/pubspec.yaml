@@ -35,6 +35,7 @@ dependencies:
   study_group_repository:
     path: packages/study_group_repository
 
+  app_links: ^6.4.0
   supabase_flutter: ^2.5.7
   shared_preferences: ^2.5.3
   google_sign_in: ^6.1.0

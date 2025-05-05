@@ -22,9 +22,10 @@ class ChangeShowJoined extends StudyGroupEvent {
 }
 
 class SelectGroup extends StudyGroupEvent {
-  final StudyGroup group;
+  final String? groupId;
+  final StudyGroup? group;
 
-  SelectGroup(this.group);
+  SelectGroup({this.group, this.groupId});
 }
 
 class NextPage extends StudyGroupEvent {}
@@ -61,6 +62,8 @@ class CreateGroupGoal extends StudyGroupEvent {
     required this.inputGoal,
   });
 }
+
+class ShareGroup extends StudyGroupEvent {}
 
 class DeleteGroupGoal extends StudyGroupEvent {}
 

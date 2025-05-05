@@ -59,7 +59,7 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
                     context.read<StudyGroupBloc>().add(JoinStudyGroup());
                   }
                 },
-                icon: state.selectedGroup!.isJoined
+                icon: state.selectedGroup?.isJoined ?? false
                     ? Icon(Icons.logout,
                         color: Theme.of(context).colorScheme.error)
                     : const Icon(Icons.login, color: Color(0xFF3FBF7F))),
@@ -74,9 +74,18 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
               };
 
               var list = [
-                Text(state.selectedGroup!.name,
-                    style: Theme.of(context).textTheme.titleLarge),
-                Text(state.selectedGroup!.description,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(state.selectedGroup?.name ?? "",
+                        style: Theme.of(context).textTheme.titleLarge),
+                    IconButton(
+                        onPressed: () =>
+                            context.read<StudyGroupBloc>().add(ShareGroup()),
+                        icon: Icon(Icons.share))
+                  ],
+                ),
+                Text(state.selectedGroup?.description ?? "",
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: Theme.of(context)
                             .colorScheme
@@ -86,14 +95,14 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
                 IconBadge(
                     icon: const Icon(Icons.person_sharp,
                         size: 16, color: Colors.orange),
-                    text: state.selectedGroup!.memberCount.toString(),
+                    text: state.selectedGroup?.memberCount.toString() ?? "-",
                     tooltipMessage: "Group Members"),
                 const SizedBox(height: 16),
                 _goalDisplay(state, context),
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    if (state.selectedGroup!.goal?.targetMinutes != null)
+                    if (state.selectedGroup?.goal?.targetMinutes != null)
                       Row(
                         children: [
                           ChoiceChip(
@@ -143,7 +152,7 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
                             rank: index + 1,
                             currentMinutes: entry.currentMinutes,
                             goalMinutes:
-                                state.selectedGroup!.goal?.targetMinutes ?? 0,
+                                state.selectedGroup?.goal?.targetMinutes ?? 0,
                           );
                       }
                     },
@@ -167,9 +176,9 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
 
   Widget _goalDisplay(StudyGroupState state, BuildContext context) {
     final userId = context.read<AppBloc>().state.user.id;
-    final isOwner = state.selectedGroup!.ownerId == userId;
+    final isOwner = state.selectedGroup?.ownerId == userId;
 
-    return state.selectedGroup!.goal?.targetMinutes != null
+    return state.selectedGroup?.goal?.targetMinutes != null
         ? FlatContainer(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +188,7 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
                   children: [
                     Expanded(
                       child: Text(
-                        state.selectedGroup!.goal!.name,
+                        state.selectedGroup?.goal!.name ?? "",
                         style: Theme.of(context).textTheme.bodyLarge,
                         softWrap: true,
                         overflow: TextOverflow.visible,
@@ -194,11 +203,11 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
                       ),
                     XpBadge(
                         text:
-                            "${state.selectedGroup!.goal!.xpReward.toString()} XP"),
+                            "${state.selectedGroup?.goal!.xpReward.toString()} XP"),
                   ],
                 ),
                 const SizedBox(height: 4),
-                Text(state.selectedGroup!.goal!.description,
+                Text(state.selectedGroup?.goal!.description ?? "",
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: Theme.of(context)
                             .colorScheme
@@ -212,7 +221,7 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
                       icon: const Icon(Icons.timer,
                           size: 16, color: Colors.orange),
                       text: formatDuration(
-                        state.selectedGroup!.goal!.targetMinutes,
+                        state.selectedGroup?.goal!.targetMinutes ?? 0,
                       ),
                       tooltipMessage: "Goal Time",
                     ),
@@ -221,7 +230,7 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
                     const SizedBox(width: 8),
                     IconBadge(
                         icon: Icon(Icons.calendar_month_outlined, size: 16),
-                        text: state.selectedGroup!.goal?.targetDate != null
+                        text: state.selectedGroup?.goal?.targetDate != null
                             ? DateFormat.yMMMd()
                                 .format(state.selectedGroup!.goal!.targetDate!)
                             : "",

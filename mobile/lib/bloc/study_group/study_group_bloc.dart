@@ -28,6 +28,7 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
     on<SelectGroup>(_onSelectGroup);
     on<RefreshSelectedGroup>(_onRefreshSelectedGroup);
     on<DeleteGroupGoal>(_onDeleteGroupGoal);
+    on<ShareGroup>(_onShareGroup);
   }
 
   Future<void> _onFetchStudyGroups(
@@ -166,9 +167,14 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
   }
 
   FutureOr<void> _onSelectGroup(
-      SelectGroup event, Emitter<StudyGroupState> emit) {
-    emit(state.copyWith(selectedGroup: event.group));
+      SelectGroup event, Emitter<StudyGroupState> emit) async {
+    var group = event.group;
+    if (event.groupId != null) {
+      group = await repository.fetchStudyGroup(event.groupId!);
+    }
+    emit(state.copyWith(selectedGroup: group));
     add(FetchLeaderboards());
+    return null;
   }
 
   FutureOr<void> _onRefreshSelectedGroup(
@@ -190,5 +196,10 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
     }
+  }
+
+  FutureOr<void> _onShareGroup(
+      ShareGroup event, Emitter<StudyGroupState> emit) async {
+    await repository.shareStudyGroup(state.selectedGroup!);
   }
 }

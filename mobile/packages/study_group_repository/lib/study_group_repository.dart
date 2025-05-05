@@ -1,6 +1,7 @@
 library study_group_repository;
 
 import 'package:analytics_repository/analytics_repository.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:study_group_repository/goal_leaderboard_entry.dart';
 import 'package:study_group_repository/input_goal.dart';
 import 'package:study_group_repository/leaderboard_entry.dart';
@@ -152,12 +153,14 @@ class StudyGroupRepository {
           .from('study_group_stats')
           .select()
           .inFilter('id', filterIds)
+          .eq('ispublic', true)
           .order(sortBy.name, ascending: ascending)
           .range(from, to);
     } else {
       query = supabaseClient
           .from('study_group_stats')
           .select()
+          .eq('ispublic', true)
           .order(sortBy.name, ascending: ascending)
           .range(from, to);
     }
@@ -354,5 +357,43 @@ class StudyGroupRepository {
       final item = Map<String, dynamic>.from(entry);
       return GoalLeaderboardEntry.fromJson(item);
     }).toList();
+  }
+
+  Future<void> shareStudyGroup(StudyGroup group) async {
+    final link = Uri.parse('https://focusnow.vollrath.io/group/${group.id}');
+
+    final buffer = StringBuffer();
+    buffer.writeln('Join my study group "${group.name}" on FocusNow!');
+    if (group.description.trim().isNotEmpty) {
+      buffer.writeln('\n${group.description.trim()}');
+    }
+    buffer.writeln(link.toString());
+
+    await SharePlus.instance.share(
+      ShareParams(
+        text: buffer.toString(),
+        subject: 'Join my study group "${group.name}" on FocusNow!',
+      ),
+    );
+  }
+
+  String _formatDuration(
+    int minutes, {
+    bool showUnit = true,
+    bool showUnitShort = false,
+  }) {
+    if (minutes >= 60) {
+      final double hours = minutes / 60;
+      final text = hours.toStringAsFixed(
+        hours.truncateToDouble() == hours ? 0 : 1,
+      );
+      return showUnit ? '$text h' : text;
+    } else {
+      return showUnit
+          ? showUnitShort
+              ? '$minutes m'
+              : '$minutes min'
+          : '$minutes';
+    }
   }
 }

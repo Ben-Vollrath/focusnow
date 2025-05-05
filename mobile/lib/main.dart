@@ -1,5 +1,6 @@
 import 'dart:isolate';
 
+import 'package:app_links/app_links.dart';
 import 'package:flutter/services.dart';
 import 'package:focusnow/ui/app/app.dart';
 import 'package:focusnow/ui/app/bloc_observer.dart';
@@ -31,6 +32,8 @@ Future<void> main() async {
   runApp(MaterialApp(
     home: SplashScreen(),
   ));
+
+  AppLinks();
 
   // HydratedBloc storage
   HydratedBloc.storage = await HydratedStorage.build(
