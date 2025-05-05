@@ -31,20 +31,36 @@ class GroupTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(group.name,
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const Spacer(),
+                Expanded(
+                  child: Text(
+                    group.name,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis, // avoids breaking layout
+                    maxLines: 2,
+                  ),
+                ),
                 if (group.isJoined)
-                  IconBadge(
-                      icon: Icon(Icons.check),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: IconBadge(
+                      icon: const Icon(Icons.check),
                       text: "Joined",
-                      tooltipMessage: "You joined this group"),
+                      tooltipMessage: "You joined this group",
+                    ),
+                  ),
               ],
             ),
             const SizedBox(height: 8),
-            Text(group.description, style: TextStyle(color: Colors.grey)),
+            Text(
+              group.description,
+              style: TextStyle(color: Colors.grey),
+              softWrap: true,
+              overflow: TextOverflow.visible,
+            ),
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -57,15 +73,15 @@ class GroupTile extends StatelessWidget {
                 IconBadge(
                     icon:
                         const Icon(Icons.timer, size: 16, color: Colors.orange),
-                    text: group.goalMinutes != null || group.goalMinutes == 0
-                        ? formatDuration(group.goalMinutes!)
+                    text: group.goal?.targetMinutes != null
+                        ? formatDuration(group.goal!.targetMinutes)
                         : "-",
                     tooltipMessage: "Current Group Goal"),
                 IconBadge(
                     icon: const Icon(Icons.calendar_month_outlined,
                         size: 16, color: Colors.orange),
-                    text: group.goalDate != null
-                        ? DateFormat.yMMMd().format(group.goalDate!)
+                    text: group.goal?.targetDate != null
+                        ? DateFormat.yMMMd().format(group.goal!.targetDate!)
                         : "-",
                     tooltipMessage: "Group Goal Date"),
               ],

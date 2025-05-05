@@ -40,8 +40,8 @@ class _GoalInputSheetState extends State<GoalInputSheet> {
       ),
       child: Form(
         key: _formKey,
-        child: Wrap(
-          runSpacing: 16,
+        child: ListView(
+          shrinkWrap: true,
           children: [
             Center(
               child: Container(
@@ -65,6 +65,7 @@ class _GoalInputSheetState extends State<GoalInputSheet> {
             ),
             TextFormField(
               controller: _nameController,
+              maxLength: 30,
               decoration: const InputDecoration(labelText: 'Goal Name'),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
@@ -75,8 +76,9 @@ class _GoalInputSheetState extends State<GoalInputSheet> {
             ),
             TextFormField(
               controller: _descriptionController,
+              maxLength: 50,
               decoration: const InputDecoration(labelText: 'Description'),
-              maxLines: 2,
+              maxLines: 1,
             ),
             TextFormField(
               controller: _targetController,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/study_group/study_group_bloc.dart';
+import 'package:focusnow/ui/study_group/create_group_sheet.dart';
 import 'package:focusnow/ui/study_group/group_tile.dart';
 import 'package:focusnow/ui/study_group/study_group_detail_page.dart';
 import 'package:study_group_repository/study_group_repository.dart';
@@ -37,7 +38,19 @@ class _StudyGroupPageState extends State<StudyGroupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Study Groups')),
+      appBar: AppBar(
+          title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text('Study Groups'),
+          IconButton(
+            onPressed: () => _openCreateGroupSheet(context, (event) {
+              context.read<StudyGroupBloc>().add(event);
+            }),
+            icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary),
+          )
+        ],
+      )),
       body: BlocBuilder<StudyGroupBloc, StudyGroupState>(
         builder: (context, state) {
           if (state.isLoading && state.groups.isEmpty) {
@@ -110,5 +123,25 @@ class _StudyGroupPageState extends State<StudyGroupPage> {
         },
       ),
     );
+  }
+
+  void _openCreateGroupSheet(
+      BuildContext context, void Function(CreateStudyGroup) onSubmit) async {
+    final result = await showModalBottomSheet<Map<String, dynamic>>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (_) => const StudyGroupInputSheet(),
+    );
+
+    if (result != null) {
+      onSubmit(
+        CreateStudyGroup(
+          name: result['name'] as String,
+          description: result['description'] as String,
+          isPublic: result['isPublic'] as bool,
+        ),
+      );
+    }
   }
 }

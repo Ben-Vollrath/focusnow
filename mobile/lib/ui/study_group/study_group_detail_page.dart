@@ -9,6 +9,7 @@ import 'package:focusnow/ui/study_group/goal_leaderboard_tile.dart';
 import 'package:focusnow/ui/widgets/duration_text.dart';
 import 'package:focusnow/ui/widgets/flat_container.dart';
 import 'package:focusnow/ui/widgets/icon_badge.dart';
+import 'package:focusnow/ui/widgets/xp_badge.dart';
 import 'package:intl/intl.dart';
 import 'package:study_group_repository/goal_leaderboard_entry.dart';
 import 'package:study_group_repository/input_goal.dart';
@@ -27,34 +28,41 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
   @override
   void initState() {
     super.initState();
-    final hasGoal =
-        context.read<StudyGroupBloc>().state.selectedGroup?.goalMinutes != null;
+    final hasGoal = context
+            .read<StudyGroupBloc>()
+            .state
+            .selectedGroup
+            ?.goal
+            ?.targetMinutes !=
+        null;
     leaderboardType = hasGoal ? 'goal' : 'daily';
   }
 
   @override
   Widget build(BuildContext context) {
+    final userId = context.read<AppBloc>().state.user.id;
+
     return BlocBuilder<StudyGroupBloc, StudyGroupState>(
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-              title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(state.selectedGroup!.name),
-              IconButton(
-                  onPressed: () {
-                    if (state.selectedGroup!.isJoined) {
-                      context.read<StudyGroupBloc>().add(LeaveStudyGroup());
-                    } else {
-                      context.read<StudyGroupBloc>().add(JoinStudyGroup());
+              title: Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+                onPressed: () {
+                  if (state.selectedGroup!.isJoined) {
+                    context.read<StudyGroupBloc>().add(LeaveStudyGroup());
+                    if (state.selectedGroup!.ownerId == userId) {
+                      Navigator.pop(context);
                     }
-                  },
-                  icon: state.selectedGroup!.isJoined
-                      ? Icon(Icons.logout,
-                          color: Theme.of(context).colorScheme.error)
-                      : const Icon(Icons.login, color: Color(0xFF3FBF7F))),
-            ],
+                  } else {
+                    context.read<StudyGroupBloc>().add(JoinStudyGroup());
+                  }
+                },
+                icon: state.selectedGroup!.isJoined
+                    ? Icon(Icons.logout,
+                        color: Theme.of(context).colorScheme.error)
+                    : const Icon(Icons.login, color: Color(0xFF3FBF7F))),
           )),
           body: BlocBuilder<StudyGroupBloc, StudyGroupState>(
             builder: (context, state) {
@@ -66,8 +74,14 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
               };
 
               var list = [
+                Text(state.selectedGroup!.name,
+                    style: Theme.of(context).textTheme.titleLarge),
                 Text(state.selectedGroup!.description,
-                    style: Theme.of(context).textTheme.bodyLarge),
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withAlpha(200))),
                 const SizedBox(height: 8),
                 IconBadge(
                     icon: const Icon(Icons.person_sharp,
@@ -79,7 +93,7 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    if (state.selectedGroup!.goalMinutes != null)
+                    if (state.selectedGroup!.goal?.targetMinutes != null)
                       Row(
                         children: [
                           ChoiceChip(
@@ -128,7 +142,8 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
                             userName: entry.userName,
                             rank: index + 1,
                             currentMinutes: entry.currentMinutes,
-                            goalMinutes: state.selectedGroup!.goalMinutes!,
+                            goalMinutes:
+                                state.selectedGroup!.goal?.targetMinutes ?? 0,
                           );
                       }
                     },
@@ -152,54 +167,99 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
 
   Widget _goalDisplay(StudyGroupState state, BuildContext context) {
     final userId = context.read<AppBloc>().state.user.id;
+    final isOwner = state.selectedGroup!.ownerId == userId;
 
-    return state.selectedGroup!.goalMinutes != null
+    return state.selectedGroup!.goal?.targetMinutes != null
         ? FlatContainer(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                DurationText(
-                  minutes: state.selectedGroup!.goalMinutes!,
-                  style: Theme.of(context).textTheme.bodyLarge,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        state.selectedGroup!.goal!.name,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
+                      ),
+                    ),
+                    if (isOwner)
+                      GestureDetector(
+                        child: const Icon(Icons.delete, color: Colors.red),
+                        onTap: () {
+                          context.read<StudyGroupBloc>().add(DeleteGroupGoal());
+                        },
+                      ),
+                    XpBadge(
+                        text:
+                            "${state.selectedGroup!.goal!.xpReward.toString()} XP"),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                Text('-', style: Theme.of(context).textTheme.bodyLarge),
-                const SizedBox(width: 8),
-                Icon(Icons.calendar_month_outlined,
-                    size: 16, color: Colors.orange),
-                const SizedBox(width: 8),
-                Text(
-                  state.selectedGroup!.goalDate != null
-                      ? DateFormat.yMMMd()
-                          .format(state.selectedGroup!.goalDate!)
-                      : "",
-                  style: Theme.of(context).textTheme.bodyLarge,
+                const SizedBox(height: 4),
+                Text(state.selectedGroup!.goal!.description,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withAlpha(200))),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconBadge(
+                      icon: const Icon(Icons.timer,
+                          size: 16, color: Colors.orange),
+                      text: formatDuration(
+                        state.selectedGroup!.goal!.targetMinutes,
+                      ),
+                      tooltipMessage: "Goal Time",
+                    ),
+                    const SizedBox(width: 8),
+                    const SizedBox(width: 8),
+                    const SizedBox(width: 8),
+                    IconBadge(
+                        icon: Icon(Icons.calendar_month_outlined, size: 16),
+                        text: state.selectedGroup!.goal?.targetDate != null
+                            ? DateFormat.yMMMd()
+                                .format(state.selectedGroup!.goal!.targetDate!)
+                            : "",
+                        tooltipMessage: "Goal Date"),
+                  ],
                 ),
               ],
             ),
           )
-        : state.selectedGroup!.ownerId == userId
+        : isOwner
             ? FlatContainer(
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.add),
-                  label: const Text('Create Goal'),
-                  onPressed: () async {
-                    final input = await showModalBottomSheet<InputGoal>(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Theme.of(context).colorScheme.surface,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(20)),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.add),
+                        label: const Text('Create Goal'),
+                        onPressed: () async {
+                          final input = await showModalBottomSheet<InputGoal>(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.surface,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20)),
+                            ),
+                            builder: (context) => const GoalInputSheet(),
+                          );
+                          if (input != null) {
+                            context
+                                .read<StudyGroupBloc>()
+                                .add(CreateGroupGoal(inputGoal: input));
+                          }
+                        },
                       ),
-                      builder: (context) => const GoalInputSheet(),
-                    );
-                    if (input != null) {
-                      context
-                          .read<StudyGroupBloc>()
-                          .add(CreateGroupGoal(inputGoal: input));
-                    }
-                  },
+                    ),
+                  ],
                 ),
               )
             : const SizedBox.shrink();
