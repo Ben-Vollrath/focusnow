@@ -111,7 +111,7 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
         studyGroupId: state.selectedGroup!.id,
       );
       add(FetchStudyGroups());
-      add(FetchStudyGroups());
+      add(RefreshSelectedGroup());
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
     }
@@ -186,6 +186,7 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
     try {
       await repository.deleteGroupGoal(state.selectedGroup!.id);
       add(FetchLeaderboards());
+      add(RefreshSelectedGroup());
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
     }

@@ -46,7 +46,8 @@ class CreateStudyGroup extends StudyGroupEvent {
   final String description;
   final bool isPublic;
 
-  CreateStudyGroup(this.name, this.description, this.isPublic);
+  CreateStudyGroup(
+      {required this.name, required this.description, required this.isPublic});
 }
 
 class JoinStudyGroup extends StudyGroupEvent {}
