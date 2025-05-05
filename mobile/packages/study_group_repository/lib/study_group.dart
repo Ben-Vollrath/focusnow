@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:study_group_repository/goal.dart';
 
 class StudyGroup extends Equatable {
   final String id;
@@ -7,8 +8,7 @@ class StudyGroup extends Equatable {
   final DateTime createdAt;
   final bool isPublic;
   final int memberCount;
-  final int? goalMinutes;
-  final DateTime? goalDate;
+  final Goal? goal;
   final bool isJoined;
   final String ownerId;
 
@@ -19,8 +19,7 @@ class StudyGroup extends Equatable {
     required this.createdAt,
     required this.isPublic,
     required this.memberCount,
-    required this.goalMinutes,
-    required this.goalDate,
+    required this.goal,
     required this.isJoined,
     required this.ownerId,
   });
@@ -36,8 +35,7 @@ class StudyGroup extends Equatable {
       createdAt: DateTime.parse(json['created_at']),
       isPublic: json['ispublic'],
       memberCount: json['member_count'],
-      goalMinutes: json['total_goal_minutes'],
-      goalDate: DateTime.tryParse(json['goal_date'] as String? ?? ''),
+      goal: json['goal'] != null ? Goal.fromJson(json['goal']) : null,
       isJoined: isJoined,
       ownerId: json['owner_id'],
     );
@@ -51,8 +49,7 @@ class StudyGroup extends Equatable {
     createdAt,
     isPublic,
     memberCount,
-    goalMinutes,
-    goalDate,
+    goal,
     isJoined,
     ownerId,
   ];
