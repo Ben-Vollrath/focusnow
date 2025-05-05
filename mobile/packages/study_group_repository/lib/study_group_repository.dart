@@ -2,6 +2,7 @@ library study_group_repository;
 
 import 'package:analytics_repository/analytics_repository.dart';
 import 'package:study_group_repository/goal_leaderboard_entry.dart';
+import 'package:study_group_repository/input_goal.dart';
 import 'package:study_group_repository/leaderboard_entry.dart';
 import 'package:study_group_repository/study_group.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -52,12 +53,54 @@ class StudyGroupRepository {
     StudyGroupSortBy sortBy = StudyGroupSortBy.memberCount,
     bool ascending = false,
   }) async {
+    final userId = supabaseClient.auth.currentUser?.id;
+    List<String> joinedGroupIds = [];
+
+    if (userId != null) {
+      final memberRes = await supabaseClient
+          .from('study_group_members')
+          .select('study_group_id')
+          .eq('user_id', userId);
+
+      joinedGroupIds =
+          (memberRes as List<dynamic>)
+              .map((e) => e['study_group_id'] as String)
+              .toList();
+    }
+
     return _fetchStudyGroupsFromStats(
       sortBy: sortBy,
       ascending: ascending,
       page: page,
       pageSize: pageSize,
+      joinedGroupIds: joinedGroupIds,
     );
+  }
+
+  Future<StudyGroup?> fetchStudyGroup(String groupId) async {
+    final response =
+        await supabaseClient
+            .from('study_group_stats')
+            .select()
+            .eq('id', groupId)
+            .single();
+
+    if (response == null) return null;
+
+    final userId = supabaseClient.auth.currentUser?.id;
+    bool isJoined = false;
+
+    if (userId != null) {
+      final memberRes = await supabaseClient
+          .from('study_group_members')
+          .select('study_group_id')
+          .eq('user_id', userId)
+          .eq('study_group_id', groupId);
+
+      isJoined = (memberRes as List<dynamic>).isNotEmpty;
+    }
+
+    return StudyGroup.fromJson(response, isJoined: isJoined);
   }
 
   Future<List<StudyGroup>> fetchJoinedStudyGroups({
@@ -85,6 +128,7 @@ class StudyGroupRepository {
       sortBy: sortBy,
       ascending: ascending,
       filterIds: groupIds,
+      joinedGroupIds: groupIds,
     );
   }
 
@@ -94,6 +138,7 @@ class StudyGroupRepository {
     int page = 0,
     int pageSize = 6,
     List<String>? filterIds,
+    List<String> joinedGroupIds = const [],
   }) async {
     final from = page * pageSize;
     final to = from + pageSize - 1;
@@ -103,7 +148,7 @@ class StudyGroupRepository {
       query = supabaseClient
           .from('study_group_stats')
           .select()
-          .eq('study_group_id', filterIds)
+          .inFilter('id', filterIds)
           .order(sortBy.name, ascending: ascending)
           .range(from, to);
     } else {
@@ -116,7 +161,12 @@ class StudyGroupRepository {
 
     final response = await query;
     final data = response as List<dynamic>;
-    return data.map((json) => StudyGroup.fromJson(json)).toList();
+
+    return data.map((json) {
+      final id = json['id'];
+      final isJoined = joinedGroupIds.contains(id);
+      return StudyGroup.fromJson(json, isJoined: isJoined);
+    }).toList();
   }
 
   Future<void> createStudyGroup({
@@ -137,26 +187,22 @@ class StudyGroupRepository {
   }
 
   Future<void> createStudyGroupGoal({
-    required String name,
-    required String description,
+    required InputGoal goal,
     required String studyGroupId,
-    required int targetMinutes,
-    required DateTime? targetDate,
-    required int xpReward,
   }) async {
-    await supabaseClient.rpc(
-      'create_goal_template',
-      params: {
-        'name': name,
-        'description': description,
-        'study_group_id': studyGroupId,
-        'target_minutes': targetMinutes,
-        'target_date': targetDate?.toIso8601String(),
-        'xp_reward': xpReward,
-      },
-    );
+    final params = goal.toJson()..addAll({'study_group_id': studyGroupId});
+    await supabaseClient.rpc('create_goal_template', params: params);
 
     _analyticsRepository.logEvent('study_group_goal_created');
+  }
+
+  Future<void> deleteGroupGoal(String goalId) async {
+    await supabaseClient.rpc(
+      'delete_goal_template',
+      params: {'goal_id': goalId},
+    );
+
+    _analyticsRepository.logEvent('study_group_goal_deleted');
   }
 
   Future<void> joinStudyGroup(String studyGroupId) async {
@@ -169,7 +215,10 @@ class StudyGroupRepository {
   }
 
   Future<void> leaveStudyGroup(String studyGroupId) async {
-    await supabaseClient.rpc('leave_or_delete_study_group');
+    await supabaseClient.rpc(
+      'leave_or_delete_study_group',
+      params: {'p_study_group_id': studyGroupId},
+    );
 
     _analyticsRepository.logEvent('study_group_left');
   }

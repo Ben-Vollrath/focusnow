@@ -18,6 +18,14 @@ ALTER TABLE goals
 ADD COLUMN study_group_id UUID REFERENCES study_groups(id) ON DELETE CASCADE,
 ADD COLUMN description TEXT DEFAULT '-';
 
+create unique index one_goal_template_per_group
+on goals(study_group_id)
+where user_id is null;
+
+create unique index one_goal_per_user_per_group
+on goals(study_group_id, user_id)
+where user_id is not null;
+
 ALTER TABLE goals DROP CONSTRAINT one_goal_per_user;
 DROP POLICY IF EXISTS "Users can read their own goals" ON goals;
 DROP POLICY IF EXISTS "Users can read delete their goals" ON goals;
@@ -36,6 +44,7 @@ select
   sg.description,
   sg.created_at,
   sg.isPublic,
+  sg.owner_id,
   count(distinct sgm.user_id) as member_count,
   coalesce((
     select g.target_minutes
@@ -90,12 +99,6 @@ CREATE POLICY "Read private study_groups if member"
         AND user_id = auth.uid()
     )
   );
-
-
-create unique index one_goal_template_per_group
-on goals(study_group_id)
-where user_id is null;
-
 
 create or replace function create_study_group(
   group_name text,
@@ -168,7 +171,21 @@ language plpgsql
 as $$
 declare
   new_goal_id uuid;
+  current_user_id uuid := auth.uid();
+  group_owner_id uuid;
 begin
+  -- Fetch the group's owner
+  select owner_id
+  into group_owner_id
+  from study_groups
+  where id = study_group_id;
+
+  -- Check ownership
+  if group_owner_id is null or group_owner_id != current_user_id then
+    raise exception 'Only the study group owner can create a goal template.';
+  end if;
+
+  -- Insert the goal template
   insert into goals (
     name,
     description,
@@ -189,9 +206,38 @@ begin
   )
   returning id into new_goal_id;
 
+  -- Automatically join the goal if needed
   perform join_goals(study_group_id);
 end;
-$$ SECURITY DEFINER;
+$$ security definer;
+
+
+create or replace function delete_goal_template(group_id uuid)
+returns void
+language plpgsql
+as $$
+declare
+  current_user_id uuid := auth.uid();
+  group_owner_id uuid;
+begin
+  -- Get the group's owner
+  select owner_id
+  into group_owner_id
+  from study_groups
+  where id = group_id;
+
+  -- Authorization check
+  if group_owner_id is null or group_owner_id != current_user_id then
+    raise exception 'Only the study group owner can delete the goal template.';
+  end if;
+
+  -- Delete the template goal (where user_id is null)
+  delete from goals
+  where study_group_id = group_id
+    and user_id is null;
+end;
+$$ security definer;
+
 
 
 create or replace function leave_or_delete_study_group(
@@ -213,6 +259,11 @@ begin
     delete from study_group_members
     where study_group_id = p_study_group_id
       and user_id = auth.uid();
+
+    delete from goals
+    where study_group_id = p_study_group_id
+      and user_id = auth.uid()
+      and study_group_id is not null;
   end if;
 end;
 $$ SECURITY DEFINER;

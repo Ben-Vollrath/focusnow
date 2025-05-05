@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:focusnow/bloc/study_group/study_group_bloc.dart';
 import 'package:focusnow/ui/study_group/study_group_detail_page.dart';
 import 'package:focusnow/ui/widgets/duration_text.dart';
 import 'package:focusnow/ui/widgets/flat_container.dart';
@@ -15,11 +17,12 @@ class GroupTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        context.read<StudyGroupBloc>().add(SelectGroup(group));
         Navigator.push(
           context,
           MaterialPageRoute(
             settings: const RouteSettings(name: "Group Detail"),
-            builder: (context) => StudyGroupDetailPage(group: group),
+            builder: (context) => StudyGroupDetailPage(),
           ),
         );
       },
@@ -27,8 +30,19 @@ class GroupTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(group.name,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Row(
+              children: [
+                Text(group.name,
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Spacer(),
+                if (group.isJoined)
+                  IconBadge(
+                      icon: Icon(Icons.check),
+                      text: "Joined",
+                      tooltipMessage: "You joined this group"),
+              ],
+            ),
             const SizedBox(height: 8),
             Text(group.description, style: TextStyle(color: Colors.grey)),
             const SizedBox(height: 8),
