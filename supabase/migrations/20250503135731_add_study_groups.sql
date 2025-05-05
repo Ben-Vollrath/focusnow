@@ -36,8 +36,7 @@ CREATE POLICY "Authenticated users can read all goals"
   USING (true);
 
 
-create or replace view study_group_stats
-with (security_barrier = true) as
+create or replace view  study_group_stats WITH (security_invoker) as
 select
   sg.id,
   sg.name,
@@ -99,6 +98,13 @@ CREATE POLICY "Read private study_groups if member"
         AND user_id = auth.uid()
     )
   );
+
+ALTER TABLE study_group_members ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Authenticated users can read study group memberships"
+  ON study_group_members
+  FOR SELECT
+  TO authenticated
+  USING (user_id = auth.uid());
 
 create or replace function create_study_group(
   group_name text,
