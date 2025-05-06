@@ -141,7 +141,7 @@ void main() {
           StudyGroupState().copyWith(
             showJoined: false,
             isLoading: false,
-            error: 'Exception: fail',
+            error: 'An error occured, try again later',
           ),
         ],
       );
