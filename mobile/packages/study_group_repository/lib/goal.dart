@@ -8,9 +8,10 @@ class Goal extends Equatable {
   final int currentMinutes;
   final bool completed;
   final String name;
+  final String description;
   final int xpReward;
 
-  Goal({
+  const Goal({
     required this.id,
     required this.createdAt,
     required this.targetDate,
@@ -18,6 +19,7 @@ class Goal extends Equatable {
     required this.currentMinutes,
     required this.completed,
     required this.name,
+    required this.description,
     required this.xpReward,
   });
 
@@ -30,6 +32,7 @@ class Goal extends Equatable {
     currentMinutes,
     completed,
     name,
+    description,
     xpReward,
   ];
 
@@ -45,30 +48,8 @@ class Goal extends Equatable {
       currentMinutes: json['current_minutes'],
       completed: json['completed'],
       name: json['name'],
+      description: json['description'],
       xpReward: json['xp_reward'],
     );
-  }
-}
-
-class InputGoal extends Equatable {
-  final DateTime? targetDate;
-  final int targetMinutes;
-  final String name;
-
-  InputGoal({
-    required this.targetDate,
-    required this.targetMinutes,
-    required this.name,
-  });
-
-  @override
-  List<Object?> get props => [targetDate, targetMinutes, name];
-
-  Map<String, dynamic> toJson() {
-    return {
-      'target_date': targetDate?.toIso8601String(),
-      'target_minutes': targetMinutes,
-      'name': name,
-    };
   }
 }

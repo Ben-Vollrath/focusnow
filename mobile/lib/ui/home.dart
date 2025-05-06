@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/study_timer/study_timer_bloc.dart';
 import 'package:focusnow/ui/leaderboard/leaderboard_page.dart';
+import 'package:focusnow/ui/study_group/study_group_page.dart';
 import 'package:focusnow/ui/study_timer/study_timer_page.dart';
 import 'package:focusnow/ui/challenges/challenges_page.dart';
 import 'package:focusnow/ui/stats/stats_page.dart';
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
     const StatsPage(),
     const StudyTimerPage(),
     const ChallengesPage(),
+    const StudyGroupPage()
   ];
 
   void _onItemTapped(int index) {
@@ -51,11 +53,11 @@ class _HomePageState extends State<HomePage> {
         builder: (context, state) {
           return PageView(
             controller: _pageController,
-            children: _pages,
             onPageChanged: _onPageChanged,
             physics: state.canInteractOutsideTimer
                 ? const BouncingScrollPhysics()
                 : const NeverScrollableScrollPhysics(),
+            children: _pages,
           );
         },
       ),
@@ -109,6 +111,10 @@ class _HomePageState extends State<HomePage> {
                       BottomNavigationBarItem(
                         icon: Icon(Icons.emoji_events_outlined),
                         label: 'Challenges',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.group_outlined),
+                        label: 'Study Groups',
                       ),
                     ],
                   ),

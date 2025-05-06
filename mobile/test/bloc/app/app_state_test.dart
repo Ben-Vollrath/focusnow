@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:focusnow/bloc/app/app_bloc.dart';
-import 'package:focusnow/ui/app/app.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

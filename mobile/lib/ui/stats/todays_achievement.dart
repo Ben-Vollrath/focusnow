@@ -10,7 +10,7 @@ class TodaysAchievements extends StatelessWidget {
   final int todaysSessions;
   final int todaysStudyTime;
 
-  const TodaysAchievements({
+  const TodaysAchievements({super.key, 
     required this.todaysSessions,
     required this.todaysStudyTime,
   });

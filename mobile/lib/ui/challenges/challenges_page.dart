@@ -1,7 +1,6 @@
 import 'package:analytics_repository/analytics_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:challenge_repository/challenge_repository.dart';
 import 'package:focusnow/bloc/challenge/challenge_bloc.dart';
 import 'package:focusnow/ui/challenges/category_filter_bar.dart';
 import 'package:focusnow/ui/challenges/challenge_tile.dart';
@@ -48,6 +47,8 @@ class _ChallengesPageState extends State<ChallengesPage> {
 
 @visibleForTesting
 class ChallengeList extends StatelessWidget {
+  const ChallengeList({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChallengeBloc, ChallengeState>(
@@ -76,6 +77,8 @@ class ChallengeList extends StatelessWidget {
 
 @visibleForTesting
 class CompletedCounter extends StatelessWidget {
+  const CompletedCounter({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChallengeBloc, ChallengeState>(

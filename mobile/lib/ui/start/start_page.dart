@@ -1,10 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:focusnow/bloc/login/login_cubit.dart';
 import 'package:focusnow/ui/login/login.dart';
 import 'package:analytics_repository/analytics_repository.dart';
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/ui/start/onboarding/onboarding_screen.dart';
 
 class StartPage extends StatefulWidget {

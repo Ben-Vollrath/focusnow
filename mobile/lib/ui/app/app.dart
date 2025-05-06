@@ -1,15 +1,13 @@
-import 'package:analytics_repository/analytics_repository.dart';
+import 'package:app_links/app_links.dart';
 import 'package:challenge_repository/challenge_repository.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/app/app_bloc.dart';
 import 'package:focusnow/bloc/challenge/challenge_bloc.dart';
-import 'package:focusnow/bloc/goal/goal_bloc.dart';
 import 'package:focusnow/bloc/leaderboard/leaderboard_bloc.dart';
 import 'package:focusnow/bloc/stats/stats_bloc.dart';
+import 'package:focusnow/bloc/study_group/study_group_bloc.dart';
 import 'package:focusnow/bloc/study_timer/study_timer_bloc.dart';
 import 'package:focusnow/bloc/login/login_cubit.dart';
 import 'package:focusnow/bloc/subscription/subscription_bloc.dart';
@@ -17,10 +15,11 @@ import 'package:focusnow/bloc/user/user_bloc.dart';
 import 'package:focusnow/static/theme/theme.dart';
 import 'package:focusnow/static/theme/util.dart';
 import 'package:focusnow/ui/app/routes/routes.dart';
-import 'package:goal_repository/goal_repository.dart';
+import 'package:focusnow/ui/study_group/study_group_detail_page.dart';
 import 'package:leaderboard_repository/leaderboard_repository.dart';
 import 'package:notification_repository/notification_repository.dart';
 import 'package:stats_repository/stats_repository.dart';
+import 'package:study_group_repository/study_group_repository.dart';
 import 'package:study_session_repository/study_session_repository.dart';
 import 'package:subscription_repository/subscription_repository.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -71,16 +70,18 @@ class App extends StatelessWidget {
                 StatsBloc(statsRepository: StatsRepository())..add(LoadStats()),
           ),
           BlocProvider(
-            create: (_) =>
-                GoalBloc(goalRepository: GoalRepository())..add(LoadGoal()),
-          ),
-          BlocProvider(
             create: (_) => UserBloc(),
           ),
           BlocProvider(
             create: (_) => LeaderboardBloc(
               leaderboardRepository: LeaderboardRepository(),
             ),
+          ),
+          BlocProvider(
+            create: (_) => StudyGroupBloc(StudyGroupRepository())
+              ..add(
+                FetchStudyGroups(),
+              ),
           ),
         ],
         child: const AppView(),
@@ -116,7 +117,34 @@ class AppView extends StatelessWidget {
           theme: theme.dark(),
           home: KeyboardDismissOnTap(
             dismissOnCapturedTaps: true,
-            child: NavFlowBuilder(),
+            child: Builder(
+              builder: (BuildContext context) {
+                AppLinks().uriLinkStream.listen((uri) {
+                  if (uri.scheme == 'io.vollrath.focusnow' &&
+                      uri.host == 'group') {
+                    final studyGroupId = uri.pathSegments.isNotEmpty
+                        ? uri.pathSegments[0]
+                        : null;
+                    if (studyGroupId != null &&
+                        context.read<AppBloc>().state.status ==
+                            AppStatus.authenticated) {
+                      context
+                          .read<StudyGroupBloc>()
+                          .add(SelectGroup(groupId: studyGroupId));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          settings:
+                              const RouteSettings(name: "StudyGroupDetail"),
+                          builder: (context) => StudyGroupDetailPage(),
+                        ),
+                      );
+                    }
+                  }
+                });
+                return NavFlowBuilder();
+              },
+            ),
           )),
     );
   }

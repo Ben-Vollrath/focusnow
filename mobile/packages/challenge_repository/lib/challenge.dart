@@ -33,7 +33,7 @@ class Challenge extends Equatable {
   final int condition_amount;
   final int difficulty;
 
-  Challenge({
+  const Challenge({
     required this.id,
     required this.name,
     required this.description,

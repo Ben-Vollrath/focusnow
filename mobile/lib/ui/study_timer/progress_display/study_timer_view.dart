@@ -252,8 +252,7 @@ class _StudyTimerViewState extends State<StudyTimerView> {
 
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          child: ListView(
             children: [
               for (final variant in TimerVariant.values) ...[
                 ListTile(

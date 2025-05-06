@@ -6,7 +6,6 @@ import 'package:analytics_repository/analytics_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:study_session_repository/study_session.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class StudySessionRepository {
   final SupabaseClient supabaseClient;

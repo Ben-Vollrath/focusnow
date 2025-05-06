@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:focusnow/ui/widgets/duration_text.dart';
 import 'package:focusnow/ui/widgets/flat_container.dart';
 import 'package:focusnow/ui/widgets/icon_badge.dart';
+import 'package:focusnow/ui/widgets/rank_display.dart';
 
 class LeaderboardTile extends StatelessWidget {
   final int rank;
@@ -23,16 +24,7 @@ class LeaderboardTile extends StatelessWidget {
     return FlatContainer(
         child: Row(
       children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text("#$rank", style: const TextStyle(fontSize: 24)),
-          ),
-        ),
+        RankDisplay(rankVal: rank),
         const SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,11 +67,11 @@ class LeaderboardTile extends StatelessWidget {
   Widget _buildRankIcon(int rank) {
     switch (rank) {
       case 1:
-        return const Icon(Icons.emoji_events, color: Colors.yellow);
+        return const Icon(Icons.star, color: Colors.yellow);
       case 2:
-        return const Icon(Icons.emoji_events, color: Colors.grey);
+        return const Icon(Icons.star, color: Colors.grey);
       case 3:
-        return const Icon(Icons.emoji_events, color: Colors.brown);
+        return const Icon(Icons.star, color: Colors.brown);
       default:
         return const SizedBox.shrink();
     }

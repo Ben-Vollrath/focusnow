@@ -1,10 +1,8 @@
 import 'package:focusnow/bloc/app/app_bloc.dart';
-import 'package:focusnow/ui/app/app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:focusnow/ui/app/routes/routes.dart';
 import 'package:focusnow/ui/home.dart';
-import 'package:focusnow/ui/login/login_page.dart';
 import 'package:focusnow/ui/paywall/paywall.dart';
 import 'package:focusnow/ui/start/start_page.dart';
 import 'package:focusnow/bloc/subscription/subscription_bloc.dart';

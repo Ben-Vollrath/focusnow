@@ -18,6 +18,11 @@ const router = createRouter({
       name: "delete",
       component: () => import("../views/DeleteView.vue"),
     },
+    {
+      path: "/group/:id",
+      name: "group-redirect",
+      component: () => import("../views/GroupRedirectView.vue"),
+    },
   ],
 });
 

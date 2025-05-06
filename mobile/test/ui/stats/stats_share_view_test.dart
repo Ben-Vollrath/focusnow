@@ -3,14 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/challenge/challenge_bloc.dart';
-import 'package:focusnow/bloc/goal/goal_bloc.dart';
 import 'package:focusnow/bloc/stats/stats_bloc.dart';
 import 'package:focusnow/ui/stats/stats_share_view.dart';
-import 'package:focusnow/ui/stats/goal_box.dart';
 import 'package:focusnow/ui/stats/level_box.dart';
 import 'package:focusnow/ui/stats/study_chart.dart';
 import 'package:focusnow/ui/stats/todays_achievement.dart';
-import 'package:goal_repository/goal.dart';
 import 'package:stats_repository/daily_study_data.dart';
 import 'package:stats_repository/user_stats.dart';
 import 'package:mocktail/mocktail.dart';
@@ -18,14 +15,11 @@ import 'package:mocktail/mocktail.dart';
 class MockStatsBloc extends MockBloc<StatsEvent, StatsState>
     implements StatsBloc {}
 
-class MockGoalBloc extends MockBloc<GoalEvent, GoalState> implements GoalBloc {}
-
 class MockChallengeBloc extends MockBloc<ChallengeEvent, ChallengeState>
     implements ChallengeBloc {}
 
 void main() {
   late MockStatsBloc mockStatsBloc;
-  late MockGoalBloc mockGoalBloc;
   late MockChallengeBloc mockChallengeBloc;
 
   final today = DateTime.now();
@@ -56,27 +50,11 @@ void main() {
 
   setUp(() {
     mockStatsBloc = MockStatsBloc();
-    mockGoalBloc = MockGoalBloc();
     mockChallengeBloc = MockChallengeBloc();
   });
 
   Widget buildWidget({required StatsState statsState}) {
     when(() => mockStatsBloc.state).thenReturn(statsState);
-    when(() => mockGoalBloc.state).thenReturn(
-      GoalState.initial().copyWith(
-        status: GoalStatus.loaded,
-        goal: Goal(
-          id: "goal-id",
-          name: "Deep Focus",
-          targetMinutes: 100,
-          currentMinutes: 50,
-          xpReward: 20,
-          createdAt: DateTime(2024),
-          targetDate: DateTime(2025),
-          completed: false,
-        ),
-      ),
-    );
 
     when(() => mockChallengeBloc.state).thenReturn(
       ChallengeState.initial().copyWith(status: Status.loaded, challenges: []),
@@ -87,7 +65,6 @@ void main() {
         providers: [
           BlocProvider<ChallengeBloc>.value(value: mockChallengeBloc),
           BlocProvider<StatsBloc>.value(value: mockStatsBloc),
-          BlocProvider<GoalBloc>.value(value: mockGoalBloc),
         ],
         child: const StatsShareView(),
       ),
@@ -140,12 +117,7 @@ void main() {
         levels: [],
       ),
     );
-    when(() => mockGoalBloc.state).thenReturn(
-      GoalState.initial().copyWith(status: GoalStatus.loaded, goal: null),
-    );
 
     await tester.pumpWidget(buildWidget(statsState: mockStatsBloc.state));
-
-    expect(find.byType(GoalBox), findsNothing);
   });
 }
