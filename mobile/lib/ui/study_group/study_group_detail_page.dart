@@ -77,12 +77,23 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(state.selectedGroup?.name ?? "",
-                        style: Theme.of(context).textTheme.titleLarge),
-                    IconButton(
+                    Expanded(
+                      child: Text(state.selectedGroup?.name ?? "",
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
+                          style: Theme.of(context).textTheme.titleLarge),
+                    ),
+                    const SizedBox(width: 8),
+                    FilledButton(
                         onPressed: () =>
                             context.read<StudyGroupBloc>().add(ShareGroup()),
-                        icon: Icon(Icons.share))
+                        child: Row(
+                          children: [
+                            Icon(Icons.share),
+                            const SizedBox(width: 4),
+                            Text('Share'),
+                          ],
+                        ))
                   ],
                 ),
                 Text(state.selectedGroup?.description ?? "",
