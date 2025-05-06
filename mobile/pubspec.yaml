@@ -24,8 +24,6 @@ dependencies:
     path: packages/challenge_repository
   stats_repository:
     path: packages/stats_repository
-  goal_repository:
-    path: packages/goal_repository
   notification_repository:
     path: packages/notification_repository
   user_repository:
