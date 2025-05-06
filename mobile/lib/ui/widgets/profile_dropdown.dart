@@ -86,40 +86,39 @@ class ProfileDropdownButton extends StatelessWidget {
                 ],
               ),
             ),
-            state.user.isAnonymous
-                ? PopupMenuItem(
-                    value: 'login',
-                    child: Column(
-                      children: [
-                        Text(
-                          'Create an Account to save your progress!',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(
-                                  color: Theme.of(context).colorScheme.error),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: const [
-                            Icon(Icons.login, size: 20),
-                            SizedBox(width: 8),
-                            Text('Create Account'),
-                          ],
-                        ),
-                      ],
+            if (state.user.isAnonymous)
+              PopupMenuItem(
+                value: 'login',
+                child: Column(
+                  children: [
+                    Text(
+                      'Create an Account to save your progress!',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: Theme.of(context).colorScheme.error),
                     ),
-                  )
-                : PopupMenuItem(
-                    value: 'logout',
-                    child: Row(
+                    const SizedBox(height: 8),
+                    Row(
                       children: const [
-                        Icon(Icons.logout, size: 20),
+                        Icon(Icons.login, size: 20),
                         SizedBox(width: 8),
-                        Text('Logout'),
+                        Text('Create Account'),
                       ],
                     ),
-                  ),
+                  ],
+                ),
+              ),
+            PopupMenuItem(
+              value: 'logout',
+              child: Row(
+                children: const [
+                  Icon(Icons.logout, size: 20),
+                  SizedBox(width: 8),
+                  Text('Logout'),
+                ],
+              ),
+            ),
           ],
         );
       },
