@@ -60,7 +60,8 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
           isLoading: false,
           endOfListReached: groups.isEmpty));
     } catch (e) {
-      emit(state.copyWith(error: e.toString(), isLoading: false));
+      emit(state.copyWith(
+          error: "An error occured, try again later", isLoading: false));
     }
   }
 
@@ -75,7 +76,8 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
       );
       add(FetchStudyGroups());
     } catch (e) {
-      emit(state.copyWith(error: e.toString(), isLoading: false));
+      emit(state.copyWith(
+          error: "An error occured, try again later", isLoading: false));
     }
   }
 
@@ -87,7 +89,8 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
       add(RefreshSelectedGroup());
       add(FetchStudyGroups());
     } catch (e) {
-      emit(state.copyWith(error: e.toString(), isLoading: false));
+      emit(state.copyWith(
+          error: "An error occured, try again later", isLoading: false));
     }
   }
 
@@ -99,7 +102,8 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
       add(RefreshSelectedGroup());
       add(FetchStudyGroups());
     } catch (e) {
-      emit(state.copyWith(error: e.toString(), isLoading: false));
+      emit(state.copyWith(
+          error: "An error occured, try again later", isLoading: false));
     }
   }
 
@@ -114,7 +118,8 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
       add(FetchStudyGroups());
       add(RefreshSelectedGroup());
     } catch (e) {
-      emit(state.copyWith(error: e.toString(), isLoading: false));
+      emit(state.copyWith(
+          error: "An error occured, try again later", isLoading: false));
     }
   }
 
@@ -135,7 +140,8 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
         isLoading: false,
       ));
     } catch (e) {
-      emit(state.copyWith(error: e.toString(), isLoading: false));
+      emit(state.copyWith(
+          error: "An error occured, try again later", isLoading: false));
     }
   }
 
@@ -194,7 +200,8 @@ class StudyGroupBloc extends Bloc<StudyGroupEvent, StudyGroupState> {
       add(FetchLeaderboards());
       add(RefreshSelectedGroup());
     } catch (e) {
-      emit(state.copyWith(error: e.toString(), isLoading: false));
+      emit(state.copyWith(
+          error: "An error occured, try again later", isLoading: false));
     }
   }
 
