@@ -5,6 +5,7 @@ import 'package:focusnow/ui/study_group/create_group_sheet.dart';
 import 'package:focusnow/ui/study_group/group_tile.dart';
 import 'package:focusnow/ui/study_group/study_group_detail_page.dart';
 import 'package:study_group_repository/study_group_repository.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StudyGroupPage extends StatefulWidget {
   const StudyGroupPage({super.key});
@@ -68,6 +69,33 @@ class _StudyGroupPageState extends State<StudyGroupPage> {
 
             return Column(
               children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: GestureDetector(
+                    onTap: () async {
+                      final url =
+                          Uri.parse('https://www.reddit.com/r/FocusNow/');
+                      await launchUrl(url);
+                    },
+                    child: Row(
+                      children: [
+                        Text('Find study groups in our SubReddit',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withAlpha(200))),
+                        const SizedBox(width: 8),
+                        Image.asset('assets/reddit_logo.png',
+                            width: 32, height: 32),
+                      ],
+                    ),
+                  ),
+                ),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
