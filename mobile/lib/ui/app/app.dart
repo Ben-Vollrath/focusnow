@@ -8,7 +8,6 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/app/app_bloc.dart';
 import 'package:focusnow/bloc/challenge/challenge_bloc.dart';
-import 'package:focusnow/bloc/goal/goal_bloc.dart';
 import 'package:focusnow/bloc/leaderboard/leaderboard_bloc.dart';
 import 'package:focusnow/bloc/stats/stats_bloc.dart';
 import 'package:focusnow/bloc/study_group/study_group_bloc.dart';
@@ -20,7 +19,6 @@ import 'package:focusnow/static/theme/theme.dart';
 import 'package:focusnow/static/theme/util.dart';
 import 'package:focusnow/ui/app/routes/routes.dart';
 import 'package:focusnow/ui/study_group/study_group_detail_page.dart';
-import 'package:goal_repository/goal_repository.dart';
 import 'package:leaderboard_repository/leaderboard_repository.dart';
 import 'package:notification_repository/notification_repository.dart';
 import 'package:stats_repository/stats_repository.dart';
@@ -73,10 +71,6 @@ class App extends StatelessWidget {
           BlocProvider(
             create: (_) =>
                 StatsBloc(statsRepository: StatsRepository())..add(LoadStats()),
-          ),
-          BlocProvider(
-            create: (_) =>
-                GoalBloc(goalRepository: GoalRepository())..add(LoadGoal()),
           ),
           BlocProvider(
             create: (_) => UserBloc(),
