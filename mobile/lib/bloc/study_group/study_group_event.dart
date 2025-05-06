@@ -36,12 +36,6 @@ class ChangeGroupSortOrder extends StudyGroupEvent {
   ChangeGroupSortOrder({required this.ascending});
 }
 
-class FetchJoinedGroups extends StudyGroupEvent {
-  final int page;
-
-  FetchJoinedGroups({this.page = 0});
-}
-
 class CreateStudyGroup extends StudyGroupEvent {
   final String name;
   final String description;

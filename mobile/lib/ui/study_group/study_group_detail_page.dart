@@ -44,141 +44,147 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
 
     return BlocBuilder<StudyGroupBloc, StudyGroupState>(
       builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-              title: Align(
-            alignment: Alignment.centerRight,
-            child: IconButton(
-                onPressed: () {
-                  if (state.selectedGroup!.isJoined) {
-                    context.read<StudyGroupBloc>().add(LeaveStudyGroup());
-                    if (state.selectedGroup!.ownerId == userId) {
-                      Navigator.pop(context);
-                    }
-                  } else {
-                    context.read<StudyGroupBloc>().add(JoinStudyGroup());
-                  }
-                },
-                icon: state.selectedGroup?.isJoined ?? false
-                    ? Icon(Icons.logout,
-                        color: Theme.of(context).colorScheme.error)
-                    : const Icon(Icons.login, color: Color(0xFF3FBF7F))),
-          )),
-          body: BlocBuilder<StudyGroupBloc, StudyGroupState>(
-            builder: (context, state) {
-              final leaderboard = switch (leaderboardType) {
-                'goal' => state.goalLeaderboard,
-                'daily' => state.dailyLeaderboard,
-                'total' => state.totalLeaderboard,
-                _ => []
-              };
-
-              var list = [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(state.selectedGroup?.name ?? "",
-                          softWrap: true,
-                          overflow: TextOverflow.visible,
-                          style: Theme.of(context).textTheme.titleLarge),
-                    ),
-                    const SizedBox(width: 8),
-                    FilledButton(
-                        onPressed: () =>
-                            context.read<StudyGroupBloc>().add(ShareGroup()),
-                        child: Row(
-                          children: [
-                            Icon(Icons.share),
-                            const SizedBox(width: 4),
-                            Text('Share'),
-                          ],
-                        ))
-                  ],
-                ),
-                Text(state.selectedGroup?.description ?? "",
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withAlpha(200))),
-                const SizedBox(height: 8),
-                IconBadge(
-                    icon: const Icon(Icons.person_sharp,
-                        size: 16, color: Colors.orange),
-                    text: state.selectedGroup?.memberCount.toString() ?? "-",
-                    tooltipMessage: "Group Members"),
-                const SizedBox(height: 16),
-                _goalDisplay(state, context),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    if (state.selectedGroup?.goal?.targetMinutes != null)
-                      Row(
-                        children: [
-                          ChoiceChip(
-                            label: const Text('Goal'),
-                            selected: leaderboardType == 'goal',
-                            onSelected: (_) =>
-                                setState(() => leaderboardType = 'goal'),
-                          ),
-                          const SizedBox(width: 8),
-                        ],
-                      ),
-                    ChoiceChip(
-                      label: const Text('Daily'),
-                      selected: leaderboardType == 'daily',
-                      onSelected: (_) =>
-                          setState(() => leaderboardType = 'daily'),
-                    ),
-                    const SizedBox(width: 8),
-                    ChoiceChip(
-                      label: const Text('Total'),
-                      selected: leaderboardType == 'total',
-                      onSelected: (_) =>
-                          setState(() => leaderboardType = 'total'),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 12),
-                    itemCount: leaderboard.length,
-                    itemBuilder: (context, index) {
-                      final entry = leaderboard[index];
-                      switch (entry) {
-                        case StudyGroupLeaderboardEntry _:
-                          return LeaderboardTile(
-                            rank: entry.rank,
-                            userName: entry.userName,
-                            studyMinutes: entry.totalStudyTime,
-                            studySessions: entry.totalStudySessions,
-                            isCurrentUser: entry.isCurrentUser,
-                          );
-                        case GoalLeaderboardEntry _:
-                          return GoalLeaderboardTile(
-                            userName: entry.userName,
-                            rank: index + 1,
-                            currentMinutes: entry.currentMinutes,
-                            goalMinutes:
-                                state.selectedGroup?.goal?.targetMinutes ?? 0,
-                          );
+        return RefreshIndicator(
+          onRefresh: () async {
+            context.read<StudyGroupBloc>().add(RefreshSelectedGroup());
+            context.read<StudyGroupBloc>().add(FetchLeaderboards());
+          },
+          child: Scaffold(
+            appBar: AppBar(
+                title: Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                  onPressed: () {
+                    if (state.selectedGroup!.isJoined) {
+                      context.read<StudyGroupBloc>().add(LeaveStudyGroup());
+                      if (state.selectedGroup!.ownerId == userId) {
+                        Navigator.pop(context);
                       }
-                    },
+                    } else {
+                      context.read<StudyGroupBloc>().add(JoinStudyGroup());
+                    }
+                  },
+                  icon: state.selectedGroup?.isJoined ?? false
+                      ? Icon(Icons.logout,
+                          color: Theme.of(context).colorScheme.error)
+                      : const Icon(Icons.login, color: Color(0xFF3FBF7F))),
+            )),
+            body: BlocBuilder<StudyGroupBloc, StudyGroupState>(
+              builder: (context, state) {
+                final leaderboard = switch (leaderboardType) {
+                  'goal' => state.goalLeaderboard,
+                  'daily' => state.dailyLeaderboard,
+                  'total' => state.totalLeaderboard,
+                  _ => []
+                };
+
+                var list = [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(state.selectedGroup?.name ?? "",
+                            softWrap: true,
+                            overflow: TextOverflow.visible,
+                            style: Theme.of(context).textTheme.titleLarge),
+                      ),
+                      const SizedBox(width: 8),
+                      FilledButton(
+                          onPressed: () =>
+                              context.read<StudyGroupBloc>().add(ShareGroup()),
+                          child: Row(
+                            children: [
+                              Icon(Icons.share),
+                              const SizedBox(width: 4),
+                              Text('Share'),
+                            ],
+                          ))
+                    ],
                   ),
-                ),
-              ];
-              var children = list;
-              return Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: children,
-                ),
-              );
-            },
+                  Text(state.selectedGroup?.description ?? "",
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withAlpha(200))),
+                  const SizedBox(height: 8),
+                  IconBadge(
+                      icon: const Icon(Icons.person_sharp,
+                          size: 16, color: Colors.orange),
+                      text: state.selectedGroup?.memberCount.toString() ?? "-",
+                      tooltipMessage: "Group Members"),
+                  const SizedBox(height: 16),
+                  _goalDisplay(state, context),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      if (state.selectedGroup?.goal?.targetMinutes != null)
+                        Row(
+                          children: [
+                            ChoiceChip(
+                              label: const Text('Goal'),
+                              selected: leaderboardType == 'goal',
+                              onSelected: (_) =>
+                                  setState(() => leaderboardType = 'goal'),
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+                        ),
+                      ChoiceChip(
+                        label: const Text('Daily'),
+                        selected: leaderboardType == 'daily',
+                        onSelected: (_) =>
+                            setState(() => leaderboardType = 'daily'),
+                      ),
+                      const SizedBox(width: 8),
+                      ChoiceChip(
+                        label: const Text('Total'),
+                        selected: leaderboardType == 'total',
+                        onSelected: (_) =>
+                            setState(() => leaderboardType = 'total'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 12),
+                      itemCount: leaderboard.length,
+                      itemBuilder: (context, index) {
+                        final entry = leaderboard[index];
+                        switch (entry) {
+                          case StudyGroupLeaderboardEntry _:
+                            return LeaderboardTile(
+                              rank: entry.rank,
+                              userName: entry.userName,
+                              studyMinutes: entry.totalStudyTime,
+                              studySessions: entry.totalStudySessions,
+                              isCurrentUser: entry.isCurrentUser,
+                            );
+                          case GoalLeaderboardEntry _:
+                            return GoalLeaderboardTile(
+                              userName: entry.userName,
+                              rank: index + 1,
+                              currentMinutes: entry.currentMinutes,
+                              goalMinutes:
+                                  state.selectedGroup?.goal?.targetMinutes ?? 0,
+                            );
+                        }
+                      },
+                    ),
+                  ),
+                ];
+                var children = list;
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: children,
+                  ),
+                );
+              },
+            ),
           ),
         );
       },

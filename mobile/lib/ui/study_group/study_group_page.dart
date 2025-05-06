@@ -37,90 +37,97 @@ class _StudyGroupPageState extends State<StudyGroupPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text('Study Groups'),
-          IconButton(
-            onPressed: () => _openCreateGroupSheet(context, (event) {
-              context.read<StudyGroupBloc>().add(event);
-            }),
-            icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary),
-          )
-        ],
-      )),
-      body: BlocBuilder<StudyGroupBloc, StudyGroupState>(
-        builder: (context, state) {
-          if (state.isLoading && state.groups.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<StudyGroupBloc>().add(FetchStudyGroups());
+      },
+      child: Scaffold(
+        appBar: AppBar(
+            title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('Study Groups'),
+            IconButton(
+              onPressed: () => _openCreateGroupSheet(context, (event) {
+                context.read<StudyGroupBloc>().add(event);
+              }),
+              icon:
+                  Icon(Icons.add, color: Theme.of(context).colorScheme.primary),
+            )
+          ],
+        )),
+        body: BlocBuilder<StudyGroupBloc, StudyGroupState>(
+          builder: (context, state) {
+            if (state.isLoading && state.groups.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (state.error != null) {
-            return Center(child: Text('Error: ${state.error}'));
-          }
+            if (state.error != null) {
+              return Center(child: Text('Error: ${state.error}'));
+            }
 
-          return Column(
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Row(
-                  children: [
-                    ChoiceChip(
-                      label: const Text('Only Joined'),
-                      selected: state.showJoined,
-                      onSelected: (_) => context.read<StudyGroupBloc>().add(
-                            ChangeShowJoined(showJoined: !state.showJoined),
-                          ),
-                    ),
-                    const Spacer(),
-                    DropdownButton<StudyGroupSortBy>(
-                      value: state.sortBy,
-                      onChanged: (value) {
-                        if (value != null) {
+            return Column(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Row(
+                    children: [
+                      ChoiceChip(
+                        label: const Text('Only Joined'),
+                        selected: state.showJoined,
+                        onSelected: (_) => context.read<StudyGroupBloc>().add(
+                              ChangeShowJoined(showJoined: !state.showJoined),
+                            ),
+                      ),
+                      const Spacer(),
+                      DropdownButton<StudyGroupSortBy>(
+                        value: state.sortBy,
+                        onChanged: (value) {
+                          if (value != null) {
+                            context.read<StudyGroupBloc>().add(
+                                  ChangeGroupSortBy(sortBy: value),
+                                );
+                          }
+                        },
+                        items: StudyGroupSortBy.values.map((sortOption) {
+                          return DropdownMenuItem(
+                            value: sortOption,
+                            child: Text(sortOption.displayName),
+                          );
+                        }).toList(),
+                      ),
+                      IconButton(
+                        icon: Icon(state.ascending
+                            ? Icons.arrow_upward
+                            : Icons.arrow_downward),
+                        onPressed: () {
                           context.read<StudyGroupBloc>().add(
-                                ChangeGroupSortBy(sortBy: value),
+                                ChangeGroupSortOrder(
+                                    ascending: !state.ascending),
                               );
-                        }
-                      },
-                      items: StudyGroupSortBy.values.map((sortOption) {
-                        return DropdownMenuItem(
-                          value: sortOption,
-                          child: Text(sortOption.displayName),
-                        );
-                      }).toList(),
-                    ),
-                    IconButton(
-                      icon: Icon(state.ascending
-                          ? Icons.arrow_upward
-                          : Icons.arrow_downward),
-                      onPressed: () {
-                        context.read<StudyGroupBloc>().add(
-                              ChangeGroupSortOrder(ascending: !state.ascending),
-                            );
-                      },
-                    )
-                  ],
+                        },
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                child: ListView.separated(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.all(12),
-                  itemCount: state.groups.length,
-                  itemBuilder: (context, index) {
-                    return GroupTile(group: state.groups[index]);
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const SizedBox(height: 16);
-                  },
+                Expanded(
+                  child: ListView.separated(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.all(12),
+                    itemCount: state.groups.length,
+                    itemBuilder: (context, index) {
+                      return GroupTile(group: state.groups[index]);
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const SizedBox(height: 16);
+                    },
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
