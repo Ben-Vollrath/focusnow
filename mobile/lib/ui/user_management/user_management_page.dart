@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/user/user_bloc.dart';
 
 class UserManagementPage extends StatefulWidget {
-  const UserManagementPage({Key? key}) : super(key: key);
+  const UserManagementPage({super.key});
 
   @override
   State<UserManagementPage> createState() => _UserManagementPageState();

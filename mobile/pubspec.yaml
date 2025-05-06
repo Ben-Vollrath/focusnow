@@ -24,15 +24,16 @@ dependencies:
     path: packages/challenge_repository
   stats_repository:
     path: packages/stats_repository
-  goal_repository:
-    path: packages/goal_repository
   notification_repository:
     path: packages/notification_repository
   user_repository:
     path: packages/user_repository
   leaderboard_repository:
     path: packages/leaderboard_repository
+  study_group_repository:
+    path: packages/study_group_repository
 
+  app_links: ^6.4.0
   supabase_flutter: ^2.5.7
   shared_preferences: ^2.5.3
   google_sign_in: ^6.1.0
@@ -62,6 +63,7 @@ dependencies:
   confetti: ^0.8.0
   share_plus: ^11.0.0
   path_provider: ^2.1.5
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   bloc_test: ^9.0.0

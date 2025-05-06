@@ -1,8 +1,6 @@
 // ignore_for_file: prefer_const_constructors
-import 'package:focusnow/bloc/goal/goal_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:focusnow/bloc/stats/stats_bloc.dart';
-import 'package:goal_repository/goal.dart';
 import 'package:stats_repository/daily_study_data.dart';
 import 'package:stats_repository/level.dart';
 import 'package:stats_repository/user_stats.dart';

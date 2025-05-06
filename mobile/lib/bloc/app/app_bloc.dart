@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:subscription_repository/subscription_repository.dart';
 
 part 'app_event.dart';
 part 'app_state.dart';

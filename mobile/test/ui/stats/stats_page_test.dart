@@ -3,18 +3,14 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:focusnow/bloc/challenge/challenge_bloc.dart';
-import 'package:focusnow/bloc/goal/goal_bloc.dart';
-import 'package:focusnow/ui/stats/goal_box.dart';
 import 'package:focusnow/ui/stats/level_box.dart';
 import 'package:focusnow/ui/stats/study_chart.dart';
 import 'package:focusnow/ui/stats/todays_achievement.dart';
-import 'package:goal_repository/goal.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/stats/stats_bloc.dart';
 import 'package:focusnow/ui/stats/stats_page.dart';
 import 'package:stats_repository/daily_study_data.dart';
-import 'package:stats_repository/stats_repository.dart';
 import 'package:stats_repository/user_stats.dart';
 
 class MockStatsBloc extends MockBloc<StatsEvent, StatsState>
@@ -22,8 +18,6 @@ class MockStatsBloc extends MockBloc<StatsEvent, StatsState>
 
 class MockChallengeBloc extends MockBloc<ChallengeEvent, ChallengeState>
     implements ChallengeBloc {}
-
-class MockGoalBloc extends MockBloc<GoalEvent, GoalState> implements GoalBloc {}
 
 class MockAnalyticsRepository extends Mock implements AnalyticsRepository {}
 
@@ -34,7 +28,6 @@ void main() {
 
   late MockStatsBloc mockBloc;
   late MockChallengeBloc mockChallengeBloc;
-  late MockGoalBloc mockGoalBloc;
 
   final today = DateTime.now();
   final todayStr = DateTime(today.year, today.month, today.day)
@@ -69,26 +62,12 @@ void main() {
     when(() => mockChallengeBloc.state).thenReturn(
       ChallengeState.initial().copyWith(status: Status.loaded, challenges: []),
     );
-    when(() => mockGoalBloc.state).thenReturn(
-      GoalState.initial().copyWith(
-          status: GoalStatus.loaded,
-          goal: Goal(
-              id: "id",
-              createdAt: DateTime(2024, 1, 1),
-              targetDate: DateTime(2024, 1, 1),
-              targetMinutes: 100,
-              currentMinutes: 10,
-              completed: false,
-              name: "name",
-              xpReward: 10)),
-    );
 
     return MaterialApp(
       home: MultiBlocProvider(
         providers: [
           BlocProvider<StatsBloc>.value(value: mockBloc),
           BlocProvider<ChallengeBloc>.value(value: mockChallengeBloc),
-          BlocProvider<GoalBloc>.value(value: mockGoalBloc),
         ],
         child: const StatsPage(),
       ),
@@ -98,7 +77,6 @@ void main() {
   setUp(() {
     mockBloc = MockStatsBloc();
     mockChallengeBloc = MockChallengeBloc();
-    mockGoalBloc = MockGoalBloc();
   });
 
   testWidgets('shows loading spinner when status is loading', (tester) async {

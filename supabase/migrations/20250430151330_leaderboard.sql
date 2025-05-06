@@ -1,14 +1,14 @@
 CREATE OR REPLACE VIEW daily_study_leaderboard AS
 SELECT
-  sd.user_id,
+  u.id AS user_id,
   u.username,
-  sd.total_study_time,
-  sd.total_study_sessions,
-  RANK() OVER (ORDER BY sd.total_study_time DESC) AS rank
-FROM study_days sd
-JOIN users u ON sd.user_id = u.id
-WHERE sd.total_study_time > 0
-  AND sd.study_date = CURRENT_DATE;
+  COALESCE(sd.total_study_time, 0) AS total_study_time,
+  COALESCE(sd.total_study_sessions, 0) AS total_study_sessions,
+  RANK() OVER (ORDER BY COALESCE(sd.total_study_time, 0) DESC) AS rank
+FROM users u
+LEFT JOIN study_days sd
+  ON sd.user_id = u.id AND sd.study_date = CURRENT_DATE;
+
 
 CREATE OR REPLACE VIEW top_5_daily_study_leaderboard AS
 SELECT *
@@ -24,8 +24,7 @@ SELECT
   u.total_study_time,
   u.total_study_sessions,
   RANK() OVER (ORDER BY u.total_study_time DESC) AS rank
-FROM users u
-WHERE u.total_study_time > 0;
+FROM users u;
 
 CREATE OR REPLACE VIEW top_5_total_study_leaderboard AS
 SELECT *

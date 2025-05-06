@@ -1,16 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:focusnow/bloc/goal/goal_bloc.dart';
 import 'package:focusnow/bloc/stats/stats_bloc.dart';
-import 'package:focusnow/ui/stats/goal_box.dart';
 import 'package:focusnow/ui/stats/level_box.dart';
 import 'package:focusnow/ui/stats/stats_page.dart';
 import 'package:focusnow/ui/stats/study_chart.dart';
 import 'package:focusnow/ui/stats/todays_achievement.dart';
 import 'package:focusnow/ui/stats/utils.dart';
-import 'package:stats_repository/daily_study_data.dart';
-import 'package:stats_repository/user_stats.dart';
 
 class StatsShareView extends StatelessWidget {
   const StatsShareView({
@@ -88,11 +84,6 @@ class StatsShareView extends StatelessWidget {
                     todaysStudyTime: getTodayMinutes(state.weeklyStudyData),
                     todaysSessions: getTodaySessions(state.weeklyStudyData),
                   ),
-                  const SizedBox(height: 16),
-                  if (context.read<GoalBloc>().state.status ==
-                          GoalStatus.loaded &&
-                      context.read<GoalBloc>().state.goal != null)
-                    GoalBox(),
                 ],
               );
             },

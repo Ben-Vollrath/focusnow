@@ -1,9 +1,6 @@
-import 'package:focusnow/bloc/login/login_cubit.dart';
 import 'package:focusnow/ui/login/login.dart';
 import 'package:analytics_repository/analytics_repository.dart';
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
