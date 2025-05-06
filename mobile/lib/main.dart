@@ -1,4 +1,3 @@
-import 'dart:isolate';
 
 import 'package:app_links/app_links.dart';
 import 'package:flutter/services.dart';
@@ -18,8 +17,6 @@ import 'package:notification_repository/notification_repository.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:subscription_repository/subscription_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

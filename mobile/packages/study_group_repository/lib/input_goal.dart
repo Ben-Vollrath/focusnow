@@ -6,7 +6,7 @@ class InputGoal extends Equatable {
   final String name;
   final String description;
 
-  InputGoal({
+  const InputGoal({
     required this.targetDate,
     required this.targetMinutes,
     required this.name,

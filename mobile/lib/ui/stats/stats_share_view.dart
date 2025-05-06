@@ -7,8 +7,6 @@ import 'package:focusnow/ui/stats/stats_page.dart';
 import 'package:focusnow/ui/stats/study_chart.dart';
 import 'package:focusnow/ui/stats/todays_achievement.dart';
 import 'package:focusnow/ui/stats/utils.dart';
-import 'package:stats_repository/daily_study_data.dart';
-import 'package:stats_repository/user_stats.dart';
 
 class StatsShareView extends StatelessWidget {
   const StatsShareView({

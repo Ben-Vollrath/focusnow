@@ -1,9 +1,6 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:focusnow/ui/start/onboarding/onboarding_demo.dart';
-import 'package:focusnow/ui/study_timer/progress_display/study_timer_view.dart';
-import 'package:focusnow/ui/study_timer/study_timer_page.dart';
 import 'package:lottie/lottie.dart';
 
 class OnboardingPageModel {

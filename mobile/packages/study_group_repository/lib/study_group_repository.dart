@@ -146,7 +146,7 @@ class StudyGroupRepository {
   }) async {
     final from = page * pageSize;
     final to = from + pageSize - 1;
-    var query;
+    PostgrestTransformBuilder<PostgrestList> query;
 
     if (filterIds != null && filterIds.isNotEmpty) {
       query = supabaseClient

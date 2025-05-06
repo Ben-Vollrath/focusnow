@@ -1,7 +1,6 @@
 import 'package:challenge_repository/challenge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:challenge_repository/challenge_repository.dart';
 import 'package:focusnow/bloc/challenge/challenge_bloc.dart';
 
 class CategoryFilterBar extends StatelessWidget {
@@ -9,7 +8,7 @@ class CategoryFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categories = ChallengeCategory.values;
+    const categories = ChallengeCategory.values;
     final state = context.watch<ChallengeBloc>().state;
 
     return SizedBox(

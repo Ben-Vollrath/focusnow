@@ -1,12 +1,9 @@
 import 'dart:async';
 
 import 'package:analytics_repository/analytics_repository.dart';
-import 'package:app_links/app_links.dart';
 import 'package:cache/cache.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:meta/meta.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:rxdart/subjects.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import './models/user.dart' as UserModel;
@@ -366,7 +363,7 @@ class AuthenticationRepository {
         // Sign in was cancelled
         return false;
       }
-      final googleAuth = await googleUser!.authentication;
+      final googleAuth = await googleUser.authentication;
       final accessToken = googleAuth.accessToken;
       final idToken = googleAuth.idToken;
 

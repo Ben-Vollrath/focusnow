@@ -14,7 +14,7 @@ class LevelBox extends StatelessWidget {
   final bool showShareButton;
 
   const LevelBox(
-      {required this.levelIcon,
+      {super.key, required this.levelIcon,
       required this.level,
       required this.levelName,
       required this.xp,

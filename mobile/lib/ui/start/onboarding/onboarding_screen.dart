@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/app/app_bloc.dart';
 import 'package:focusnow/bloc/login/login_cubit.dart';
 import 'package:focusnow/bloc/study_timer/study_timer_bloc.dart';
-import 'package:focusnow/ui/paywall/paywall.dart';
 import 'onboarding_page.dart';
 import 'onboarding_data.dart';
 

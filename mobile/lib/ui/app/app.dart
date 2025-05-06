@@ -1,8 +1,5 @@
-import 'package:analytics_repository/analytics_repository.dart';
 import 'package:app_links/app_links.dart';
 import 'package:challenge_repository/challenge_repository.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

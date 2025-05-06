@@ -6,7 +6,7 @@ class ChallengeProgress extends Equatable {
   final DateTime last_updated;
   final String challenge_id;
 
-  ChallengeProgress({
+  const ChallengeProgress({
     required this.completed,
     required this.progress,
     required this.last_updated,

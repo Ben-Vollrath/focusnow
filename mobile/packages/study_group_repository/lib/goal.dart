@@ -11,7 +11,7 @@ class Goal extends Equatable {
   final String description;
   final int xpReward;
 
-  Goal({
+  const Goal({
     required this.id,
     required this.createdAt,
     required this.targetDate,

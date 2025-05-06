@@ -13,11 +13,10 @@ import 'package:intl/intl.dart';
 import 'package:study_group_repository/goal_leaderboard_entry.dart';
 import 'package:study_group_repository/input_goal.dart';
 import 'package:study_group_repository/leaderboard_entry.dart';
-import 'package:study_group_repository/study_group.dart';
-import 'package:study_group_repository/study_group_repository.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class StudyGroupDetailPage extends StatefulWidget {
+  const StudyGroupDetailPage({super.key});
+
   @override
   State<StudyGroupDetailPage> createState() => _StudyGroupDetailPageState();
 }
@@ -171,6 +170,7 @@ class _StudyGroupDetailPageState extends State<StudyGroupDetailPage> {
                                   state.selectedGroup?.goal?.targetMinutes ?? 0,
                             );
                         }
+                        return null;
                       },
                     ),
                   ),

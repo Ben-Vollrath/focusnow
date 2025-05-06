@@ -13,7 +13,6 @@ import 'package:study_group_repository/goal.dart';
 import 'package:study_group_repository/goal_leaderboard_entry.dart';
 import 'package:study_group_repository/leaderboard_entry.dart';
 import 'package:study_group_repository/study_group.dart';
-import 'package:study_group_repository/study_group_repository.dart';
 
 class MockStudyGroupBloc extends MockBloc<StudyGroupEvent, StudyGroupState>
     implements StudyGroupBloc {}

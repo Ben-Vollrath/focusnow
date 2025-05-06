@@ -8,7 +8,7 @@ import 'package:stats_repository/daily_study_data.dart';
 class StudyChart extends StatelessWidget {
   final List<DailyStudyData> weeklyData;
 
-  const StudyChart({required this.weeklyData});
+  const StudyChart({super.key, required this.weeklyData});
 
   @override
   Widget build(BuildContext context) {

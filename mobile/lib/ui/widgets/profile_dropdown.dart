@@ -17,9 +17,9 @@ class ProfileDropdownButton extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 18,
-                child: Icon(Icons.person),
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 foregroundColor: Theme.of(context).colorScheme.onSurface,
+                child: Icon(Icons.person),
               ),
               if (state.user.isAnonymous)
                 Positioned(

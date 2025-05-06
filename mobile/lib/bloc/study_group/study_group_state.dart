@@ -14,7 +14,7 @@ class StudyGroupState extends Equatable {
   final int page;
   final bool endOfListReached;
 
-  StudyGroupState({
+  const StudyGroupState({
     this.groups = const [],
     this.selectedGroup,
     this.dailyLeaderboard = const [],

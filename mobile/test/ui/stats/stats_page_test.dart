@@ -11,7 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/stats/stats_bloc.dart';
 import 'package:focusnow/ui/stats/stats_page.dart';
 import 'package:stats_repository/daily_study_data.dart';
-import 'package:stats_repository/stats_repository.dart';
 import 'package:stats_repository/user_stats.dart';
 
 class MockStatsBloc extends MockBloc<StatsEvent, StatsState>

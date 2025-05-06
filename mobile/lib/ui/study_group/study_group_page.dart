@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focusnow/bloc/study_group/study_group_bloc.dart';
 import 'package:focusnow/ui/study_group/create_group_sheet.dart';
 import 'package:focusnow/ui/study_group/group_tile.dart';
-import 'package:focusnow/ui/study_group/study_group_detail_page.dart';
 import 'package:study_group_repository/study_group_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 

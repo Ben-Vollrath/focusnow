@@ -40,7 +40,7 @@ void main() {
   });
 
   testWidgets('highlights selected category', (tester) async {
-    final selectedCategory = ChallengeCategory.total_sessions;
+    const selectedCategory = ChallengeCategory.total_sessions;
 
     when(() => mockBloc.state).thenReturn(
       ChallengeState.initial().copyWith(selectedCategory: selectedCategory),
